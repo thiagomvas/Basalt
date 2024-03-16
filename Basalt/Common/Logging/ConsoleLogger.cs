@@ -2,6 +2,7 @@
 using Basalt.Core.Common.Types;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 
 namespace Basalt.Common.Logging
 {
@@ -9,12 +10,13 @@ namespace Basalt.Common.Logging
 	{
 		private LogLevel logLevel;
 
-		public void Log(LogLevel level, string message)
+		public void Log(LogLevel level, string message, string callerName = "")
 		{
+			var frame = new StackTrace(1).GetFrame(1);
 			if (level >= logLevel)
 			{
 				SetAppropriateColor(level);
-				string levelString = level == LogLevel.Debug ? $"[{level}]" : $"[{level} : {new StackTrace(1).GetFrame(1)?.GetMethod()?.DeclaringType.Name}]";
+				string levelString = level != LogLevel.Debug ? $"[{level}]" : $"[{level} : {new StackTrace(1).GetFrame(1)?.GetMethod()?.DeclaringType.Name}.{callerName}]";
 				Console.WriteLine($"{levelString} [{DateTime.Now}]  {message}");
 				Console.ResetColor();
 			}
@@ -55,29 +57,29 @@ namespace Basalt.Common.Logging
 		}
 
 
-		public void LogDebug(string message)
+		public void LogDebug(string message, [CallerMemberName] string callerName = "")
 		{
-			Log(LogLevel.Debug, message);
+			Log(LogLevel.Debug, message, callerName);
 		}
 
-		public void LogInformation(string message)
+		public void LogInformation(string message, [CallerMemberName] string callerName = "")
 		{
-			Log(LogLevel.Info, message);
+			Log(LogLevel.Info, message, callerName);
 		}
 
-		public void LogWarning(string message)
+		public void LogWarning(string message, [CallerMemberName] string callerName = "")
 		{
-			Log(LogLevel.Warning, message);
+			Log(LogLevel.Warning, message , callerName);
 		}
 
-		public void LogError(string message)
+		public void LogError(string message, [CallerMemberName] string callerName = "")
 		{
-			Log(LogLevel.Error, message);
+			Log(LogLevel.Error, message , callerName);
 		}
 
-		public void LogFatal(string message)
+		public void LogFatal(string message, [CallerMemberName] string callerName = "")
 		{
-			Log(LogLevel.Fatal, message);
+			Log(LogLevel.Fatal, message , callerName);
 		}
 	}
 }

@@ -10,41 +10,41 @@ namespace Basalt.Core.Common
 {
 	public class EngineBuilder : IEngineBuilder
 	{
-		private IGraphicsEngine? graphics;
-		private IPhysicsEngine? physics;
-		private ISoundSystem? sound;
-		private ILogger? logger;
+		public IGraphicsEngine? GraphicsEngine {get; set; }
+		public IPhysicsEngine? PhysicsEngine {get; set; }
+		public ISoundSystem? SoundEngine {get; set; }
+		public ILogger? Logger { get; set; }
 
 		public Engine Build()
 		{
-			Engine.Initialize(graphics, sound, physics);
+			Engine.Initialize(GraphicsEngine, SoundEngine, PhysicsEngine);
 
-			Engine.Instance.logger = logger;
+			Engine.Instance.logger = Logger;
 
 			return Engine.Instance;
 		}
 
 		public IEngineBuilder WithGraphicsEngine(IGraphicsEngine graphicsEngine)
 		{
-			graphics = graphicsEngine;
+			GraphicsEngine = graphicsEngine;
 			return this;
 		}
 
 		public IEngineBuilder WithLogger(ILogger logger)
 		{
-			this.logger = logger;
+			this.Logger = logger;
 			return this;
 		}
 
 		public IEngineBuilder WithPhysicsEngine(IPhysicsEngine physicsEngine)
 		{
-			physics = physicsEngine;
+			PhysicsEngine = physicsEngine;
 			return this;
 		}
 
 		public IEngineBuilder WithSoundEngine(ISoundSystem soundEngine)
 		{
-			sound = soundEngine;
+			SoundEngine = soundEngine;
 			return this;
 		}
 	}

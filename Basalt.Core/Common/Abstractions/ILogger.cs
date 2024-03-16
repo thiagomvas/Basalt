@@ -1,14 +1,15 @@
 ﻿using Basalt.Core.Common.Types;
+using System.Runtime.CompilerServices;
 
 namespace Basalt.Core.Common.Abstractions
 {
 	public interface ILogger
 	{
-		void Log(LogLevel level, string message);
-		void LogDebug(string message);
-		void LogInformation(string message);
-		void LogWarning(string message);
-		void LogError(string message);
-		void LogFatal(string message);
+		void Log(LogLevel level, string message, string callerName);
+		void LogDebug(string message, [CallerMemberName] string callerName = "");
+		void LogInformation(string message, [CallerMemberName] string callerName = "");
+		void LogWarning(string message, [CallerMemberName] string callerName = "");
+		void LogError(string message, [CallerMemberName] string callerName = "");
+		void LogFatal(string message, [CallerMemberName] string callerName = "");
 	}
 }
