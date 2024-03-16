@@ -4,33 +4,55 @@ namespace Basalt.Core.Common
 {
 	public class Engine
 	{
+		private static Engine? _instance;
 		private readonly IGraphicsEngine? _graphicsEngine;
 		private readonly ISoundSystem? _soundSystem;
 		private readonly IPhysicsEngine? _physicsEngine;
-		public ILogger? Logger;
-		public Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine)
+		internal ILogger? logger;
+		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine)
 		{
 			_graphicsEngine = graphicsEngine;
 			_soundSystem = soundSystem;
 			_physicsEngine = physicsEngine;
 		}
 
-		public void Initialize()
+		public static Engine Instance
 		{
-			Logger?.LogInformation("Engine Initializing");
-			if(_graphicsEngine == null)
+			get
 			{
-				Logger?.LogFatal("Graphics engine not specified! Cannot run engine.");
+				if (_instance == null)
+				{
+					throw new InvalidOperationException("Engine has not been initialized.");
+				}
+				return _instance;
+			}
+		}
+
+		public static void Initialize(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine)
+		{
+			if (_instance != null)
+			{
+				throw new InvalidOperationException("Engine has already been initialized.");
+			}
+			_instance = new Engine(graphicsEngine, soundSystem, physicsEngine);
+		}
+
+		public void Run()
+		{
+			logger?.LogInformation("Engine Initializing");
+			if (_graphicsEngine == null)
+			{
+				logger?.LogFatal("Graphics engine not specified! Cannot run engine.");
 				return;
 			}
-			if(_soundSystem == null)
+			if (_soundSystem == null)
 			{
-				Logger?.LogWarning("Sound system not specified! Engine will run without sound.");
+				logger?.LogWarning("Sound system not specified! Engine will run without sound.");
 			}
 
-			if(_physicsEngine == null)
+			if (_physicsEngine == null)
 			{
-				Logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
+				logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
 			}
 
 			_graphicsEngine?.Initialize();

@@ -14,12 +14,13 @@ var initParams = new WindowInitParams
 	TargetFps = 120,
 };
 
-var logger = new ConsoleLogger(LogLevel.Debug);
+var logger = new ConsoleLogger(LogLevel.Info);
 
 var graphicsEngine = new RaylibGraphicsEngine(initParams, logger);
-builder.UseGraphicsEngine(graphicsEngine);
+
+builder.WithGraphicsEngine(graphicsEngine);
+builder.WithLogger(logger);
 
 var engine = builder.Build();
-engine.Logger = logger;
 
-engine.Initialize();
+engine.Run();

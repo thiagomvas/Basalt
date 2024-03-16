@@ -8,9 +8,10 @@ namespace Basalt.Core.Common.Abstractions
 {
 	public interface IEngineBuilder
 	{
-		IEngineBuilder UseGraphicsEngine(IGraphicsEngine graphicsEngine);
-		IEngineBuilder UseSoundEngine(ISoundSystem soundEngine);
-		IEngineBuilder UsePhysicsEngine(IPhysicsEngine physicsEngine);
+		IEngineBuilder WithGraphicsEngine(IGraphicsEngine graphicsEngine);
+		IEngineBuilder WithSoundEngine(ISoundSystem soundEngine);
+		IEngineBuilder WithPhysicsEngine(IPhysicsEngine physicsEngine);
+		IEngineBuilder WithLogger(ILogger logger);
 		Engine Build();
 	}
 }
