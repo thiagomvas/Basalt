@@ -1,4 +1,6 @@
-﻿using Basalt.Core.Common;
+﻿using Basalt.Common.Logging;
+using Basalt.Core.Common;
+using Basalt.Core.Common.Types;
 using Basalt.Graphics;
 using Basalt.Types;
 
@@ -7,15 +9,17 @@ var builder = new EngineBuilder();
 var initParams = new WindowInitParams
 {
 	Title = "Basalt Test Field",
-	Width = 1920,
-	Height = 1080,
-	TargetFps = 10,
-	Fullscreen = true,
+	Width = 1280,
+	Height = 720,
+	TargetFps = 120,
 };
 
-var graphicsEngine = new RaylibGraphicsEngine(initParams);
+var logger = new ConsoleLogger(LogLevel.Debug);
 
+var graphicsEngine = new RaylibGraphicsEngine(initParams, logger);
 builder.UseGraphicsEngine(graphicsEngine);
 
-var game = builder.Build();
-game.Initialize();
+var engine = builder.Build();
+engine.Logger = logger;
+
+engine.Initialize();

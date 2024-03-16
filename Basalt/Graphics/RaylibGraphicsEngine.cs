@@ -1,7 +1,9 @@
-﻿using Basalt.Core.Common.Abstractions;
+﻿using Basalt.Common.Logging;
+using Basalt.Core.Common.Abstractions;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using static Raylib_cs.Raylib;
 
 namespace Basalt.Graphics
@@ -13,27 +15,33 @@ namespace Basalt.Graphics
 		public Action Rendering { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 		private readonly WindowInitParams config;
-
-        public RaylibGraphicsEngine(WindowInitParams initConfig)
-        {
-			config = initConfig;
-        }
-
-        public void Initialize()
+		private readonly ILogger? logger;
+		private static RaylibGraphicsEngine instance;
+		public RaylibGraphicsEngine(WindowInitParams initConfig, ILogger? logger = null)
 		{
+			config = initConfig;
+			this.logger = logger;
+		}
+
+		public unsafe void Initialize()
+		{
+			instance = this;
+			SetTraceLogCallback(&LogCustom);
 			InitWindow(config.Width, config.Height, config.Title);
 			SetTargetFPS(config.TargetFps);
 
-			if(config.Fullscreen)
+			if (config.Fullscreen)
 			{
 				ToggleFullscreen();
 			}
 
-			if(config.VSync)
+			if (config.VSync)
 			{
 				SetConfigFlags(ConfigFlags.VSyncHint);
 			}
 			DisableCursor();
+
+			logger?.LogInformation("Graphics Engine Initialized");
 			Render();
 		}
 
@@ -53,16 +61,16 @@ namespace Basalt.Graphics
 
 			for (int i = 0; i < MaxColumns; i++)
 			{
-				heights[i] = (float)GetRandomValue(1, 12);
+				heights[i] = GetRandomValue(1, 12);
 				positions[i] = new Vector3(GetRandomValue(-15, 15), heights[i] / 2, GetRandomValue(-15, 15));
 				colors[i] = new Color(GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255);
 			}
 
 			CameraMode cameraMode = CameraMode.FirstPerson;
 
-			SetTargetFPS(60);
 			//--------------------------------------------------------------------------------------
 
+			logger?.LogInformation("Starting raylib rendering loop...");
 			// Main game loop
 			while (!WindowShouldClose())
 			{
@@ -126,7 +134,6 @@ namespace Basalt.Graphics
 				// For advance camera controls, it's reecommended to compute camera movement manually
 				UpdateCamera(ref camera, cameraMode);
 				//----------------------------------------------------------------------------------
-
 				// Draw
 				//----------------------------------------------------------------------------------
 				BeginDrawing();
@@ -187,7 +194,41 @@ namespace Basalt.Graphics
 				//----------------------------------------------------------------------------------
 			}
 
+			logger?.LogInformation("Exiting application...");
 			CloseWindow();
+		}
+
+		[UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+		private static unsafe void LogCustom(int logLevel, sbyte* text, sbyte* args)
+		{
+			var message = Logging.GetLogMessage(new IntPtr(text), new IntPtr(args));
+			switch ((TraceLogLevel)logLevel)
+			{
+				case TraceLogLevel.All:
+					instance.logger?.LogDebug(message);
+					break;
+				case TraceLogLevel.Trace:
+					instance.logger?.LogDebug(message);
+					break;
+				case TraceLogLevel.Debug:
+					instance.logger?.LogDebug(message);
+					break;
+				case TraceLogLevel.Info:
+					instance.logger?.LogInformation(message);
+					break;
+				case TraceLogLevel.Warning:
+					instance.logger?.LogWarning(message);
+					break;
+				case TraceLogLevel.Error:
+					instance.logger?.LogError(message);
+					break;
+				case TraceLogLevel.Fatal:
+					instance.logger?.LogError(message);
+					break;
+				default:
+					break;
+			}
+
 		}
 	}
 }

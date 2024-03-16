@@ -1,9 +1,4 @@
 ﻿using Basalt.Core.Common.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basalt.Core.Common
 {
@@ -12,7 +7,7 @@ namespace Basalt.Core.Common
 		private readonly IGraphicsEngine? _graphicsEngine;
 		private readonly ISoundSystem? _soundSystem;
 		private readonly IPhysicsEngine? _physicsEngine;
-
+		public ILogger? Logger;
 		public Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine)
 		{
 			_graphicsEngine = graphicsEngine;
@@ -22,13 +17,25 @@ namespace Basalt.Core.Common
 
 		public void Initialize()
 		{
+			Logger?.LogInformation("Engine Initializing");
+			if(_graphicsEngine == null)
+			{
+				Logger?.LogFatal("Graphics engine not specified! Cannot run engine.");
+				return;
+			}
+			if(_soundSystem == null)
+			{
+				Logger?.LogWarning("Sound system not specified! Engine will run without sound.");
+			}
+
+			if(_physicsEngine == null)
+			{
+				Logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
+			}
+
 			_graphicsEngine?.Initialize();
 			_soundSystem?.Initialize();
 			_physicsEngine?.Initialize();
-
-			Console.WriteLine($"Graphics Engine: {_graphicsEngine?.GetType()}");
-			Console.WriteLine($"Sound Engine: {_soundSystem?.GetType()}");
-			Console.WriteLine($"Physics Engine: {_physicsEngine?.GetType()}");
 		}
 	}
 }
