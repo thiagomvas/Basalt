@@ -10,6 +10,7 @@ namespace Basalt.Core.Common
 		private readonly IPhysicsEngine? _physicsEngine;
 		internal ILogger? logger;
 		private readonly IEventBus? _eventBus;
+		private bool _exceptionOccurred = false;
 
 		private Thread graphicsThread, physicsThread;
 		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
@@ -61,11 +62,20 @@ namespace Basalt.Core.Common
 
 			_soundSystem?.Initialize();
 
-			physicsThread = new Thread(() => _physicsEngine?.Initialize());
+			physicsThread = new Thread(() => SafeInitialize(_physicsEngine));
 			physicsThread.Start();
 
-			graphicsThread = new Thread(() => _graphicsEngine.Initialize());
+			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
 			graphicsThread.Start();
+
+			physicsThread.Join();
+			graphicsThread.Join();
+
+			if (_exceptionOccurred)
+			{
+				Shutdown();
+				return;
+			}
 		}
 
 		public void Shutdown()
@@ -74,13 +84,27 @@ namespace Basalt.Core.Common
 			if (physicsThread != null && physicsThread.IsAlive)
 			{
 				_physicsEngine?.Shutdown();
-				physicsThread.Join();
 			}
 
 			if (graphicsThread != null && graphicsThread.IsAlive)
 			{
 				_graphicsEngine?.Shutdown();
-				graphicsThread.Join();
+			}
+			logger?.LogInformation("Engine shut down");
+		}
+
+		private void SafeInitialize(IEngineComponent? component)
+		{
+			try
+			{
+				component?.Initialize();
+			}
+			catch (Exception e)
+			{
+				_exceptionOccurred = true;
+				logger?.LogFatal($"EXCEPTION OCURRED AT {component.GetType().Name}: {e.Message}");
+				Shutdown();
+				return;
 			}
 		}
 

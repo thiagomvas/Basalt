@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Events;
 using Basalt.Common.Logging;
+using Basalt.Common.Physics;
 using Basalt.Core.Common;
 using Basalt.Core.Common.Types;
 using Basalt.Graphics;
@@ -16,11 +17,13 @@ var initParams = new WindowInitParams
 	TargetFps = 120
 };
 
-var logger = new ConsoleLogger(LogLevel.Warning);
+var logger = new ConsoleLogger(LogLevel.Info);
 
 var graphicsEngine = new RaylibGraphicsEngine(initParams, logger);
+var physicsEngine = new PhysicsEngine(logger);
 
 builder.WithGraphicsEngine(graphicsEngine);
+builder.WithPhysicsEngine(physicsEngine);
 builder.WithLogger(logger);
 
 EventBus eventBus = new EventBus();
@@ -31,10 +34,3 @@ var engine = builder.Build();
 
 engine.Run();
 
-while(true)
-{
-	if(Raylib.IsKeyPressed(KeyboardKey.G))
-	{
-		engine.Shutdown();
-	}
-}

@@ -43,7 +43,17 @@ namespace Basalt.Graphics
 			DisableCursor();
 
 			logger?.LogInformation("Graphics Engine Initialized");
-			Render();
+			try
+			{
+				Render();
+			}
+			catch
+			{
+				ShouldRun = false;
+				CloseWindow();
+				logger?.LogError("Graphics Engine stopped running due to an exception.");	
+				throw;
+			}
 		}
 
 		public void Render()
@@ -75,6 +85,10 @@ namespace Basalt.Graphics
 			// Main game loop
 			while (ShouldRun)
 			{
+				if (IsKeyPressed(KeyboardKey.G))
+					throw new Exception("Simulated exception");
+				if (IsKeyPressed(KeyboardKey.H))
+					Engine.Instance.Shutdown();
 				// Update
 				//----------------------------------------------------------------------------------
 				Engine.Instance.EventBus?.NotifyUpdate();
@@ -195,7 +209,9 @@ namespace Basalt.Graphics
 				EndDrawing();
 				//----------------------------------------------------------------------------------
 			}
+			Console.WriteLine($"{ShouldRun}");
 			CloseWindow();
+			logger?.LogWarning("Graphics Engine stopped running gracefully.");
 
 		}
 
