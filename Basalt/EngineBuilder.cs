@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Basalt.Core.Common
+namespace Basalt
 {
 	public class EngineBuilder : IEngineBuilder
 	{
@@ -16,7 +16,7 @@ namespace Basalt.Core.Common
 		public ILogger? Logger { get; set; }
 		public IEventBus? EventBus { get; set; }
 
-		public Engine Build()
+		public IEngine Build()
 		{
 			Engine.Initialize(GraphicsEngine, SoundEngine, PhysicsEngine, EventBus);
 

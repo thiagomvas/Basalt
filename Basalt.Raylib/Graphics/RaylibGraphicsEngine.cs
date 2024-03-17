@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using static Raylib_cs.Raylib;
 
-namespace Basalt.Graphics
+namespace Basalt.Raylib.Graphics
 {
 	public class RaylibGraphicsEngine : IGraphicsEngine
 	{

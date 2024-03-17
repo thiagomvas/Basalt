@@ -12,6 +12,6 @@ namespace Basalt.Core.Common.Abstractions
 		IEngineBuilder WithSoundEngine(ISoundSystem soundEngine);
 		IEngineBuilder WithPhysicsEngine(IPhysicsEngine physicsEngine);
 		IEngineBuilder WithLogger(ILogger logger);
-		Engine Build();
+		IEngine Build();
 	}
 }

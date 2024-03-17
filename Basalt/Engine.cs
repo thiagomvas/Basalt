@@ -1,8 +1,9 @@
-﻿using Basalt.Core.Common.Abstractions;
+﻿using Basalt.Common.Entities;
+using Basalt.Core.Common.Abstractions;
 
-namespace Basalt.Core.Common
+namespace Basalt
 {
-	public class Engine
+	public class Engine : IEngine
 	{
 		private static Engine? _instance;
 		private readonly IGraphicsEngine? _graphicsEngine;
@@ -11,6 +12,7 @@ namespace Basalt.Core.Common
 		internal ILogger? logger;
 		private readonly IEventBus? _eventBus;
 		private bool _exceptionOccurred = false;
+		private readonly EntityManager entityManager = new();
 
 		private Thread graphicsThread, physicsThread;
 		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
@@ -91,6 +93,16 @@ namespace Basalt.Core.Common
 				_graphicsEngine?.Shutdown();
 			}
 			logger?.LogInformation("Engine shut down");
+		}
+
+		public static void CreateEntity(Entity entity)
+		{
+			Instance.entityManager.AddEntity(entity);
+		}
+
+		public static void RemoveEntity(Entity entity)
+		{
+			Instance.entityManager.RemoveEntity(entity);
 		}
 
 		private void SafeInitialize(IEngineComponent? component)

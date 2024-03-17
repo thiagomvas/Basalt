@@ -4,15 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Abstractions\Input\" />
-    <Folder Include="Common\Entities\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MiNET" Version="1.0.2304" />
+    <ProjectReference Include="..\Basalt.Core\Basalt.Core.csproj" />
+    <ProjectReference Include="..\Basalt\Basalt.csproj" />
   </ItemGroup>
 
 </Project>
