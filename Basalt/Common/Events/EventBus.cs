@@ -1,10 +1,4 @@
 ﻿using Basalt.Core.Common.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Basalt.Common.Events
 {
 	public class EventBus : IEventBus
@@ -29,7 +23,7 @@ namespace Basalt.Common.Events
 						observer.OnRender();
 					}
 				}
-			});
+			}).Wait();
 		}
 
 		public void NotifyStart()
@@ -54,7 +48,7 @@ namespace Basalt.Common.Events
 						observer.OnUpdate();
 					}
 				}
-			});
+			}).Wait();
 		}
 
 		public void Subscribe(IObserver observer)

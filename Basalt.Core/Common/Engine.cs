@@ -102,7 +102,7 @@ namespace Basalt.Core.Common
 			catch (Exception e)
 			{
 				_exceptionOccurred = true;
-				logger?.LogFatal($"EXCEPTION OCURRED AT {component.GetType().Name}: {e.Message}");
+				logger?.LogFatal($"EXCEPTION OCURRED AT {component?.GetType().Name}: {e.Message}");
 				Shutdown();
 				return;
 			}
