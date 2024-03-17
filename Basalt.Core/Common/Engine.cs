@@ -9,11 +9,15 @@ namespace Basalt.Core.Common
 		private readonly ISoundSystem? _soundSystem;
 		private readonly IPhysicsEngine? _physicsEngine;
 		internal ILogger? logger;
-		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine)
+		private readonly IEventBus? _eventBus;
+
+		private Thread graphicsThread, physicsThread;
+		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
 		{
 			_graphicsEngine = graphicsEngine;
 			_soundSystem = soundSystem;
 			_physicsEngine = physicsEngine;
+			_eventBus = eventBus;
 		}
 
 		public static Engine Instance
@@ -28,13 +32,13 @@ namespace Basalt.Core.Common
 			}
 		}
 
-		public static void Initialize(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine)
+		public static void Initialize(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
 		{
 			if (_instance != null)
 			{
 				throw new InvalidOperationException("Engine has already been initialized.");
 			}
-			_instance = new Engine(graphicsEngine, soundSystem, physicsEngine);
+			_instance = new Engine(graphicsEngine, soundSystem, physicsEngine, eventBus);
 		}
 
 		public void Run()
@@ -42,7 +46,7 @@ namespace Basalt.Core.Common
 			logger?.LogInformation("Engine Initializing");
 			if (_graphicsEngine == null)
 			{
-				logger?.LogFatal("Graphics engine not specified! Cannot run engine.");
+				logger?.LogFatal("Graphics engine not specified! Cannogivet run engine.");
 				return;
 			}
 			if (_soundSystem == null)
@@ -55,9 +59,31 @@ namespace Basalt.Core.Common
 				logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
 			}
 
-			_graphicsEngine?.Initialize();
 			_soundSystem?.Initialize();
-			_physicsEngine?.Initialize();
+
+			physicsThread = new Thread(() => _physicsEngine?.Initialize());
+			physicsThread.Start();
+
+			graphicsThread = new Thread(() => _graphicsEngine.Initialize());
+			graphicsThread.Start();
 		}
+
+		public void Shutdown()
+		{
+			logger?.LogWarning("Engine shutting down");
+			if (physicsThread != null && physicsThread.IsAlive)
+			{
+				_physicsEngine?.Shutdown();
+				physicsThread.Join();
+			}
+
+			if (graphicsThread != null && graphicsThread.IsAlive)
+			{
+				_graphicsEngine?.Shutdown();
+				graphicsThread.Join();
+			}
+		}
+
+		public IEventBus? EventBus => _eventBus;
 	}
 }

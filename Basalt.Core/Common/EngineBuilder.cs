@@ -14,10 +14,11 @@ namespace Basalt.Core.Common
 		public IPhysicsEngine? PhysicsEngine {get; set; }
 		public ISoundSystem? SoundEngine {get; set; }
 		public ILogger? Logger { get; set; }
+		public IEventBus? EventBus { get; set; }
 
 		public Engine Build()
 		{
-			Engine.Initialize(GraphicsEngine, SoundEngine, PhysicsEngine);
+			Engine.Initialize(GraphicsEngine, SoundEngine, PhysicsEngine, EventBus);
 
 			Engine.Instance.logger = Logger;
 

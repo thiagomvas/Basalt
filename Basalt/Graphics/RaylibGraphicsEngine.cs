@@ -1,4 +1,4 @@
-﻿using Basalt.Common.Logging;
+﻿using Basalt.Core.Common;
 using Basalt.Core.Common.Abstractions;
 using Basalt.Types;
 using Raylib_cs;
@@ -11,12 +11,13 @@ namespace Basalt.Graphics
 	public class RaylibGraphicsEngine : IGraphicsEngine
 	{
 		public const int MaxColumns = 20;
-		public Action Update { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public Action Rendering { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 		private readonly WindowInitParams config;
 		private readonly ILogger? logger;
 		private static RaylibGraphicsEngine instance;
+
+		bool ShouldRun = true;
+
 		public RaylibGraphicsEngine(WindowInitParams initConfig, ILogger? logger = null)
 		{
 			config = initConfig;
@@ -72,10 +73,11 @@ namespace Basalt.Graphics
 
 			logger?.LogInformation("Starting raylib rendering loop...");
 			// Main game loop
-			while (!WindowShouldClose())
+			while (ShouldRun)
 			{
 				// Update
 				//----------------------------------------------------------------------------------
+				Engine.Instance.EventBus?.NotifyUpdate();
 				// Switch camera mode
 				if (IsKeyPressed(KeyboardKey.One))
 				{
@@ -193,9 +195,8 @@ namespace Basalt.Graphics
 				EndDrawing();
 				//----------------------------------------------------------------------------------
 			}
-
-			logger?.LogInformation("Exiting application...");
 			CloseWindow();
+
 		}
 
 		[UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
@@ -229,6 +230,12 @@ namespace Basalt.Graphics
 					break;
 			}
 
+		}
+
+		public void Shutdown()
+		{
+			ShouldRun = false;
+			logger?.LogWarning("Shutting down graphics engine...");
 		}
 	}
 }

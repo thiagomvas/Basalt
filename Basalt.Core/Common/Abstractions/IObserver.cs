@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Basalt.Core.Common.Abstractions
 {
-	public interface IEngineComponent
+	public interface IObserver
 	{
-		void Initialize();
-		void Shutdown();
+		void OnStart();
+		void OnUpdate();
+		void OnRender();
 	}
 }

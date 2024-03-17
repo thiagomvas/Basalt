@@ -1,7 +1,6 @@
 ﻿using Basalt.Core.Common.Abstractions;
 using Basalt.Core.Common.Types;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 
 namespace Basalt.Common.Logging
@@ -16,7 +15,11 @@ namespace Basalt.Common.Logging
 			if (level >= logLevel)
 			{
 				SetAppropriateColor(level);
-				string levelString = level != LogLevel.Debug ? $"[{level}]" : $"[{level} : {new StackTrace(1).GetFrame(1)?.GetMethod()?.DeclaringType.Name}.{callerName}]";
+				string levelString = "";
+				if (logLevel == LogLevel.Debug)
+					levelString = $"[{level} : {new StackTrace(1).GetFrame(1)?.GetMethod()?.DeclaringType.Name}.{callerName}]";
+				else
+					levelString = $"[{level}]";
 				Console.WriteLine($"{levelString} [{DateTime.Now}]  {message}");
 				Console.ResetColor();
 			}
