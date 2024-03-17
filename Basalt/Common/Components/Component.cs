@@ -15,6 +15,12 @@ namespace Basalt.Common.Components
 		protected Component(Entity entity)
         {
             this.entity = entity;
+            Engine.Instance.EventBus?.Subscribe(this);
+
+            if(Engine.Instance.HasStarted)
+            {
+				OnStart();
+			}
         }
 
         public virtual void OnRender()

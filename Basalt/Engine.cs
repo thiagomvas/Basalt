@@ -5,6 +5,8 @@ namespace Basalt
 {
 	public class Engine : IEngine
 	{
+		public bool HasStarted { get; private set; } = false;
+
 		private static Engine? _instance;
 		private readonly IGraphicsEngine? _graphicsEngine;
 		private readonly ISoundSystem? _soundSystem;
@@ -46,6 +48,8 @@ namespace Basalt
 
 		public void Run()
 		{
+			HasStarted = true;
+			EventBus?.NotifyStart();
 			logger?.LogInformation("Engine Initializing");
 			if (_graphicsEngine == null)
 			{

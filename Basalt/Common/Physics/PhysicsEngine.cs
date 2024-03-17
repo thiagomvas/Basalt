@@ -21,8 +21,6 @@ namespace Basalt.Common.Physics
 			logger?.LogInformation("Physics Engine Initialized");
 			while(ShouldRun)
 			{
-				Task.Delay(1000).Wait();
-				logger?.LogInformation("Physics Engine Update");
 			}
 			logger?.LogWarning("Shut down physics engine");
 		}

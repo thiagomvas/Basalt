@@ -20,17 +20,17 @@ namespace Basalt.Common.Events
 		}
 		public void OnRender()
 		{
-			Raylib.DrawSphere(pos, 2, Color.Red);
+
 		}
 
 		public void OnStart()
 		{
-			pos = new(0, 0, 0);
+
 		}
 
 		public void OnUpdate()
 		{
-			pos = new(0, (float)Math.Sin(Raylib.GetTime() / 10d) * 10, 0); 
+
 		}
 	}
 }

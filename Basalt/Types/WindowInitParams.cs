@@ -8,12 +8,11 @@ namespace Basalt.Types
 {
 	public class WindowInitParams
 	{
-		public string Title { get; set; }
+		public string Title { get; set; } = "New Window";
 		public int Width { get; set; }
 		public int Height { get; set; }
 		public int TargetFps { get; set; }
 		public bool Fullscreen { get; set; }
-
 		public bool VSync { get; set; }
 		public bool Borderless { get; set; }
 		public bool MSAA4X { get; set; }
