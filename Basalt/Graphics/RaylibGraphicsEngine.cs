@@ -28,18 +28,20 @@ namespace Basalt.Graphics
 		{
 			instance = this;
 			SetTraceLogCallback(&LogCustom);
+			if(config.Borderless)
+				SetConfigFlags(ConfigFlags.UndecoratedWindow);
+
 			InitWindow(config.Width, config.Height, config.Title);
 			SetTargetFPS(config.TargetFps);
 
 			if (config.Fullscreen)
-			{
 				ToggleFullscreen();
-			}
-
 			if (config.VSync)
-			{
 				SetConfigFlags(ConfigFlags.VSyncHint);
-			}
+			
+			if(config.MSAA4X)
+				SetConfigFlags(ConfigFlags.Msaa4xHint);
+
 			DisableCursor();
 
 			logger?.LogInformation("Graphics Engine Initialized");
@@ -156,6 +158,7 @@ namespace Basalt.Graphics
 				ClearBackground(Color.RayWhite);
 
 				BeginMode3D(camera);
+				Engine.Instance.EventBus?.NotifyRender();
 
 				// Draw ground
 				DrawPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector2(32.0f, 32.0f), Color.LightGray);

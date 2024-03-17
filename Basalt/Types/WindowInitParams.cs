@@ -15,5 +15,7 @@ namespace Basalt.Types
 		public bool Fullscreen { get; set; }
 
 		public bool VSync { get; set; }
+		public bool Borderless { get; set; }
+		public bool MSAA4X { get; set; }
 	}
 }

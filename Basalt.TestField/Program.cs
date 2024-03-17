@@ -14,7 +14,8 @@ var initParams = new WindowInitParams
 	Title = "Basalt Test Field",
 	Width = 1280,
 	Height = 720,
-	TargetFps = 120
+	TargetFps = 120,
+	Borderless = true
 };
 
 var logger = new ConsoleLogger(LogLevel.Info);
@@ -27,6 +28,9 @@ builder.WithPhysicsEngine(physicsEngine);
 builder.WithLogger(logger);
 
 EventBus eventBus = new EventBus();
+
+var Observer = new Observer(logger);
+eventBus.Subscribe(Observer);
 
 builder.EventBus = eventBus;
 
