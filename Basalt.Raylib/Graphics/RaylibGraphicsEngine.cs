@@ -1,6 +1,7 @@
 ﻿using Basalt.Common;
 using Basalt.Core.Common.Abstractions;
 using Basalt.Core.Common.Abstractions.Sound;
+using Basalt.Raylib.Sound;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -83,13 +84,18 @@ namespace Basalt.Raylib.Graphics
 
 			CameraMode cameraMode = CameraMode.FirstPerson;
 
-
 			//--------------------------------------------------------------------------------------
+
+			bool hasSoundSystem = Engine.Instance.SoundSystem is not null;
 
 			logger?.LogInformation("Starting raylib rendering loop...");
 			// Main game loop
 			while (ShouldRun)
 			{
+				if(hasSoundSystem && Engine.Instance.SoundSystem!.IsMusicPlaying())
+				{
+					UpdateMusicStream((Music) Engine.Instance.SoundSystem.GetMusicPlaying()!);
+				}
 				Time.Instance.DeltaTime = GetFrameTime();
 
 				if (IsKeyPressed(KeyboardKey.G))
@@ -97,6 +103,28 @@ namespace Basalt.Raylib.Graphics
 					Engine.Instance.SoundSystem?.PlayAudio("testaudio.mp3", AudioType.SoundEffect);
 
 				}
+
+				if (IsKeyPressed(KeyboardKey.H))
+				{
+					Engine.Instance.SoundSystem?.PlayAudio("testsong.mp3", AudioType.Music);
+				}
+
+				if (IsKeyPressed(KeyboardKey.J))
+				{
+					Engine.Instance.SoundSystem?.PauseAudio(AudioType.Music);
+				}
+
+				if (IsKeyPressed(KeyboardKey.K))
+				{
+					Engine.Instance.SoundSystem?.ResumeAudio(AudioType.Music);
+				}
+
+				if (IsKeyPressed(KeyboardKey.L))
+				{
+					Engine.Instance.SoundSystem?.StopAudio(AudioType.Music);
+				}
+
+
 				if (IsKeyPressed(KeyboardKey.Escape))
 					Engine.Instance.Shutdown();
 				// Update

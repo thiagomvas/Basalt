@@ -27,5 +27,8 @@ namespace Basalt.Core.Common.Abstractions.Sound
 
 		// Set volume for audio type
 		void SetVolume(float volume, AudioType type);
+
+		bool IsMusicPlaying();
+		object? GetMusicPlaying();
 	}
 }

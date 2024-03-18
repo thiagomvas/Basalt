@@ -97,6 +97,8 @@ namespace Basalt
 			{
 				_graphicsEngine?.Shutdown();
 			}
+
+			SoundSystem?.Shutdown();
 			logger?.LogInformation("Engine shut down");
 		}
 

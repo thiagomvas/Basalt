@@ -51,4 +51,4 @@ Thread engineThread = new Thread(() => engine.Run());
 engineThread.Start();
 
 soundSystem.LoadAudio("testaudio.mp3", AudioType.SoundEffect);
-
+soundSystem.LoadAudio("testsong.mp3", AudioType.Music);

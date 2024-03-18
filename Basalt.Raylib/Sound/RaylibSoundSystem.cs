@@ -9,9 +9,10 @@ namespace Basalt.Raylib.Sound
     {
         private readonly ILogger? logger;
         private Dictionary<string, Raylib_cs.Sound> loadedSounds;
-        private Music backgroundMusic;
-
+        private Dictionary<string, Music> loadedMusic;
+        public Music? MusicPlaying { get; private set; } = null;
         private List<string> queuedSounds = new();
+        private List<string> queuedMusic = new();
 
 
 
@@ -22,6 +23,10 @@ namespace Basalt.Raylib.Sound
             {
                 LoadAudio(sound, AudioType.SoundEffect);
             }
+            foreach (var music in queuedMusic)
+            {
+				LoadAudio(music, AudioType.Music);
+			}
         }
         public void Shutdown()
         {
@@ -31,7 +36,10 @@ namespace Basalt.Raylib.Sound
             {
                 UnloadSound(sound);
             }
-            UnloadMusicStream(backgroundMusic);
+            foreach (var sound in loadedMusic.Values)
+            {
+				UnloadMusicStream(sound);
+			}
             logger?.LogInformation("Unloaded all sounds and music.");
         }
 
@@ -40,6 +48,7 @@ namespace Basalt.Raylib.Sound
         {
             this.logger = logger;
             loadedSounds = new Dictionary<string, Raylib_cs.Sound>();
+            loadedMusic = new Dictionary<string, Music>();
         }
 
         public void LoadAudio(string filename, AudioType type)
@@ -47,6 +56,7 @@ namespace Basalt.Raylib.Sound
             if (!Engine.Instance.HasStarted)
             {
                 queuedSounds.Add(filename);
+                queuedMusic.Add(filename);
                 return;
             }
 
@@ -54,7 +64,7 @@ namespace Basalt.Raylib.Sound
             switch (type)
             {
                 case AudioType.Music:
-                    backgroundMusic = LoadMusicStream(filename);
+                    loadedMusic.Add(filename, LoadMusicStream(filename));
                     break;
                 case AudioType.SoundEffect:
                     loadedSounds.Add(filename, LoadSound(filename));
@@ -69,7 +79,8 @@ namespace Basalt.Raylib.Sound
             switch (type)
             {
                 case AudioType.Music:
-                    PlayMusicStream(backgroundMusic);
+                    MusicPlaying = loadedMusic[filename];
+                    PlayMusicStream(MusicPlaying.Value);
                     break;
                 case AudioType.SoundEffect:
                     PlaySound(loadedSounds[filename]);
@@ -84,7 +95,7 @@ namespace Basalt.Raylib.Sound
             switch (type)
             {
                 case AudioType.Music:
-                    PauseMusicStream(backgroundMusic);
+                    if(MusicPlaying is not null) PauseMusicStream(MusicPlaying.Value);
                     break;
                 case AudioType.SoundEffect:
                     // Pause individual sound effects not supported in raylib
@@ -99,7 +110,7 @@ namespace Basalt.Raylib.Sound
             switch (type)
             {
                 case AudioType.Music:
-                    ResumeMusicStream(backgroundMusic);
+                    if(MusicPlaying is not null) ResumeMusicStream(MusicPlaying.Value);
                     break;
                 case AudioType.SoundEffect:
                     // Resuming individual sound effects not supported in raylib
@@ -114,7 +125,7 @@ namespace Basalt.Raylib.Sound
             switch (type)
             {
                 case AudioType.Music:
-                    StopMusicStream(backgroundMusic);
+                    if(MusicPlaying is not null) StopMusicStream(MusicPlaying.Value);
                     break;
                 case AudioType.SoundEffect:
                     break;
@@ -128,7 +139,7 @@ namespace Basalt.Raylib.Sound
             switch (type)
             {
                 case AudioType.Music:
-                    UnloadMusicStream(backgroundMusic);
+                    UnloadMusicStream(loadedMusic[filename]);
                     break;
                 case AudioType.SoundEffect:
                     UnloadSound(loadedSounds[filename]);
@@ -144,7 +155,7 @@ namespace Basalt.Raylib.Sound
             switch (type)
             {
                 case AudioType.Music:
-                    SetMusicVolume(backgroundMusic, volume);
+                    if(MusicPlaying is not null) SetMusicVolume(MusicPlaying.Value, volume);
                     break;
                 case AudioType.SoundEffect:
                     foreach (var sound in loadedSounds.Values)
@@ -156,6 +167,9 @@ namespace Basalt.Raylib.Sound
                     throw new ArgumentException($"Unsupported audio type: {type}");
             }
         }
+
+        public bool IsMusicPlaying() => MusicPlaying is not null;
+        public object? GetMusicPlaying() => MusicPlaying;
 
     }
 }
