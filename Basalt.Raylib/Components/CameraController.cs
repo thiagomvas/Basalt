@@ -35,6 +35,8 @@ namespace Basalt.Raylib.Components
 
 		public void OnUpdate()
 		{
+			if (!IsActive)
+				return;
 			Vector3 movement = Vector3.Zero;
 
 			if (IsKeyDown(KeyboardKey.W))

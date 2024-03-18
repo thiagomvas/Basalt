@@ -21,7 +21,7 @@ namespace Basalt.Common.Physics
 
 		private Grid entityGrid = new(10);
 
-		public float Gravity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+		public float Gravity { get; set; }
 
 		public PhysicsEngine(ILogger? logger = null)
 		{

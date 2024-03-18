@@ -5,8 +5,9 @@ namespace Basalt.Common.Entities
 	{
 		private HashSet<Component> components = new();
 		public Transform Transform;
-
 		public List<Entity> Children { get; set; } = new();
+
+		public bool IsActive = true;
 
 		public Entity()
 		{
