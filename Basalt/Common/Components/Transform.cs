@@ -7,6 +7,7 @@ namespace Basalt.Common.Components
 	public sealed class Transform : Component
 	{
 		public Vector3 Position { get; set; }
+		public Quaternion Rotation { get; set; }
 		internal Transform(Entity entity) : base(entity)
 		{
 			Position = new Vector3();

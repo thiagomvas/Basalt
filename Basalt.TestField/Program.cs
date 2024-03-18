@@ -41,9 +41,9 @@ builder.EventBus = eventBus;
 
 var engine = builder.Build();
 
-var entity = new Entity();
-entity.Transform.Position = new Vector3(0, 15, 0);
-entity.AddComponent(new SphereRenderer(entity) { Radius = 5, Color = Color.Yellow});
+var entity = new CameraController();
+entity.Transform.Position = new Vector3(0, 5, 0);
+entity.AddComponent(new SphereRenderer(entity) { Radius = 1, Color = Color.Red, Offset = new(0, -2, 0)});
 
 Engine.CreateEntity(entity);
 

@@ -56,7 +56,7 @@ namespace Basalt.Common.Physics
 				entityGrid.UpdateGrid();
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
-				Time.Instance.PhysicsDeltaTime = targetFrameTimeMs / 1000f;
+				Time.PhysicsDeltaTime = targetFrameTimeMs / 1000f;
 
 				if (elapsedTime > targetFrameTimeMs)
 				{

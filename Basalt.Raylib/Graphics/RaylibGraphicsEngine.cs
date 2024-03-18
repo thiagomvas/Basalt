@@ -66,12 +66,19 @@ namespace Basalt.Raylib.Graphics
 		public void Render()
 		{
 			Camera3D camera = new();
-			camera.Position = new Vector3(4.0f, 2.0f, 4.0f);
-			camera.Target = new Vector3(0.0f, 1.8f, 0.0f);
-			camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-			camera.FovY = 60.0f;
-			camera.Projection = CameraProjection.Perspective;
+			var control = (CameraController)Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e is CameraController);
+			camera = control.camera;
+			control.OnStart();
+			if (false)
+			{
+				camera = new();
+				camera.Position = new Vector3(4.0f, 2.0f, 4.0f);
+				camera.Target = new Vector3(0.0f, 1.8f, 0.0f);
+				camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
+				camera.FovY = 60.0f;
+				camera.Projection = CameraProjection.Perspective;
 
+			}
 			// Generates some random columns
 			float[] heights = new float[MaxColumns];
 			Vector3[] positions = new Vector3[MaxColumns];
@@ -97,12 +104,13 @@ namespace Basalt.Raylib.Graphics
 			// Main game loop
 			while (ShouldRun)
 			{
+				control.OnUpdate();	
 				e.Transform.Position = camera.Position - Vector3.UnitY;
 				if(hasSoundSystem && Engine.Instance.SoundSystem!.IsMusicPlaying())
 				{
 					UpdateMusicStream((Music) Engine.Instance.SoundSystem.GetMusicPlaying()!);
 				}
-				Time.Instance.DeltaTime = GetFrameTime();
+				Time.DeltaTime = GetFrameTime();
 
 				if (IsKeyPressed(KeyboardKey.G))
 				{
@@ -199,7 +207,7 @@ namespace Basalt.Raylib.Graphics
 				BeginDrawing();
 				ClearBackground(Color.RayWhite);
 
-				BeginMode3D(camera);
+				BeginMode3D(control.camera);
 				Engine.Instance.EventBus?.NotifyRender();
 
 				// Draw ground
@@ -246,13 +254,13 @@ namespace Basalt.Raylib.Graphics
 
 				DrawText("Camera status:", 610, 15, 10, Color.Black);
 				DrawText($"- Mode: {cameraMode}", 610, 30, 10, Color.Black);
-				DrawText($"- Projection: {camera.Projection}", 610, 45, 10, Color.Black);
-				DrawText($"- Position: {camera.Position}", 610, 60, 10, Color.Black);
-				DrawText($"- Target: {camera.Target}", 610, 75, 10, Color.Black);
-				DrawText($"- Up: {camera.Up}", 610, 90, 10, Color.Black);
+				DrawText($"- Projection: {control.camera.Projection}", 610, 45, 10, Color.Black);
+				DrawText($"- Position: {control.camera.Position}", 610, 60, 10, Color.Black);
+				DrawText($"- Target: {control.camera.Target}", 610, 75, 10, Color.Black);
+				DrawText($"- Up: {control.camera.Up}", 610, 90, 10, Color.Black);
 
-				DrawText($"Physics Elapsed time: {Time.Instance.PhysicsDeltaTime}s - Expected: 0.016s", 15, 200, 10, Color.Black);
-				DrawText($"Update Elapsed time: {Time.Instance.DeltaTime}s - Expected: 0.00833s", 15, 220, 10, Color.Black);
+				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 200, 10, Color.Black);
+				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 220, 10, Color.Black);
 
 				EndDrawing();
 				//----------------------------------------------------------------------------------

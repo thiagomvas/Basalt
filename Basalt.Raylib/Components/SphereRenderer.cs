@@ -2,6 +2,7 @@
 using Basalt.Common.Entities;
 using Basalt.Common.Physics;
 using Raylib_cs;
+using System.Numerics;
 
 namespace Basalt.Raylib.Components
 {
@@ -13,7 +14,7 @@ namespace Basalt.Raylib.Components
 
 		public Color Color = Color.Pink;
 
-		PhysicsEngine engine;
+		public Vector3 Offset { get; set; } = Vector3.Zero;
 		
 		public SphereRenderer(Entity entity) : base(entity)
 		{
@@ -30,7 +31,7 @@ namespace Basalt.Raylib.Components
 
 		public override void OnRender()
 		{
-			Raylib_cs.Raylib.DrawSphereEx(entity.Transform.Position, Radius, Rings, Slices, Color);
+			Raylib_cs.Raylib.DrawSphereEx(entity.Transform.Position + Offset, Radius, Rings, Slices, Color);
 		}
 	}
 }
