@@ -32,5 +32,10 @@ namespace Basalt.Common.Events
 		{
 
 		}
+
+		public void OnPhysicsUpdate()
+		{
+
+		}
 	}
 }

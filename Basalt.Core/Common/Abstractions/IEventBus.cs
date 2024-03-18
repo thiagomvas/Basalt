@@ -13,6 +13,7 @@ namespace Basalt.Core.Common.Abstractions
 		void Unsubscribe(IObserver observer);
 		void NotifyStart();
 		void NotifyUpdate();
+		void NotifyPhysicsUpdate();
 		void NotifyRender();
 	}
 }

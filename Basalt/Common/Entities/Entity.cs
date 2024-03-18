@@ -22,9 +22,25 @@ namespace Basalt.Common.Entities
 			components.Remove(component);
 		}
 
+		public T? GetComponent<T>() where T : Component
+		{
+			foreach (var component in components)
+			{
+				if (component is T)
+				{
+					return (T)component;
+				}
+			}
+			return null;
+		}
+
 		public List<Component> GetComponents()
 		{
 			return new List<Component>(components);
+		}
+		public void Destroy()
+		{
+			Engine.RemoveEntity(this);
 		}
 	}
 }

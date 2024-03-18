@@ -29,5 +29,9 @@ namespace Basalt.Common.Components
 
 		abstract public void OnStart();
         abstract public void OnUpdate();
+
+        public virtual void OnPhysicsUpdate()
+        {
+		}
     }
 }

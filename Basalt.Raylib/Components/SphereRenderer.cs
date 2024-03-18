@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Basalt.Common.Physics;
 using Raylib_cs;
 
 namespace Basalt.Raylib.Components
@@ -11,9 +12,12 @@ namespace Basalt.Raylib.Components
 		public int Slices { get; set; } = 16;
 
 		public Color Color = Color.Pink;
+
+		PhysicsEngine engine;
 		
 		public SphereRenderer(Entity entity) : base(entity)
 		{
+
 		}
 
 		public override void OnStart()

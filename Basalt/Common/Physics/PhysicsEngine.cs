@@ -12,6 +12,10 @@ namespace Basalt.Common.Physics
 		private readonly ILogger? logger;
 		private bool ShouldRun = true;
 
+		public long startTime, elapsedTime;
+
+		const int targetFrameTimeMs = 16;
+
 		public PhysicsEngine(ILogger? logger = null)
 		{
 			this.logger = logger;
@@ -21,6 +25,25 @@ namespace Basalt.Common.Physics
 			logger?.LogInformation("Physics Engine Initialized");
 			while(ShouldRun)
 			{
+				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+				Engine.Instance.EventBus?.NotifyPhysicsUpdate();
+
+
+				Time.Instance.DeltaTime = elapsedTime;
+				Time.Instance.PhysicsDeltaTime = targetFrameTimeMs;
+
+				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
+
+				if(elapsedTime > targetFrameTimeMs)
+				{
+					logger?.LogWarning($"Physics engine is running behind. Elapsed time: {elapsedTime}ms");
+				}
+
+				if(elapsedTime < targetFrameTimeMs)
+				{
+					Task.Delay((int)(targetFrameTimeMs - elapsedTime)).Wait();
+				}
 			}
 			logger?.LogWarning("Shut down physics engine");
 		}

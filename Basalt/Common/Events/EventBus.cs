@@ -51,6 +51,20 @@ namespace Basalt.Common.Events
 			}).Wait();
 		}
 
+		public void NotifyPhysicsUpdate()
+		{
+			Task.Run(() =>
+			{
+				lock (lockObject)
+				{
+					foreach (var observer in observers)
+					{
+						observer.OnPhysicsUpdate();
+					}
+				}
+			}).Wait();
+		}
+
 		public void Subscribe(IObserver observer)
 		{
 			lock (lockObject)

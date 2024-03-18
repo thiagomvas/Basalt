@@ -23,5 +23,10 @@ namespace Basalt.Common.Components
 		{
 
 		}
+
+		public override void OnPhysicsUpdate()
+		{
+
+		}
 	}
 }

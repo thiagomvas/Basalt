@@ -1,4 +1,4 @@
-﻿using Basalt.Core.Common;
+﻿using Basalt.Common;
 using Basalt.Core.Common.Abstractions;
 using Basalt.Types;
 using Raylib_cs;
@@ -208,6 +208,8 @@ namespace Basalt.Raylib.Graphics
 				DrawText($"- Position: {camera.Position}", 610, 60, 10, Color.Black);
 				DrawText($"- Target: {camera.Target}", 610, 75, 10, Color.Black);
 				DrawText($"- Up: {camera.Up}", 610, 90, 10, Color.Black);
+
+				DrawText($"Physics Elapsed time: {Time.Instance.DeltaTime} - Expected: {Time.Instance.PhysicsDeltaTime}", 15, 200, 10, Color.Black);
 
 				EndDrawing();
 				//----------------------------------------------------------------------------------

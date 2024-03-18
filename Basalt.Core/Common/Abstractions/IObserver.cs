@@ -11,6 +11,7 @@ namespace Basalt.Core.Common.Abstractions
 	{
 		void OnStart();
 		void OnUpdate();
+		void OnPhysicsUpdate();
 		void OnRender();
 	}
 }
