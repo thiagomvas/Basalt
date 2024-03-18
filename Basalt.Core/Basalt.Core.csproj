@@ -11,8 +11,4 @@
     <Folder Include="Common\Entities\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MiNET" Version="1.0.2304" />
-  </ItemGroup>
-
 </Project>

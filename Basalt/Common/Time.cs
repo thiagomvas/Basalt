@@ -8,7 +8,7 @@ namespace Basalt.Common
 {
 	public class Time
 	{
-		public float DeltaTime { get; internal set; }
+		public float DeltaTime { get; set; }
 		public float PhysicsDeltaTime { get; internal set; }
 		private static Time instance;
 		private static readonly object lockObject = new object();

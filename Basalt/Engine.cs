@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions;
+using Basalt.Core.Common.Abstractions.Sound;
 
 namespace Basalt
 {
@@ -9,7 +10,7 @@ namespace Basalt
 
 		private static Engine? _instance;
 		private readonly IGraphicsEngine? _graphicsEngine;
-		private readonly ISoundSystem? _soundSystem;
+		public readonly ISoundSystem? SoundSystem;
 		private readonly IPhysicsEngine? _physicsEngine;
 		internal ILogger? logger;
 		private readonly IEventBus? _eventBus;
@@ -20,7 +21,7 @@ namespace Basalt
 		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
 		{
 			_graphicsEngine = graphicsEngine;
-			_soundSystem = soundSystem;
+			SoundSystem = soundSystem;
 			_physicsEngine = physicsEngine;
 			_eventBus = eventBus;
 		}
@@ -56,7 +57,7 @@ namespace Basalt
 				logger?.LogFatal("Graphics engine not specified! Cannogivet run engine.");
 				return;
 			}
-			if (_soundSystem == null)
+			if (SoundSystem == null)
 			{
 				logger?.LogWarning("Sound system not specified! Engine will run without sound.");
 			}
@@ -66,7 +67,7 @@ namespace Basalt
 				logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
 			}
 
-			_soundSystem?.Initialize();
+			SoundSystem?.Initialize();
 
 			physicsThread = new Thread(() => SafeInitialize(_physicsEngine));
 			physicsThread.Start();

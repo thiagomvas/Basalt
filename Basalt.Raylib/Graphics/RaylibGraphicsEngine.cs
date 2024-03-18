@@ -1,5 +1,6 @@
 ﻿using Basalt.Common;
 using Basalt.Core.Common.Abstractions;
+using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -26,6 +27,7 @@ namespace Basalt.Raylib.Graphics
 
 		public unsafe void Initialize()
 		{
+
 			instance = this;
 			SetTraceLogCallback(&LogCustom);
 			if(config.Borderless)
@@ -81,15 +83,21 @@ namespace Basalt.Raylib.Graphics
 
 			CameraMode cameraMode = CameraMode.FirstPerson;
 
+
 			//--------------------------------------------------------------------------------------
 
 			logger?.LogInformation("Starting raylib rendering loop...");
 			// Main game loop
 			while (ShouldRun)
 			{
+				Time.Instance.DeltaTime = GetFrameTime();
+
 				if (IsKeyPressed(KeyboardKey.G))
-					throw new Exception("Simulated exception");
-				if (IsKeyPressed(KeyboardKey.H))
+				{
+					Engine.Instance.SoundSystem?.PlayAudio("testaudio.mp3", AudioType.SoundEffect);
+
+				}
+				if (IsKeyPressed(KeyboardKey.Escape))
 					Engine.Instance.Shutdown();
 				// Update
 				//----------------------------------------------------------------------------------
@@ -209,7 +217,8 @@ namespace Basalt.Raylib.Graphics
 				DrawText($"- Target: {camera.Target}", 610, 75, 10, Color.Black);
 				DrawText($"- Up: {camera.Up}", 610, 90, 10, Color.Black);
 
-				DrawText($"Physics Elapsed time: {Time.Instance.DeltaTime} - Expected: {Time.Instance.PhysicsDeltaTime}", 15, 200, 10, Color.Black);
+				DrawText($"Physics Elapsed time: {Time.Instance.PhysicsDeltaTime}s - Expected: 0.016s", 15, 200, 10, Color.Black);
+				DrawText($"Update Elapsed time: {Time.Instance.DeltaTime}s - Expected: 0.00833s", 15, 220, 10, Color.Black);
 
 				EndDrawing();
 				//----------------------------------------------------------------------------------

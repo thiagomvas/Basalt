@@ -30,10 +30,8 @@ namespace Basalt.Common.Physics
 				Engine.Instance.EventBus?.NotifyPhysicsUpdate();
 
 
-				Time.Instance.DeltaTime = elapsedTime;
-				Time.Instance.PhysicsDeltaTime = targetFrameTimeMs;
-
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
+				Time.Instance.PhysicsDeltaTime = targetFrameTimeMs / 1000f;
 
 				if(elapsedTime > targetFrameTimeMs)
 				{

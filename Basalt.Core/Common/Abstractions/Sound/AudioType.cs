@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Basalt.Core.Common.Abstractions
+namespace Basalt.Core.Common.Abstractions.Sound
 {
-	public interface ISoundSystem : IEngineComponent
+
+	public enum AudioType
 	{
+		SoundEffect,
+		Music
 	}
 }
