@@ -15,7 +15,9 @@ namespace Basalt
 		internal ILogger? logger;
 		private readonly IEventBus? _eventBus;
 		private bool _exceptionOccurred = false;
-		private readonly EntityManager entityManager = new();
+		public readonly EntityManager EntityManager = new();
+
+		public Action<Entity> OnCreateEntity;
 
 		private Thread graphicsThread, physicsThread;
 		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
@@ -104,12 +106,13 @@ namespace Basalt
 
 		public static void CreateEntity(Entity entity)
 		{
-			Instance.entityManager.AddEntity(entity);
+			Instance.EntityManager.AddEntity(entity);
+			Instance.OnCreateEntity?.Invoke(entity);
 		}
 
 		public static void RemoveEntity(Entity entity)
 		{
-			Instance.entityManager.RemoveEntity(entity);
+			Instance.EntityManager.RemoveEntity(entity);
 		}
 
 		private void SafeInitialize(IEngineComponent? component)

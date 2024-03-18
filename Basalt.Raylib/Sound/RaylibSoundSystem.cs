@@ -10,7 +10,7 @@ namespace Basalt.Raylib.Sound
         private readonly ILogger? logger;
         private Dictionary<string, Raylib_cs.Sound> loadedSounds;
         private Dictionary<string, Music> loadedMusic;
-        public Music? MusicPlaying { get; private set; } = null;
+        private Music? MusicPlaying;
         private List<string> queuedSounds = new();
         private List<string> queuedMusic = new();
 

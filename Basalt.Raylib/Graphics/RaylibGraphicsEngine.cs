@@ -1,6 +1,8 @@
 ﻿using Basalt.Common;
+using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions;
 using Basalt.Core.Common.Abstractions.Sound;
+using Basalt.Raylib.Components;
 using Basalt.Raylib.Sound;
 using Basalt.Types;
 using Raylib_cs;
@@ -75,6 +77,9 @@ namespace Basalt.Raylib.Graphics
 			Vector3[] positions = new Vector3[MaxColumns];
 			Color[] colors = new Color[MaxColumns];
 
+			Entity e = new();
+			e.AddComponent(new SphereRenderer(e) { Color = Color.Red, Radius = 0.5f });
+			Engine.CreateEntity(e);
 			for (int i = 0; i < MaxColumns; i++)
 			{
 				heights[i] = GetRandomValue(1, 12);
@@ -92,6 +97,7 @@ namespace Basalt.Raylib.Graphics
 			// Main game loop
 			while (ShouldRun)
 			{
+				e.Transform.Position = camera.Position - Vector3.UnitY;
 				if(hasSoundSystem && Engine.Instance.SoundSystem!.IsMusicPlaying())
 				{
 					UpdateMusicStream((Music) Engine.Instance.SoundSystem.GetMusicPlaying()!);

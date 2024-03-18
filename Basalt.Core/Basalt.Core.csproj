@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Abstractions\Input\" />
-    <Folder Include="Common\Entities\" />
   </ItemGroup>
 
 </Project>
