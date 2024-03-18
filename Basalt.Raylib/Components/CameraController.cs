@@ -55,6 +55,7 @@ namespace Basalt.Raylib.Components
 			UpdateCameraPro(ref camera, movement, rotation, 0);
 
 			Transform.Position = camera.Position;
+			Transform.Rotation = Quaternion.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z);
 		}
 	}
 }

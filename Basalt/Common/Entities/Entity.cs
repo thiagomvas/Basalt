@@ -6,6 +6,8 @@ namespace Basalt.Common.Entities
 		private HashSet<Component> components = new();
 		public Transform Transform;
 
+		public List<Entity> Children { get; set; } = new();
+
 		public Entity()
 		{
 			Transform = new Transform(this);
@@ -38,9 +40,23 @@ namespace Basalt.Common.Entities
 		{
 			return new List<Component>(components);
 		}
+
+		public void AddChildren(Entity e)
+		{
+			Children.Add(e);
+		}
+
+		public void RemoveChildren(Entity e)
+		{
+			Children.Remove(e);
+		}
 		public void Destroy()
 		{
 			Engine.RemoveEntity(this);
+			foreach(var child in Children)
+			{
+				child.Destroy();
+			}
 		}
 	}
 }

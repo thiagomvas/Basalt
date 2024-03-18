@@ -19,7 +19,8 @@ var initParams = new WindowInitParams
 	Title = "Basalt Test Field",
 	Width = 1280,
 	Height = 720,
-	TargetFps = 120
+	TargetFps = 120,
+	MSAA4X = true
 };
 
 var logger = new ConsoleLogger(LogLevel.Info);
@@ -45,7 +46,18 @@ var entity = new CameraController();
 entity.Transform.Position = new Vector3(0, 5, 0);
 entity.AddComponent(new SphereRenderer(entity) { Radius = 1, Color = Color.Red, Offset = new(0, -2, 0)});
 
+var child1 = new Entity();
+child1.Transform.Position = new Vector3(0, 5, 0);
+child1.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = new(-1f, -2, 0)});
+entity.AddChildren(child1);
+
+var child2 = new Entity();
+child2.Transform.Position = new Vector3(0, 5, 0);
+child2.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = new(1f, -2, 0) });
+
 Engine.CreateEntity(entity);
+Engine.CreateEntity(child1);
+Engine.CreateEntity(child2);
 
 Thread engineThread = new Thread(() => engine.Run());
 engineThread.Start();
