@@ -44,7 +44,7 @@ var engine = builder.Build();
 
 var entity = new CameraController();
 entity.Transform.Position = new Vector3(0, 5, 0);
-entity.AddComponent(new SphereRenderer(entity) { Radius = 1, Color = Color.Red, Offset = new(0, -2, 0)});
+entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
 
 var child1 = new Entity();
 child1.Transform.Position = new Vector3(0, 5, 0);
@@ -58,6 +58,24 @@ child2.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Bl
 Engine.CreateEntity(entity);
 Engine.CreateEntity(child1);
 Engine.CreateEntity(child2);
+
+int MaxColumns = 12;
+
+for (int i = 0; i < MaxColumns; i++)
+{
+	var height = Random.Shared.NextSingle() * 12;
+	var position = new Vector3(Random.Shared.NextSingle() * 30 - 15, height / 2, Random.Shared.NextSingle() * 30 - 15);
+	var color = new Color(Random.Shared.Next(20, 255), Random.Shared.Next(10, 55), 30, 255);
+
+	Entity e = new();
+	e.Transform.Position = position;
+	e.AddComponent(new BoxRenderer(e) { Size = new Vector3(2, height, 2), Color = color });
+
+	Engine.CreateEntity(e);
+}
+
+
+
 
 Thread engineThread = new Thread(() => engine.Run());
 engineThread.Start();

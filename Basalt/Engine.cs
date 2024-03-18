@@ -108,6 +108,8 @@ namespace Basalt
 		{
 			Instance.EntityManager.AddEntity(entity);
 			Instance.OnCreateEntity?.Invoke(entity);
+
+			Console.WriteLine(string.Join(", ", Instance.EntityManager.GetEntities().Select(e => e.Transform.Position)));
 		}
 
 		public static void RemoveEntity(Entity entity)

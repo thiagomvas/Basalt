@@ -69,30 +69,6 @@ namespace Basalt.Raylib.Graphics
 			var control = (CameraController)Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e is CameraController);
 			camera = control.camera;
 			control.OnStart();
-			if (false)
-			{
-				camera = new();
-				camera.Position = new Vector3(4.0f, 2.0f, 4.0f);
-				camera.Target = new Vector3(0.0f, 1.8f, 0.0f);
-				camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-				camera.FovY = 60.0f;
-				camera.Projection = CameraProjection.Perspective;
-
-			}
-			// Generates some random columns
-			float[] heights = new float[MaxColumns];
-			Vector3[] positions = new Vector3[MaxColumns];
-			Color[] colors = new Color[MaxColumns];
-
-			Entity e = new();
-			e.AddComponent(new SphereRenderer(e) { Color = Color.Red, Radius = 0.5f });
-			Engine.CreateEntity(e);
-			for (int i = 0; i < MaxColumns; i++)
-			{
-				heights[i] = GetRandomValue(1, 12);
-				positions[i] = new Vector3(GetRandomValue(-15, 15), heights[i] / 2, GetRandomValue(-15, 15));
-				colors[i] = new Color(GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255);
-			}
 
 			CameraMode cameraMode = CameraMode.FirstPerson;
 
@@ -105,7 +81,6 @@ namespace Basalt.Raylib.Graphics
 			while (ShouldRun)
 			{
 				control.OnUpdate();	
-				e.Transform.Position = camera.Position - Vector3.UnitY;
 				if(hasSoundSystem && Engine.Instance.SoundSystem!.IsMusicPlaying())
 				{
 					UpdateMusicStream((Music) Engine.Instance.SoundSystem.GetMusicPlaying()!);
@@ -144,97 +119,22 @@ namespace Basalt.Raylib.Graphics
 				// Update
 				//----------------------------------------------------------------------------------
 				Engine.Instance.EventBus?.NotifyUpdate();
-				// Switch camera mode
-				if (IsKeyPressed(KeyboardKey.One))
-				{
-					cameraMode = CameraMode.Free;
-					camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-				}
 
-				if (IsKeyPressed(KeyboardKey.Two))
-				{
-					cameraMode = CameraMode.FirstPerson;
-					camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-				}
-
-				if (IsKeyPressed(KeyboardKey.Three))
-				{
-					cameraMode = CameraMode.ThirdPerson;
-					camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-				}
-
-				if (IsKeyPressed(KeyboardKey.Four))
-				{
-					cameraMode = CameraMode.Orbital;
-					camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-				}
-
-				// Switch camera projection
-				if (IsKeyPressed(KeyboardKey.P))
-				{
-					if (camera.Projection == CameraProjection.Perspective)
-					{
-						// Create isometric view
-						cameraMode = CameraMode.ThirdPerson;
-						// Note: The target distance is related to the render distance in the orthographic projection
-						camera.Position = new Vector3(0.0f, 2.0f, -100.0f);
-						camera.Target = new Vector3(0.0f, 2.0f, 0.0f);
-						camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-						camera.Projection = CameraProjection.Orthographic;
-						camera.FovY = 20.0f; // near plane width in CAMERA_ORTHOGRAPHIC
-											 // CameraYaw(&camera, -135 * DEG2RAD, true);
-											 // CameraPitch(&camera, -45 * DEG2RAD, true, true, false);
-					}
-					else if (camera.Projection == CameraProjection.Orthographic)
-					{
-						// Reset to default view
-						cameraMode = CameraMode.ThirdPerson;
-						camera.Position = new Vector3(0.0f, 2.0f, 10.0f);
-						camera.Target = new Vector3(0.0f, 2.0f, 0.0f);
-						camera.Up = new Vector3(0.0f, 1.0f, 0.0f);
-						camera.Projection = CameraProjection.Perspective;
-						camera.FovY = 60.0f;
-					}
-				}
-
-				// Update camera computes movement internally depending on the camera mode
-				// Some default standard keyboard/mouse inputs are hardcoded to simplify use
-				// For advance camera controls, it's reecommended to compute camera movement manually
 				UpdateCamera(ref camera, cameraMode);
 				//----------------------------------------------------------------------------------
 				// Draw
 				//----------------------------------------------------------------------------------
 				BeginDrawing();
-				ClearBackground(Color.RayWhite);
+				ClearBackground(Color.Black);
 
 				BeginMode3D(control.camera);
 				Engine.Instance.EventBus?.NotifyRender();
 
 				// Draw ground
-				DrawPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector2(32.0f, 32.0f), Color.LightGray);
+				DrawPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector2(128.0f, 128.0f), new(200, 200, 200, 100));
 
-				// Draw a blue wall
-				DrawCube(new Vector3(-16.0f, 2.5f, 0.0f), 1.0f, 5.0f, 32.0f, Color.Blue);
 
-				// Draw a green wall
-				DrawCube(new Vector3(16.0f, 2.5f, 0.0f), 1.0f, 5.0f, 32.0f, Color.Lime);
-
-				// Draw a yellow wall
-				DrawCube(new Vector3(0.0f, 2.5f, 16.0f), 32.0f, 5.0f, 1.0f, Color.Gold);
-
-				// Draw some cubes around
-				for (int i = 0; i < MaxColumns; i++)
-				{
-					DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
-					DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, Color.Maroon);
-				}
-
-				// Draw player cube
-				if (cameraMode == CameraMode.ThirdPerson)
-				{
-					DrawCube(camera.Target, 0.5f, 0.5f, 0.5f, Color.Purple);
-					DrawCubeWires(camera.Target, 0.5f, 0.5f, 0.5f, Color.DarkPurple);
-				}
+				
 
 				EndMode3D();
 
