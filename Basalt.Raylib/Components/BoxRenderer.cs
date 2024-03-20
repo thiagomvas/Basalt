@@ -31,7 +31,7 @@ namespace Basalt.Raylib.Components
 
 		public override void OnRender()
 		{
-			DrawCubeV(entity.Transform.Position + Offset, Size, Color);
+			DrawCubeV(Entity.Transform.Position + Offset, Size, Color);
 		}
 	}
 }

@@ -11,10 +11,10 @@ namespace Basalt.Common.Components
 {
     public abstract class Component : IObserver
     {
-        protected Entity entity;
+        public Entity Entity;
 		protected Component(Entity entity)
         {
-            this.entity = entity;
+            this.Entity = entity;
             Engine.Instance.EventBus?.Subscribe(this);
 
             if(Engine.Instance.HasStarted)

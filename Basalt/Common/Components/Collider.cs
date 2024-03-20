@@ -14,9 +14,5 @@ namespace Basalt.Common.Components
 		protected Collider(Entity entity) : base(entity)
 		{
 		}
-
-		public abstract bool Intersects(Collider cols);
-
-		public abstract void HandleCollision(Collider col);
 	}
 }

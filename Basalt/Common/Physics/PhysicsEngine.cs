@@ -20,7 +20,7 @@ namespace Basalt.Common.Physics
 
 		const int targetFrameTimeMs = 16;
 
-		private Grid entityGrid = new(10);
+		private Grid entityGrid = new(100);
 
 		public float Gravity { get; set; }
 
@@ -58,24 +58,21 @@ namespace Basalt.Common.Physics
 
 				// Check for collisions
 				foreach (var chunk in entityGrid.GetEntitiesChunked())
-				{ 
-					for(int i = 0; i < chunk.Count; i++)
+				{
+					for (int i = 0; i < chunk.Count; i++)
 					{
-						for(int j = i + 1; j < chunk.Count; j++)
+						for (int j = i + 1; j < chunk.Count; j++)
 						{
 							var entityA = chunk[i];
 							var entityB = chunk[j];
 
-							var colliderA = entityA.GetComponent<BoxCollider>();
-							var colliderB = entityB.GetComponent<BoxCollider>();
+							var colliderA = entityA.GetComponent<Collider>();
+							var colliderB = entityB.GetComponent<Collider>();
 
 							if (colliderA != null && colliderB != null)
 							{
-								if (colliderA.Intersects(colliderB))
-								{
-									colliderA.HandleCollision(colliderB);
-									colliderB.HandleCollision(colliderA);
-								}
+								CollisionHandler.Handle(colliderA, colliderB);
+
 							}
 						}
 					}

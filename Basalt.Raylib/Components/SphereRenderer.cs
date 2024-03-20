@@ -31,7 +31,7 @@ namespace Basalt.Raylib.Components
 
 		public override void OnRender()
 		{
-			Raylib_cs.Raylib.DrawSphereEx(entity.Transform.Position + Offset, Radius, Rings, Slices, Color);
+			Raylib_cs.Raylib.DrawSphereEx(Entity.Transform.Position + Offset, Radius, Rings, Slices, Color);
 		}
 	}
 }

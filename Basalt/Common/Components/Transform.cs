@@ -16,7 +16,7 @@ namespace Basalt.Common.Components
 			{
 				var offset = value - position;
 				position = value;
-				foreach (var child in entity.Children)
+				foreach (var child in Entity.Children)
 				{
 					child.Transform.Position += offset;
 				}
