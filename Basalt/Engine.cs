@@ -69,7 +69,6 @@ namespace Basalt
 				logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
 			}
 
-			SoundSystem?.Initialize();
 
 			physicsThread = new Thread(() => SafeInitialize(_physicsEngine));
 			physicsThread.Start();
@@ -77,6 +76,7 @@ namespace Basalt
 			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
 			graphicsThread.Start();
 
+			SoundSystem?.Initialize();
 			physicsThread.Join();
 			graphicsThread.Join();
 
@@ -109,7 +109,6 @@ namespace Basalt
 			Instance.EntityManager.AddEntity(entity);
 			Instance.OnCreateEntity?.Invoke(entity);
 
-			Console.WriteLine(string.Join(", ", Instance.EntityManager.GetEntities().Select(e => e.Transform.Position)));
 		}
 
 		public static void RemoveEntity(Entity entity)
