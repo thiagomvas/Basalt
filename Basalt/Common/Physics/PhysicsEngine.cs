@@ -20,7 +20,7 @@ namespace Basalt.Common.Physics
 
 		const int targetFrameTimeMs = 16;
 
-		private Grid entityGrid = new(100);
+		private Grid entityGrid = new(10);
 
 		public float Gravity { get; set; }
 

@@ -46,24 +46,55 @@ namespace Basalt.Common.Physics
 
 		public List<Entity> GetEntitiesNearPoint(Vector3 point)
 		{
-			var chunk = new Point((int)point.X / sideLength, (int)point.Z / sideLength);
-
+			
 
 			List<Entity> e = new();
 
-			if (chunks.ContainsKey(chunk))
-				e.AddRange(chunks[chunk]);
+			for(int x = -1; x <= 1; x++)
+			{
+				for(int z = -1; z <= 1; z++)
+				{
+					var chunk = new Point((int)point.X / sideLength + x, (int)point.Z / sideLength + z);
+
+					if (chunks.ContainsKey(chunk))
+						e.AddRange(chunks[chunk]);
+				}
+			}
 
 			return e;
 		}
 
 		public List<List<Entity>> GetEntitiesChunked()
 		{
-			return chunks.Values.ToList();
+			List<List<Entity>> chunkedEntities = new List<List<Entity>>();
+
+			foreach (var position in chunks.Keys)
+			{
+				for (int x = -1; x <= 1; x++)
+				{
+					for (int z = -1; z <= 1; z++)
+					{
+						var chunk = new Point((int)position.X / sideLength + x, (int)position.Z / sideLength + z);
+
+						if (chunks.ContainsKey(chunk))
+						{
+							chunkedEntities.Add(chunks[chunk]);
+						}
+						else
+						{
+							chunkedEntities.Add(new List<Entity>());
+						}
+					}
+				} 
+			}
+
+			return chunkedEntities;
 		}
 
 		private struct Point(int X, int Z)
 		{
+			public int X { get; }
+			public int Z { get; }
 			public override string ToString()
 			{
 				return $"{X}, {Z}";
