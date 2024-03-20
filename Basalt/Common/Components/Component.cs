@@ -33,5 +33,14 @@ namespace Basalt.Common.Components
         public virtual void OnPhysicsUpdate()
         {
 		}
+
+        internal void onDestroy()
+        {
+            Engine.Instance.EventBus?.Unsubscribe(this);
+            OnDestroy();
+		}
+
+        public virtual void OnDestroy()
+        { }
     }
 }
