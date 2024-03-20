@@ -41,5 +41,12 @@ namespace Basalt.Common.Utils
 			Vector3 rotatedForward = Vector3.Normalize(Vector3.Transform(Vector3.UnitZ, Quaternion.Normalize(rotation)));
 			return rotatedForward;
 		}
+
+		public static Vector3 GetRightVector(Quaternion quaternion)
+		{
+			// Apply the quaternion rotation to the right vector (1, 0, 0)
+			Vector3 rightVector = Vector3.Transform(new Vector3(-1, 0, 0), quaternion);
+			return rightVector;
+		}
 	}
 }

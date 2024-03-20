@@ -23,7 +23,7 @@ namespace Basalt.Common.Components
 			}
 		}
 
-		private Quaternion rotation;
+		private Quaternion rotation = Quaternion.Identity;
 		public Quaternion Rotation
 		{
 			get => rotation;
@@ -32,6 +32,7 @@ namespace Basalt.Common.Components
 		}
 
 		public Vector3 Forward => MathExtended.GetForwardVector(Rotation);
+		public Vector3 Right => MathExtended.GetRightVector(Rotation);
 		internal Transform(Entity entity) : base(entity)
 		{
 			Position = new Vector3();
