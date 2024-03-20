@@ -35,7 +35,6 @@ namespace Basalt.Raylib.Components
 
 		public void OnUpdate()
 		{
-			camera.Position = Transform.Position;
 			if (!IsActive)
 				return;
 			Vector3 movement = Vector3.Zero;
@@ -62,6 +61,7 @@ namespace Basalt.Raylib.Components
 
 			// Update the camera in raylib
 
+			camera.Position = Transform.Position;
 			camera.Target = camera.Position + Transform.Forward;
 
 			UpdateCameraPro(ref camera, Vector3.Zero, rotation, 0);

@@ -53,8 +53,8 @@ Engine.CreateEntity(ground);
 
 var entity = new CameraController();
 entity.Transform.Position = new Vector3(0, 5, 0);
-entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
-entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(2, 2, 2), Offset = new Vector3(0, -2, 0) });
+//entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
+entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(1, 1, 1), Offset = new Vector3(0, -2, 0) });
 entity.AddComponent(new Rigidbody(entity) { IsKinematic = false });
 
 var child1 = new Entity();
@@ -82,7 +82,7 @@ for (int i = 0; i < MaxColumns; i++)
 	e.Transform.Position = position;
 	e.AddComponent(new BoxRenderer(e) { Size = new Vector3(2, height, 2), Color = color });
 	e.AddComponent(new BoxCollider(e) { Size = new Vector3(2, height, 2) });
-	e.AddComponent(new Rigidbody(e) { Mass = height, Drag = 0.1f, IsKinematic = true });
+	e.AddComponent(new Rigidbody(e) { Mass = height, Drag = 0.1f, IsKinematic = false });
 
 	Engine.CreateEntity(e);
 }

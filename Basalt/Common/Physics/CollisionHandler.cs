@@ -63,15 +63,15 @@ namespace Basalt.Common.Physics
 			float minOverlap = Math.Min(overlapX, Math.Min(overlapY, overlapZ));
 			if (minOverlap == overlapX)
 			{
-				separationDirection = (box1.Entity.Transform.Position.X < box2.Entity.Transform.Position.X) ? -Vector3.UnitX : Vector3.UnitX;
+				separationDirection = (box1.Position.X < box2.Position.X) ? -Vector3.UnitX : Vector3.UnitX;
 			}
 			else if (minOverlap == overlapY)
 			{
-				separationDirection = (box1.Entity.Transform.Position.Y < box2.Entity.Transform.Position.Y) ? -Vector3.UnitY : Vector3.UnitY;
+				separationDirection = (box1.Position.Y < box2.Position.Y) ? -Vector3.UnitY : Vector3.UnitY;
 			}
 			else if (minOverlap == overlapZ)
 			{
-				separationDirection = (box1.Entity.Transform.Position.Z < box2.Entity.Transform.Position.Z) ? -Vector3.UnitZ : Vector3.UnitZ;
+				separationDirection = (box1.Position.Z < box2.Position.Z) ? -Vector3.UnitZ : Vector3.UnitZ;
 			}
 
 			// Move the colliders to separate them along the direction of least penetration
