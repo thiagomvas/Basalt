@@ -36,20 +36,27 @@ namespace Basalt.Common.Physics
 			BoxCollider box1 = (BoxCollider)col1;
 			BoxCollider box2 = (BoxCollider)col2;
 
+			Rigidbody? rb1 = box1.Entity.Rigidbody;
+			Rigidbody? rb2 = box2.Entity.Rigidbody;
 
 			Vector3 extents1 = box1.Size / 2f;
 			Vector3 extents2 = box2.Size / 2f;
 
 			// Calculate the min and max points of the two colliders along each axis
-			Vector3 min1 = box1.Entity.Transform.Position - extents1;
-			Vector3 max1 = box1.Entity.Transform.Position + extents1;
-			Vector3 min2 = box2.Entity.Transform.Position - extents2;
-			Vector3 max2 = box2.Entity.Transform.Position + extents2;
+			Vector3 min1 = box1.Position - extents1;
+			Vector3 max1 = box1.Position + extents1;
+			Vector3 min2 = box2.Position - extents2;
+			Vector3 max2 = box2.Position + extents2;
 
 			// Calculate the overlap along each axis
 			float overlapX = Math.Max(0, Math.Min(max1.X, max2.X) - Math.Max(min1.X, min2.X));
 			float overlapY = Math.Max(0, Math.Min(max1.Y, max2.Y) - Math.Max(min1.Y, min2.Y));
 			float overlapZ = Math.Max(0, Math.Min(max1.Z, max2.Z) - Math.Max(min1.Z, min2.Z));
+
+			if (overlapX == 0 || overlapY == 0 || overlapZ == 0)
+			{
+				return; // No overlap, no need to perform separation or movement calculations
+			}
 
 			// Calculate the direction of least penetration
 			Vector3 separationDirection = Vector3.Zero;
@@ -69,8 +76,22 @@ namespace Basalt.Common.Physics
 
 			// Move the colliders to separate them along the direction of least penetration
 			float separationDistance = Math.Abs(minOverlap);
-			box1.Entity.Transform.Position += separationDirection * separationDistance / 2f;
-			box2.Entity.Transform.Position -= separationDirection * separationDistance / 2f;
+
+			if (rb1 != null && rb1.IsKinematic)
+			{
+				box2.Entity.Transform.Position -= separationDirection * separationDistance;
+				rb2.Velocity *= 0.5f;
+			}
+			else if (rb2 != null && rb2.IsKinematic)
+			{
+				box1.Entity.Transform.Position += separationDirection * separationDistance;
+				rb1.Velocity *= 0.5f;
+			}
+			else
+			{
+				box1.Entity.Transform.Position += separationDirection * separationDistance / 2f;
+				box2.Entity.Transform.Position -= separationDirection * separationDistance / 2f;
+			}
 		}
 	}
 }

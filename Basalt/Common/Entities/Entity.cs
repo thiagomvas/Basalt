@@ -5,6 +5,7 @@ namespace Basalt.Common.Entities
 	{
 		private HashSet<Component> components = new();
 		public Transform Transform;
+		public Rigidbody? Rigidbody;
 		public List<Entity> Children { get; set; } = new();
 
 		public bool IsActive = true;
@@ -18,6 +19,10 @@ namespace Basalt.Common.Entities
 		public void AddComponent(Component component)
 		{
 			components.Add(component);
+			if(Rigidbody == null && component is Rigidbody rb)
+			{
+				Rigidbody = rb;
+			}
 		}
 
 		public void RemoveComponent(Component component)

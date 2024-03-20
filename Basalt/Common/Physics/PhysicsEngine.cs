@@ -22,7 +22,7 @@ namespace Basalt.Common.Physics
 
 		private Grid entityGrid = new(10);
 
-		public float Gravity { get; set; }
+		public float Gravity { get; set; } = 9.81f;
 
 		public PhysicsEngine(ILogger? logger = null)
 		{

@@ -20,7 +20,7 @@ var initParams = new WindowInitParams
 	Title = "Basalt Test Field",
 	Width = 1280,
 	Height = 720,
-	TargetFps = 120,
+	TargetFps = 60,
 	MSAA4X = true
 };
 
@@ -43,19 +43,28 @@ builder.EventBus = eventBus;
 
 var engine = builder.Build();
 
+var ground = new Entity();
+ground.Transform.Position = new Vector3(0, -1, 0);
+ground.AddComponent(new BoxRenderer(ground) { Size = new Vector3(30, 2, 30), Color = Color.Green });
+ground.AddComponent(new BoxCollider(ground) { Size = new Vector3(30, 2, 30) });
+ground.AddComponent(new Rigidbody(ground) { IsKinematic = true });
+
+Engine.CreateEntity(ground);
+
 var entity = new CameraController();
 entity.Transform.Position = new Vector3(0, 5, 0);
 entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
-entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(2, 2, 2) });
+entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(2, 2, 2), Offset = new Vector3(0, -2, 0) });
+entity.AddComponent(new Rigidbody(entity) { IsKinematic = false });
 
 var child1 = new Entity();
 child1.Transform.Position = new Vector3(0, 5, 0);
-child1.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = new(-1f, -2, 0)});
+child1.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = -Vector3.UnitY * 2 + child1.Transform.Right });
 entity.AddChildren(child1);
 
 var child2 = new Entity();
 child2.Transform.Position = new Vector3(0, 5, 0);
-child2.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = new(1f, -2, 0) });
+child2.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = -Vector3.UnitY * 2 - child1.Transform.Right });
 
 Engine.CreateEntity(entity);
 Engine.CreateEntity(child1);
@@ -73,6 +82,7 @@ for (int i = 0; i < MaxColumns; i++)
 	e.Transform.Position = position;
 	e.AddComponent(new BoxRenderer(e) { Size = new Vector3(2, height, 2), Color = color });
 	e.AddComponent(new BoxCollider(e) { Size = new Vector3(2, height, 2) });
+	e.AddComponent(new Rigidbody(e) { Mass = height, Drag = 0.1f, IsKinematic = true });
 
 	Engine.CreateEntity(e);
 }

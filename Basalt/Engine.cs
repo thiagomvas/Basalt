@@ -134,5 +134,8 @@ namespace Basalt
 		}
 
 		public IEventBus? EventBus => _eventBus;
+		public static ILogger? Logger => _instance?.logger;
+		public static IPhysicsEngine? PhysicsEngine => _instance?._physicsEngine;
+
 	}
 }

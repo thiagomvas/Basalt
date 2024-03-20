@@ -21,7 +21,7 @@ namespace Basalt.Raylib.Components
 			// Initialize the camera
 			camera = new Camera3D();
 			camera.Position = Transform.Position;
-			camera.Target = new Vector3(0f, 0f, -1f);
+			camera.Target = Transform.Position + Transform.Forward;
 			camera.Up = new Vector3(0f, 1f, 0f);
 			camera.FovY = 60f;
 			camera.Projection = CameraProjection.Perspective;
@@ -35,18 +35,25 @@ namespace Basalt.Raylib.Components
 
 		public void OnUpdate()
 		{
+			camera.Position = Transform.Position;
 			if (!IsActive)
 				return;
 			Vector3 movement = Vector3.Zero;
 
+			var f = Transform.Forward;
+			f = Vector3.Normalize(new(f.X, 0, f.Z));
+
+			var r = Transform.Right;
+			r = Vector3.Normalize(new(r.X, 0, r.Z));
+
 			if (IsKeyDown(KeyboardKey.W))
-				movement += forward * Time.DeltaTime;
+				Transform.Position += f * Time.DeltaTime * MovementSpeed;
 			if(IsKeyDown(KeyboardKey.S))
-				movement -= forward * Time.DeltaTime;
-			if(IsKeyDown(KeyboardKey.A))
-				movement -= right * Time.DeltaTime;
+				Transform.Position -= f * Time.DeltaTime * MovementSpeed;
+			if (IsKeyDown(KeyboardKey.A))
+				Transform.Position -= r * Time.DeltaTime * MovementSpeed;
 			if(IsKeyDown(KeyboardKey.D))
-				movement += right * Time.DeltaTime;
+				Transform.Position += r * Time.DeltaTime * MovementSpeed;
 
 
 			Vector3 rotation = new(GetMouseDelta().X * sensitivity,                            // Rotation: yaw
@@ -54,9 +61,11 @@ namespace Basalt.Raylib.Components
 								   0.0f);                                             // Rotation: roll
 
 			// Update the camera in raylib
-			UpdateCameraPro(ref camera, movement, rotation, 0);
 
-			Transform.Position = camera.Position;
+			camera.Target = camera.Position + Transform.Forward;
+
+			UpdateCameraPro(ref camera, Vector3.Zero, rotation, 0);
+
 			Transform.Rotation = LookAtRotation(camera.Position, camera.Target, camera.Up);
 		}
 

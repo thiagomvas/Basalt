@@ -115,7 +115,10 @@ namespace Basalt.Raylib.Graphics
 
 
 				if (IsKeyPressed(KeyboardKey.Escape))
+				{
 					Engine.Instance.Shutdown();
+					ShouldRun = false;
+				}
 				// Update
 				//----------------------------------------------------------------------------------
 				Engine.Instance.EventBus?.NotifyUpdate();
@@ -131,12 +134,7 @@ namespace Basalt.Raylib.Graphics
 
 				Engine.Instance.EventBus?.NotifyRender();
 
-				// Draw ground
-				DrawPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector2(128.0f, 128.0f), new(200, 200, 200, 100));
-
-
 				
-
 				EndMode3D();
 
 				// Draw info boxes
