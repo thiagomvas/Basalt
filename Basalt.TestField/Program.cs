@@ -1,4 +1,5 @@
 ﻿using Basalt;
+using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
 using Basalt.Common.Logging;
@@ -45,6 +46,7 @@ var engine = builder.Build();
 var entity = new CameraController();
 entity.Transform.Position = new Vector3(0, 5, 0);
 entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
+entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(2, 2, 2) });
 
 var child1 = new Entity();
 child1.Transform.Position = new Vector3(0, 5, 0);
@@ -70,6 +72,7 @@ for (int i = 0; i < MaxColumns; i++)
 	Entity e = new();
 	e.Transform.Position = position;
 	e.AddComponent(new BoxRenderer(e) { Size = new Vector3(2, height, 2), Color = color });
+	e.AddComponent(new BoxCollider(e) { Size = new Vector3(2, height, 2) });
 
 	Engine.CreateEntity(e);
 }

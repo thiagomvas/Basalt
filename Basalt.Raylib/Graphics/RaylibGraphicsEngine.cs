@@ -128,6 +128,7 @@ namespace Basalt.Raylib.Graphics
 				ClearBackground(Color.Black);
 
 				BeginMode3D(control.camera);
+
 				Engine.Instance.EventBus?.NotifyRender();
 
 				// Draw ground
@@ -159,8 +160,10 @@ namespace Basalt.Raylib.Graphics
 				DrawText($"- Target: {control.camera.Target}", 610, 75, 10, Color.Black);
 				DrawText($"- Up: {control.camera.Up}", 610, 90, 10, Color.Black);
 
-				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 200, 10, Color.Black);
-				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 220, 10, Color.Black);
+				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 200, 10, Color.White);
+				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 220, 10, Color.White);
+				DrawText($"Pos: {control.Transform.Position} - {control.camera.Position}", 15, 240, 10, Color.White);
+				DrawText($"Rot: {control.Transform.Rotation}", 15, 260, 10, Color.White);
 
 				EndDrawing();
 				//----------------------------------------------------------------------------------

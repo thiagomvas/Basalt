@@ -28,6 +28,7 @@ namespace Basalt.Common.Components
 		{
 			get => rotation;
 			set => rotation = value;
+			
 		}
 
 		public Vector3 Forward => MathExtended.GetForwardVector(Rotation);

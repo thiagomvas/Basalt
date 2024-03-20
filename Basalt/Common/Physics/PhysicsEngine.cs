@@ -1,4 +1,5 @@
-﻿using Basalt.Common.Entities;
+﻿using Basalt.Common.Components;
+using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions;
 using Basalt.Core.Common.Entities;
 using System;
@@ -54,6 +55,31 @@ namespace Basalt.Common.Physics
 				entityGrid.Entities = Engine.Instance.EntityManager.GetEntities();
 
 				entityGrid.UpdateGrid();
+
+				// Check for collisions
+				foreach (var chunk in entityGrid.GetEntitiesChunked())
+				{ 
+					for(int i = 0; i < chunk.Count; i++)
+					{
+						for(int j = i + 1; j < chunk.Count; j++)
+						{
+							var entityA = chunk[i];
+							var entityB = chunk[j];
+
+							var colliderA = entityA.GetComponent<BoxCollider>();
+							var colliderB = entityB.GetComponent<BoxCollider>();
+
+							if (colliderA != null && colliderB != null)
+							{
+								if (colliderA.Intersects(colliderB))
+								{
+									colliderA.HandleCollision(colliderB);
+									colliderB.HandleCollision(colliderA);
+								}
+							}
+						}
+					}
+				}
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 				Time.PhysicsDeltaTime = targetFrameTimeMs / 1000f;
