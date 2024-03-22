@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using Basalt.Raylib.Graphics;
 
 namespace Basalt.Raylib.Components
 {
@@ -16,6 +17,9 @@ namespace Basalt.Raylib.Components
 		public Vector3 Size { get; set; } = Vector3.One;
 		public Vector3 Offset { get; set; }
 		public Color Color { get; set; }
+		public float Scale = 1;
+		Model cube;
+		bool init = false;
 		public BoxRenderer(Entity entity) : base(entity)
 		{
 		}
@@ -31,7 +35,12 @@ namespace Basalt.Raylib.Components
 
 		public override void OnRender()
 		{
-			DrawCubeV(Entity.Transform.Position + Offset, Size, Color);
+			if(!init)
+			{
+				cube = LoadModelFromMesh(GenMeshCube(Size.X, Size.Y, Size.Z));
+				init = true;
+			}
+			DrawModel(cube, Entity.Transform.Position, Scale, Color);
 		}
 	}
 }

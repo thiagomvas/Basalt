@@ -1,13 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions;
-using Basalt.Core.Common.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basalt.Common.Physics
 {
@@ -23,6 +16,7 @@ namespace Basalt.Common.Physics
 		private Grid entityGrid = new(10);
 
 		public float Gravity { get; set; } = 9.81f;
+
 
 		public PhysicsEngine(ILogger? logger = null)
 		{

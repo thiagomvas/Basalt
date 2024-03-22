@@ -15,8 +15,7 @@ namespace Basalt.Raylib.Sound
         private List<string> queuedMusic = new();
 
 
-
-        public void Initialize()
+		public void Initialize()
         {
             InitAudioDevice();
             foreach (var sound in queuedSounds)

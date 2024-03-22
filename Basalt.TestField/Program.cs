@@ -20,11 +20,11 @@ var initParams = new WindowInitParams
 	Title = "Basalt Test Field",
 	Width = 1280,
 	Height = 720,
-	TargetFps = 60,
+	TargetFps = 120,
 	MSAA4X = true
 };
 
-var logger = new ConsoleLogger(LogLevel.Info);
+var logger = new ConsoleLogger(LogLevel.Warning);
 
 var graphicsEngine = new RaylibGraphicsEngine(initParams, logger);
 var physicsEngine = new PhysicsEngine(logger);
@@ -53,7 +53,7 @@ Engine.CreateEntity(ground);
 
 var entity = new CameraController();
 entity.Transform.Position = new Vector3(0, 5, 0);
-//entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
+entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
 entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(1, 1, 1), Offset = new Vector3(0, -2, 0) });
 entity.AddComponent(new Rigidbody(entity) { IsKinematic = false });
 

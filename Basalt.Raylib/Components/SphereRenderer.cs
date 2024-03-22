@@ -15,7 +15,9 @@ namespace Basalt.Raylib.Components
 		public Color Color = Color.Pink;
 
 		public Vector3 Offset { get; set; } = Vector3.Zero;
-		
+
+		Model sphere;
+		bool init;
 		public SphereRenderer(Entity entity) : base(entity)
 		{
 
@@ -31,7 +33,12 @@ namespace Basalt.Raylib.Components
 
 		public override void OnRender()
 		{
-			Raylib_cs.Raylib.DrawSphereEx(Entity.Transform.Position + Offset, Radius, Rings, Slices, Color);
+			if(!init)
+			{
+				sphere = Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(Radius, Rings, Slices));
+				init = true;
+			}
+			Raylib_cs.Raylib.DrawModel(sphere, Entity.Transform.Position + Offset, 1, Color);
 		}
 	}
 }

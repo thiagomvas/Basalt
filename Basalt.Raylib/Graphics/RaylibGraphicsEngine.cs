@@ -16,11 +16,13 @@ namespace Basalt.Raylib.Graphics
 	{
 		public const int MaxColumns = 20;
 
+
 		private readonly WindowInitParams config;
 		private readonly ILogger? logger;
 		private static RaylibGraphicsEngine instance;
 
 		bool ShouldRun = true;
+
 
 		public RaylibGraphicsEngine(WindowInitParams initConfig, ILogger? logger = null)
 		{
@@ -37,6 +39,7 @@ namespace Basalt.Raylib.Graphics
 				SetConfigFlags(ConfigFlags.UndecoratedWindow);
 
 			InitWindow(config.Width, config.Height, config.Title);
+
 			SetTargetFPS(config.TargetFps);
 
 			if (config.Fullscreen)
@@ -66,7 +69,7 @@ namespace Basalt.Raylib.Graphics
 		public void Render()
 		{
 			Camera3D camera = new();
-			var control = (CameraController)Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e is CameraController);
+			var control = Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e is CameraController) as CameraController;
 			camera = control.camera;
 			control.OnStart();
 
@@ -77,6 +80,8 @@ namespace Basalt.Raylib.Graphics
 			bool hasSoundSystem = Engine.Instance.SoundSystem is not null;
 
 			logger?.LogInformation("Starting raylib rendering loop...");
+
+			Model model = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
 			// Main game loop
 			while (ShouldRun)
 			{
@@ -131,6 +136,9 @@ namespace Basalt.Raylib.Graphics
 				ClearBackground(Color.Black);
 
 				BeginMode3D(control.camera);
+
+				DrawModel(model, Vector3.One, 1.0f, Color.Red);
+
 
 				Engine.Instance.EventBus?.NotifyRender();
 
@@ -204,6 +212,15 @@ namespace Basalt.Raylib.Graphics
 			}
 
 		}
+
+		public static T InvokeOnThread<T>(Func<T> delegateFunc)
+		{
+			return instance.invoke(delegateFunc);
+		}
+
+		private T invoke<T>(Func<T> delegateFunc) => delegateFunc();
+
+		
 
 		public void Shutdown()
 		{

@@ -52,6 +52,7 @@ namespace Basalt
 		public void Run()
 		{
 			HasStarted = true;
+
 			logger?.LogInformation("Engine Initializing");
 			if (_graphicsEngine == null)
 			{
@@ -77,8 +78,9 @@ namespace Basalt
 
 			SoundSystem?.Initialize();
 
+			_eventBus?.NotifyStart();
 
-			EventBus?.NotifyStart();
+
 			physicsThread.Join();
 			graphicsThread.Join();
 
@@ -136,6 +138,8 @@ namespace Basalt
 		public IEventBus? EventBus => _eventBus;
 		public static ILogger? Logger => _instance?.logger;
 		public static IPhysicsEngine? PhysicsEngine => _instance?._physicsEngine;
+
+		public static IGraphicsEngine? GraphicsEngine => _instance?._graphicsEngine;
 
 	}
 }

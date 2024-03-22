@@ -14,26 +14,20 @@ namespace Basalt.Common.Events
 
 		public void NotifyRender()
 		{
-			Task.Run(() =>
-			{
-				lock (lockObject)
-				{
-					foreach (var observer in observers)
-					{
-						observer.OnRender();
-					}
-				}
-			}).Wait();
-		}
-
-		public void NotifyStart()
-		{
 			lock (lockObject)
 			{
 				foreach (var observer in observers)
 				{
-					observer.OnStart();
+					observer.OnRender();
 				}
+			}
+		}
+
+		public void NotifyStart()
+		{
+			foreach (var observer in observers)
+			{
+				observer.OnStart();
 			}
 		}
 
