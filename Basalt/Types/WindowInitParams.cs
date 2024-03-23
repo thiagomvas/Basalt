@@ -16,5 +16,6 @@ namespace Basalt.Types
 		public bool VSync { get; set; }
 		public bool Borderless { get; set; }
 		public bool MSAA4X { get; set; }
+		public bool PostProcessing { get; set; }
 	}
 }

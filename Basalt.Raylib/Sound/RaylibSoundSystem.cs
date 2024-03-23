@@ -30,7 +30,7 @@ namespace Basalt.Raylib.Sound
         }
         public void Shutdown()
         {
-            logger?.LogWarning("Shutting down sound system.");
+            logger?.LogInformation("Shutting down sound system.");
             CloseAudioDevice();
             foreach (var sound in loadedSounds.Values)
             {

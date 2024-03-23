@@ -15,12 +15,15 @@ namespace Basalt.Raylib.Graphics
 	public class RaylibGraphicsEngine : IGraphicsEngine
 	{
 		public const int MaxColumns = 20;
-
+		private bool enablePostProcessing = false;
+		public string PostProcessingVertexShaderPath { get; set; } = string.Empty;
+		public string PostProcessingFragmentShaderPath { get; set; } = string.Empty;
 
 		private readonly WindowInitParams config;
 		private readonly ILogger? logger;
 		private static RaylibGraphicsEngine instance;
 
+		Shader PostProcessShader;
 		bool ShouldRun = true;
 
 
@@ -32,10 +35,10 @@ namespace Basalt.Raylib.Graphics
 
 		public unsafe void Initialize()
 		{
-
+			enablePostProcessing = config.PostProcessing;
 			instance = this;
 			SetTraceLogCallback(&LogCustom);
-			if(config.Borderless)
+			if (config.Borderless)
 				SetConfigFlags(ConfigFlags.UndecoratedWindow);
 
 			InitWindow(config.Width, config.Height, config.Title);
@@ -46,9 +49,12 @@ namespace Basalt.Raylib.Graphics
 				ToggleFullscreen();
 			if (config.VSync)
 				SetConfigFlags(ConfigFlags.VSyncHint);
-			
-			if(config.MSAA4X)
+
+			if (config.MSAA4X)
 				SetConfigFlags(ConfigFlags.Msaa4xHint);
+
+			if (enablePostProcessing)
+				PostProcessShader = LoadShader(PostProcessingVertexShaderPath, PostProcessingFragmentShaderPath);
 
 			DisableCursor();
 
@@ -61,7 +67,7 @@ namespace Basalt.Raylib.Graphics
 			{
 				ShouldRun = false;
 				CloseWindow();
-				logger?.LogError("Graphics Engine stopped running due to an exception.");	
+				logger?.LogError("Graphics Engine stopped running due to an exception.");
 				throw;
 			}
 		}
@@ -73,7 +79,7 @@ namespace Basalt.Raylib.Graphics
 			camera = control.camera;
 			control.OnStart();
 
-			CameraMode cameraMode = CameraMode.FirstPerson;
+			RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
 			//--------------------------------------------------------------------------------------
 
@@ -85,10 +91,10 @@ namespace Basalt.Raylib.Graphics
 			// Main game loop
 			while (ShouldRun)
 			{
-				control.OnUpdate();	
-				if(hasSoundSystem && Engine.Instance.SoundSystem!.IsMusicPlaying())
+				control.OnUpdate();
+				if (hasSoundSystem && Engine.Instance.SoundSystem!.IsMusicPlaying())
 				{
-					UpdateMusicStream((Music) Engine.Instance.SoundSystem.GetMusicPlaying()!);
+					UpdateMusicStream((Music)Engine.Instance.SoundSystem.GetMusicPlaying()!);
 				}
 				Time.DeltaTime = GetFrameTime();
 
@@ -128,11 +134,12 @@ namespace Basalt.Raylib.Graphics
 				//----------------------------------------------------------------------------------
 				Engine.Instance.EventBus?.NotifyUpdate();
 
-				UpdateCamera(ref camera, cameraMode);
 				//----------------------------------------------------------------------------------
 				// Draw
 				//----------------------------------------------------------------------------------
 				BeginDrawing();
+				if (enablePostProcessing)
+					BeginTextureMode(target);
 				ClearBackground(Color.Black);
 
 				BeginMode3D(control.camera);
@@ -142,34 +149,31 @@ namespace Basalt.Raylib.Graphics
 
 				Engine.Instance.EventBus?.NotifyRender();
 
-				
+
 				EndMode3D();
+
+				if (enablePostProcessing)
+				{
+					EndTextureMode();
+
+					BeginShaderMode(PostProcessShader);
+					DrawTextureRec(target.Texture, new Rectangle(0, 0, target.Texture.Width, -target.Texture.Height), new Vector2(0, 0), Color.White);
+					EndShaderMode();
+
+				}
+
 
 				// Draw info boxes
 				DrawRectangle(5, 5, 330, 100, ColorAlpha(Color.SkyBlue, 0.5f));
 				DrawRectangleLines(10, 10, 330, 100, Color.Blue);
 
-				DrawText("Camera controls:", 15, 15, 10, Color.Black);
-				DrawText("- Move keys: W, A, S, D, Space, Left-Ctrl", 15, 30, 10, Color.Black);
-				DrawText("- Look around: arrow keys or mouse", 15, 45, 10, Color.Black);
-				DrawText("- Camera mode keys: 1, 2, 3, 4", 15, 60, 10, Color.Black);
-				DrawText("- Zoom keys: num-plus, num-minus or mouse scroll", 15, 75, 10, Color.Black);
-				DrawText("- Camera projection key: P", 15, 90, 10, Color.Black);
-
 				DrawRectangle(600, 5, 195, 100, Fade(Color.SkyBlue, 0.5f));
 				DrawRectangleLines(600, 5, 195, 100, Color.Blue);
 
-				DrawText("Camera status:", 610, 15, 10, Color.Black);
-				DrawText($"- Mode: {cameraMode}", 610, 30, 10, Color.Black);
-				DrawText($"- Projection: {control.camera.Projection}", 610, 45, 10, Color.Black);
-				DrawText($"- Position: {control.camera.Position}", 610, 60, 10, Color.Black);
-				DrawText($"- Target: {control.camera.Target}", 610, 75, 10, Color.Black);
-				DrawText($"- Up: {control.camera.Up}", 610, 90, 10, Color.Black);
-
-				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 200, 10, Color.White);
-				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 220, 10, Color.White);
-				DrawText($"Pos: {control.Transform.Position} - {control.camera.Position}", 15, 240, 10, Color.White);
-				DrawText($"Rot: {control.Transform.Rotation}", 15, 260, 10, Color.White);
+				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 30, 10, Color.White);
+				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 45, 10, Color.White);
+				DrawText($"Pos: {control.Transform.Position} - {control.camera.Position}", 15, 60, 10, Color.White);
+				DrawText($"Rot: {control.Transform.Rotation}", 15, 75, 10, Color.White);
 
 				EndDrawing();
 				//----------------------------------------------------------------------------------
@@ -220,7 +224,7 @@ namespace Basalt.Raylib.Graphics
 
 		private T invoke<T>(Func<T> delegateFunc) => delegateFunc();
 
-		
+
 
 		public void Shutdown()
 		{

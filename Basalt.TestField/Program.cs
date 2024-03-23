@@ -18,15 +18,18 @@ var builder = new EngineBuilder();
 var initParams = new WindowInitParams
 {
 	Title = "Basalt Test Field",
-	Width = 1280,
-	Height = 720,
+	Width = 1920,
+	Height = 1080,
 	TargetFps = 120,
+	Fullscreen = true,
 	MSAA4X = true
 };
 
 var logger = new ConsoleLogger(LogLevel.Warning);
 
 var graphicsEngine = new RaylibGraphicsEngine(initParams, logger);
+graphicsEngine.PostProcessingFragmentShaderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/shaders/grayscale.fs");
+
 var physicsEngine = new PhysicsEngine(logger);
 var soundSystem = new RaylibSoundSystem(logger);
 

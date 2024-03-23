@@ -40,7 +40,7 @@ namespace Basalt.Raylib.Components
 				cube = LoadModelFromMesh(GenMeshCube(Size.X, Size.Y, Size.Z));
 				init = true;
 			}
-			DrawModel(cube, Entity.Transform.Position, Scale, Color);
+			DrawModel(cube, Entity.Transform.Position + Offset, Scale, Color);
 		}
 	}
 }

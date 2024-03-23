@@ -51,7 +51,6 @@ namespace Basalt
 
 		public void Run()
 		{
-			HasStarted = true;
 
 			logger?.LogInformation("Engine Initializing");
 			if (_graphicsEngine == null)
@@ -69,12 +68,13 @@ namespace Basalt
 				logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
 			}
 
+			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
+			graphicsThread.Start();
 
 			physicsThread = new Thread(() => SafeInitialize(_physicsEngine));
 			physicsThread.Start();
 
-			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
-			graphicsThread.Start();
+			HasStarted = true;
 
 			SoundSystem?.Initialize();
 
