@@ -4,17 +4,15 @@ using Basalt.Common.Entities;
 using Basalt.Common.Events;
 using Basalt.Common.Logging;
 using Basalt.Common.Physics;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Core.Common.Types;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Sound;
 using Basalt.Types;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Raylib_cs;
 using System.Numerics;
-using System.Reflection;
 
 var builder = new EngineBuilder();
 
@@ -94,8 +92,7 @@ for (int i = 0; i < MaxColumns; i++)
 	Engine.CreateEntity(e);
 }
 
-
-var result = File.ReadAllText("test.json");
+var result = ResourceCache.GetResourceString("test.json");	
 
 var target = Entity.DeserializeFromJson(result);
 
