@@ -37,10 +37,11 @@ namespace Basalt.Raylib.Components
 		{
 			if(!init)
 			{
-				cube = LoadModelFromMesh(GenMeshCube(Size.X, Size.Y, Size.Z));
+				ModelsCache.Instance.CacheModel("cube", LoadModelFromMesh(GenMeshCube(1, 1, 1)));
+				cube = ModelsCache.Instance.GetModel("cube");
 				init = true;
 			}
-			DrawModel(cube, Entity.Transform.Position + Offset, Scale, Color);
+			DrawModelEx(cube, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
 		}
 	}
 }

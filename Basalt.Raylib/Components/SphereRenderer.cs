@@ -1,6 +1,7 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Physics;
+using Basalt.Raylib.Graphics;
 using Raylib_cs;
 using System.Numerics;
 
@@ -8,13 +9,21 @@ namespace Basalt.Raylib.Components
 {
 	public class SphereRenderer : Component
 	{
-		public float Radius { get; set; } = 1.0f;
+		private Vector3 size;
+
+		public Vector3 Size
+		{
+			get { return size; }
+			set { size = value / 2; }
+		}
+
 		public int Rings { get; set; } = 16;
 		public int Slices { get; set; } = 16;
 
 		public Color Color = Color.Pink;
 
 		public Vector3 Offset { get; set; } = Vector3.Zero;
+
 
 		Model sphere;
 		bool init;
@@ -35,10 +44,11 @@ namespace Basalt.Raylib.Components
 		{
 			if(!init)
 			{
-				sphere = Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(Radius, Rings, Slices));
+				ModelsCache.Instance.CacheModel("sphere", Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(1, Rings, Slices)));
+				sphere = ModelsCache.Instance.GetModel("sphere");
 				init = true;
 			}
-			Raylib_cs.Raylib.DrawModel(sphere, Entity.Transform.Position + Offset, 1, Color);
+			Raylib_cs.Raylib.DrawModelEx(sphere, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
 		}
 	}
 }
