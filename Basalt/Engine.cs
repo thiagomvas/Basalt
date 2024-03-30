@@ -12,7 +12,7 @@ namespace Basalt
 		/// <summary>
 		/// Gets a value indicating whether the engine has started.
 		/// </summary>
-		public bool HasStarted { get; private set; } = false;
+		public bool Running { get; private set; } = false;
 
 		private static Engine? _instance;
 		private readonly IGraphicsEngine? _graphicsEngine;
@@ -100,7 +100,7 @@ namespace Basalt
 			physicsThread = new Thread(() => SafeInitialize(_physicsEngine));
 			physicsThread.Start();
 
-			HasStarted = true;
+			Running = true;
 
 			SoundSystem?.Initialize();
 
@@ -121,7 +121,12 @@ namespace Basalt
 		/// </summary>
 		public void Shutdown()
 		{
+			// Shut down services in reverse order of initialization
+			Running = false;
 			logger?.LogWarning("Engine shutting down");
+
+			
+			Task.Run(() => SoundSystem?.Shutdown());
 			if (physicsThread != null && physicsThread.IsAlive)
 			{
 				_physicsEngine?.Shutdown();
@@ -132,7 +137,7 @@ namespace Basalt
 				_graphicsEngine?.Shutdown();
 			}
 
-			SoundSystem?.Shutdown();
+
 			logger?.LogInformation("Engine shut down");
 		}
 
@@ -168,9 +173,17 @@ namespace Basalt
 			catch (Exception e)
 			{
 				_exceptionOccurred = true;
-				logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.Message}");
+#if DEBUG
+				logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}\n {e.StackTrace}");
+				#else
+				logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}");
+				#endif
 				Shutdown();
-				return;
+			}
+			finally
+			{
+				logger?.SaveLog($"CRASH_REPORT_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt");
+				logger?.LogInformation("Saved crash report");
 			}
 		}
 

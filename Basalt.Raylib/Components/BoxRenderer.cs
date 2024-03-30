@@ -35,6 +35,8 @@ namespace Basalt.Raylib.Components
 
 		public override void OnRender()
 		{
+			if (!Engine.Instance.Running)
+				return;
 			if(!init)
 			{
 				ModelsCache.Instance.CacheModel("cube", LoadModelFromMesh(GenMeshCube(1, 1, 1)));

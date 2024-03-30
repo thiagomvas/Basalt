@@ -11,5 +11,6 @@ namespace Basalt.Core.Common.Abstractions
 		void LogWarning(string message, [CallerMemberName] string callerName = "");
 		void LogError(string message, [CallerMemberName] string callerName = "");
 		void LogFatal(string message, [CallerMemberName] string callerName = "");
+		void SaveLog(string path);
 	}
 }

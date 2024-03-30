@@ -53,7 +53,7 @@ namespace Basalt.Raylib.Sound
 
         public void LoadAudio(string filename, AudioType type)
         {
-            if (!Engine.Instance.HasStarted)
+            if (!Engine.Instance.Running)
             {
                 if(type == AudioType.SoundEffect) queuedSounds.Add(filename);
                 else queuedMusic.Add(filename);

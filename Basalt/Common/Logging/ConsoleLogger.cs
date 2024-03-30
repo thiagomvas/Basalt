@@ -10,6 +10,7 @@ namespace Basalt.Common.Logging
 	/// </summary>
 	public class ConsoleLogger : ILogger
 	{
+		private List<string> logLines = new List<string>();
 		private LogLevel logLevel;
 
 		/// <summary>
@@ -29,7 +30,10 @@ namespace Basalt.Common.Logging
 					levelString = $"[{level} : {new StackTrace(1).GetFrame(1)?.GetMethod()?.DeclaringType.Name}.{callerName}]";
 				else
 					levelString = $"[{level}]";
-				Console.WriteLine($"{levelString} [{DateTime.Now}]  {message}");
+
+				string log = $"{levelString} [{DateTime.Now}]  {message}";
+				logLines.Add(log);
+				Console.WriteLine(log);
 				Console.ResetColor();
 			}
 		}
@@ -124,6 +128,15 @@ namespace Basalt.Common.Logging
 		public void LogFatal(string message, [CallerMemberName] string callerName = "")
 		{
 			Log(LogLevel.Fatal, message, callerName);
+		}
+
+		public void SaveLog(string path)
+		{
+			if (!Directory.Exists("crash_reports"))
+			{
+				Directory.CreateDirectory("crash_reports");
+			}
+			File.WriteAllLines(Path.Combine("crash_reports", path), logLines);
 		}
 	}
 }

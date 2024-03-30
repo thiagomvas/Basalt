@@ -26,7 +26,7 @@ var initParams = new WindowInitParams
 	MSAA4X = true
 };
 
-var logger = new ConsoleLogger(LogLevel.Warning);
+var logger = new ConsoleLogger(LogLevel.Info);
 
 var graphicsEngine = new RaylibGraphicsEngine(initParams, logger);
 graphicsEngine.PostProcessingFragmentShaderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/shaders/grayscale.fs");

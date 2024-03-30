@@ -66,9 +66,12 @@ namespace Basalt.Raylib.Graphics
 			catch
 			{
 				ShouldRun = false;
-				CloseWindow();
-				logger?.LogError("Graphics Engine stopped running due to an exception.");
+				logger?.LogError($"Graphics Engine stopped running due to an exception.");
 				throw;
+			}
+			finally
+			{
+				Engine.Instance.Shutdown();
 			}
 		}
 
@@ -101,7 +104,7 @@ namespace Basalt.Raylib.Graphics
 				if (IsKeyPressed(KeyboardKey.G))
 				{
 					Engine.Instance.SoundSystem?.PlayAudio("testaudio.mp3", AudioType.SoundEffect);
-
+					int foo = 1 / (int)GetFrameTime();
 				}
 
 				if (IsKeyPressed(KeyboardKey.H))
@@ -178,7 +181,6 @@ namespace Basalt.Raylib.Graphics
 				EndDrawing();
 				//----------------------------------------------------------------------------------
 			}
-			Console.WriteLine($"{ShouldRun}");
 			CloseWindow();
 			logger?.LogWarning("Graphics Engine stopped running gracefully.");
 
@@ -209,7 +211,7 @@ namespace Basalt.Raylib.Graphics
 					instance.logger?.LogError(message);
 					break;
 				case TraceLogLevel.Fatal:
-					instance.logger?.LogError(message);
+					instance.logger?.LogFatal(message);
 					break;
 				default:
 					break;
@@ -229,6 +231,7 @@ namespace Basalt.Raylib.Graphics
 		public void Shutdown()
 		{
 			ShouldRun = false;
+			ModelsCache.Instance.UnloadAllModels();
 			logger?.LogWarning("Shutting down graphics engine...");
 		}
 	}

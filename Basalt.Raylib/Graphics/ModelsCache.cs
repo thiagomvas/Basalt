@@ -52,6 +52,24 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		public void UnloadAllModels()
+		{
+			foreach (var model in modelDictionary.Values)
+			{
+				Raylib_cs.Raylib.UnloadModel(model);
+			}
+			modelDictionary.Clear();
+		}
+
+		public void UnloadModel(string modelName)
+		{
+			if (modelDictionary.ContainsKey(modelName))
+			{
+				Raylib_cs.Raylib.UnloadModel(modelDictionary[modelName]);
+				modelDictionary.Remove(modelName);
+			}
+		}
+
 		private Model LoadModel(string modelName)
 		{
 			Model model = Raylib_cs.Raylib.LoadModel(modelName);

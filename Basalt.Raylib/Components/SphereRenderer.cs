@@ -42,7 +42,9 @@ namespace Basalt.Raylib.Components
 
 		public override void OnRender()
 		{
-			if(!init)
+			if (!Engine.Instance.Running)
+				return;
+			if (!init)
 			{
 				ModelsCache.Instance.CacheModel("sphere", Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(1, Rings, Slices)));
 				sphere = ModelsCache.Instance.GetModel("sphere");
