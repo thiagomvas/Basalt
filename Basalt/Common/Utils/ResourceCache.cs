@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Basalt.Common.Utils
 {
+	/// <summary>
+	/// Represents a cache for storing and retrieving resources.
+	/// </summary>
 	public class ResourceCache
 	{
 		private static ResourceCache instance;
@@ -17,7 +14,10 @@ namespace Basalt.Common.Utils
 			resourceCache = new Dictionary<string, string>();
 		}
 
-		private static ResourceCache Instance
+		/// <summary>
+		/// Gets the singleton instance of the ResourceCache class.
+		/// </summary>
+		public static ResourceCache Instance
 		{
 			get
 			{
@@ -29,11 +29,22 @@ namespace Basalt.Common.Utils
 			}
 		}
 
+		/// <summary>
+		/// Gets the resource content as a string for the specified resource name.
+		/// </summary>
+		/// <param name="resourceName">The name of the resource.</param>
+		/// <returns>The resource content as a string.</returns>
 		public static string GetResourceString(string resourceName)
 		{
 			return Instance.GetResource(resourceName);
 		}
 
+		/// <summary>
+		/// Gets the resource content as an object of type T for the specified resource name.
+		/// </summary>
+		/// <typeparam name="T">The type of the resource object.</typeparam>
+		/// <param name="resourceName">The name of the resource.</param>
+		/// <returns>The resource content as an object of type T.</returns>
 		public static T GetResourceAs<T>(string resourceName)
 		{
 			return Instance.GetResource<T>(resourceName);

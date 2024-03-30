@@ -4,8 +4,14 @@ using Basalt.Core.Common.Abstractions.Sound;
 
 namespace Basalt
 {
+	/// <summary>
+	/// Represents the main game engine. Responsible for initializing any engine components and overall management.
+	/// </summary>
 	public class Engine : IEngine
 	{
+		/// <summary>
+		/// Gets a value indicating whether the engine has started.
+		/// </summary>
 		public bool HasStarted { get; private set; } = false;
 
 		private static Engine? _instance;
@@ -20,6 +26,14 @@ namespace Basalt
 		public Action<Entity> OnCreateEntity;
 
 		private Thread graphicsThread, physicsThread;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Engine"/> class.
+		/// </summary>
+		/// <param name="graphicsEngine">The graphics engine.</param>
+		/// <param name="soundSystem">The sound system.</param>
+		/// <param name="physicsEngine">The physics engine.</param>
+		/// <param name="eventBus">The event bus.</param>
 		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
 		{
 			_graphicsEngine = graphicsEngine;
@@ -28,6 +42,9 @@ namespace Basalt
 			_eventBus = eventBus;
 		}
 
+		/// <summary>
+		/// Gets the instance of the engine.
+		/// </summary>
 		public static Engine Instance
 		{
 			get
@@ -40,6 +57,13 @@ namespace Basalt
 			}
 		}
 
+		/// <summary>
+		/// Initializes the engine with the specified graphics engine, sound system, physics engine, and event bus.
+		/// </summary>
+		/// <param name="graphicsEngine">The graphics engine.</param>
+		/// <param name="soundSystem">The sound system.</param>
+		/// <param name="physicsEngine">The physics engine.</param>
+		/// <param name="eventBus">The event bus.</param>
 		public static void Initialize(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
 		{
 			if (_instance != null)
@@ -49,13 +73,15 @@ namespace Basalt
 			_instance = new Engine(graphicsEngine, soundSystem, physicsEngine, eventBus);
 		}
 
+		/// <summary>
+		/// Runs the engine.
+		/// </summary>
 		public void Run()
 		{
-
 			logger?.LogInformation("Engine Initializing");
 			if (_graphicsEngine == null)
 			{
-				logger?.LogFatal("Graphics engine not specified! Cannogivet run engine.");
+				logger?.LogFatal("Graphics engine not specified! Cannot run engine.");
 				return;
 			}
 			if (SoundSystem == null)
@@ -80,7 +106,6 @@ namespace Basalt
 
 			_eventBus?.NotifyStart();
 
-
 			physicsThread.Join();
 			graphicsThread.Join();
 
@@ -91,6 +116,9 @@ namespace Basalt
 			}
 		}
 
+		/// <summary>
+		/// Shuts down the engine.
+		/// </summary>
 		public void Shutdown()
 		{
 			logger?.LogWarning("Engine shutting down");
@@ -108,18 +136,29 @@ namespace Basalt
 			logger?.LogInformation("Engine shut down");
 		}
 
+		/// <summary>
+		/// Creates an entity and adds it to the entity manager.
+		/// </summary>
+		/// <param name="entity">The entity to create.</param>
 		public static void CreateEntity(Entity entity)
 		{
 			Instance.EntityManager.AddEntity(entity);
 			Instance.OnCreateEntity?.Invoke(entity);
-
 		}
 
+		/// <summary>
+		/// Removes an entity from the entity manager.
+		/// </summary>
+		/// <param name="entity">The entity to remove.</param>
 		public static void RemoveEntity(Entity entity)
 		{
 			Instance.EntityManager.RemoveEntity(entity);
 		}
 
+		/// <summary>
+		/// Initializes the specified engine component safely.
+		/// </summary>
+		/// <param name="component">The engine component to initialize.</param>
 		private void SafeInitialize(IEngineComponent? component)
 		{
 			try
@@ -129,17 +168,30 @@ namespace Basalt
 			catch (Exception e)
 			{
 				_exceptionOccurred = true;
-				logger?.LogFatal($"EXCEPTION OCURRED AT {component?.GetType().Name}: {e.Message}");
+				logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.Message}");
 				Shutdown();
 				return;
 			}
 		}
 
+		/// <summary>
+		/// Gets the event bus.
+		/// </summary>
 		public IEventBus? EventBus => _eventBus;
+
+		/// <summary>
+		/// Gets the logger.
+		/// </summary>
 		public static ILogger? Logger => _instance?.logger;
+
+		/// <summary>
+		/// Gets the physics engine.
+		/// </summary>
 		public static IPhysicsEngine? PhysicsEngine => _instance?._physicsEngine;
 
+		/// <summary>
+		/// Gets the graphics engine.
+		/// </summary>
 		public static IGraphicsEngine? GraphicsEngine => _instance?._graphicsEngine;
-
 	}
 }

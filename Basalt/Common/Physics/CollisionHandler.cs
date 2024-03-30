@@ -1,36 +1,50 @@
 ﻿using Basalt.Common.Components;
-using Basalt.Common.Entities;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basalt.Common.Physics
 {
+	/// <summary>
+	/// Handles collision between different types of colliders.
+	/// </summary>
 	public static class CollisionHandler
 	{
+		/// <summary>
+		/// Delegate for collision handler methods.
+		/// </summary>
+		/// <param name="col1">The first collider.</param>
+		/// <param name="col2">The second collider.</param>
 		private delegate void CollisionHandlerDelegate(Collider col1, Collider col2);
-		private readonly static Dictionary<(Type, Type), CollisionHandlerDelegate> handlers = new()
-		{
-			{(typeof(BoxCollider), typeof(BoxCollider)), BoxBoxCollision},
-		};
 
+		/// <summary>
+		/// Dictionary to store collision handler delegates for different collider types.
+		/// </summary>
+		private readonly static Dictionary<(Type, Type), CollisionHandlerDelegate> handlers = new()
+			{
+				{(typeof(BoxCollider), typeof(BoxCollider)), BoxBoxCollision},
+			};
+
+		/// <summary>
+		/// Handles collision between two colliders.
+		/// </summary>
+		/// <param name="col1">The first collider.</param>
+		/// <param name="col2">The second collider.</param>
 		public static void Handle(Collider col1, Collider col2)
 		{
 			if (handlers.TryGetValue((col1.GetType(), col2.GetType()), out CollisionHandlerDelegate handler))
 			{
 				handler(col1, col2);
 			}
-
 			else
 			{
 				Engine.Instance.logger?.LogError($"No collision handler for {col1.GetType()} and {col2.GetType()}");
 			}
 		}
 
+		/// <summary>
+		/// Handles collision between two box colliders.
+		/// </summary>
+		/// <param name="col1">The first box collider.</param>
+		/// <param name="col2">The second box collider.</param>
 		private static void BoxBoxCollision(Collider col1, Collider col2)
 		{
 			BoxCollider box1 = (BoxCollider)col1;

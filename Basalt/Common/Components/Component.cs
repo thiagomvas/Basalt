@@ -5,39 +5,67 @@ using Newtonsoft.Json;
 
 namespace Basalt.Common.Components
 {
-    public abstract class Component : IObserver
-    {
-        [JsonIgnore]
-        public Entity Entity;
-		protected Component(Entity entity)
-        {
-            this.Entity = entity;
-            Engine.Instance.EventBus?.Subscribe(this);
+	/// <summary>
+	/// Represents a base class for components in the Basalt game engine.
+	/// </summary>
+	public abstract class Component : IObserver
+	{
+		/// <summary>
+		/// The entity that owns this component.
+		/// </summary>
+		[JsonIgnore]
+		public Entity Entity;
 
-            if(Engine.Instance.HasStarted)
-            {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Component"/> class.
+		/// </summary>
+		/// <param name="entity">The entity that owns this component.</param>
+		protected Component(Entity entity)
+		{
+			this.Entity = entity;
+			Engine.Instance.EventBus?.Subscribe(this);
+
+			if (Engine.Instance.HasStarted)
+			{
 				OnStart();
 			}
-        }
-
-        public virtual void OnRender()
-        {
-        }
-
-		abstract public void OnStart();
-        abstract public void OnUpdate();
-
-        public virtual void OnPhysicsUpdate()
-        {
 		}
 
-        internal void onDestroy()
-        {
-            Engine.Instance.EventBus?.Unsubscribe(this);
-            OnDestroy();
+		/// <summary>
+		/// Called when the component needs to be rendered.
+		/// </summary>
+		public virtual void OnRender()
+		{
 		}
 
-        public virtual void OnDestroy()
-        { }
-    }
+		/// <summary>
+		/// Called when the component is started.
+		/// </summary>
+		public abstract void OnStart();
+
+		/// <summary>
+		/// Called every frame to update the component.
+		/// </summary>
+		public abstract void OnUpdate();
+
+		/// <summary>
+		/// Called every physics update to update the component's physics.
+		/// </summary>
+		public virtual void OnPhysicsUpdate()
+		{
+		}
+
+		internal void onDestroy()
+		{
+			Engine.Instance.EventBus?.Unsubscribe(this);
+			OnDestroy();
+		}
+
+		/// <summary>
+		/// Called when the component is destroyed.
+		/// </summary>
+		public virtual void OnDestroy()
+		{
+		}
+	}
 }

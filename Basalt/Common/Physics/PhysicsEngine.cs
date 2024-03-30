@@ -4,6 +4,9 @@ using Basalt.Core.Common.Abstractions;
 
 namespace Basalt.Common.Physics
 {
+	/// <summary>
+	/// Default implementation for a basic physics engine.
+	/// </summary>
 	public class PhysicsEngine : IPhysicsEngine
 	{
 		private readonly ILogger? logger;
@@ -15,13 +18,23 @@ namespace Basalt.Common.Physics
 
 		private Grid entityGrid = new(10);
 
+		/// <summary>
+		/// Gets or sets the gravity value for the physics engine.
+		/// </summary>
 		public float Gravity { get; set; } = 9.81f;
 
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class.
+		/// </summary>
+		/// <param name="logger">The logger to use for logging messages.</param>
 		public PhysicsEngine(ILogger? logger = null)
 		{
 			this.logger = logger;
 		}
+
+		/// <summary>
+		/// Initializes the physics engine.
+		/// </summary>
 		public void Initialize()
 		{
 			logger?.LogInformation("Physics Engine Initialized");
@@ -32,12 +45,18 @@ namespace Basalt.Common.Physics
 			logger?.LogWarning("Shut down physics engine");
 		}
 
+		/// <summary>
+		/// Shuts down the physics engine.
+		/// </summary>
 		public void Shutdown()
 		{
 			ShouldRun = false;
 			logger?.LogWarning("Shutting down physics engine...");
 		}
 
+		/// <summary>
+		/// Simulates the physics interactions.
+		/// </summary>
 		public void Simulate()
 		{
 			while (ShouldRun)
@@ -66,7 +85,6 @@ namespace Basalt.Common.Physics
 							if (colliderA != null && colliderB != null)
 							{
 								CollisionHandler.Handle(colliderA, colliderB);
-
 							}
 						}
 					}
@@ -87,6 +105,10 @@ namespace Basalt.Common.Physics
 			}
 		}
 
+		/// <summary>
+		/// Handles the creation of an entity.
+		/// </summary>
+		/// <param name="entity">The entity that was created.</param>
 		public void OnCreateEntity(Entity entity)
 		{
 		}
