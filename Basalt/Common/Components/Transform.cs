@@ -1,8 +1,7 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Common.Utils;
-using Basalt.Core.Common;
+using Newtonsoft.Json;
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Basalt.Common.Components
 {
@@ -31,14 +30,18 @@ namespace Basalt.Common.Components
 			
 		}
 
+		[JsonIgnore]
 		public Vector3 Forward => MathExtended.GetForwardVector(Rotation);
+
+		[JsonIgnore]
 		public Vector3 Right => MathExtended.GetRightVector(Rotation);
-		internal Transform(Entity entity) : base(entity)
+		public Transform(Entity entity) : base(entity)
 		{
 			Position = new Vector3();
 
 			Engine.Instance.EventBus?.Subscribe(this);
 		}
+
 
 		public override void OnStart()
 		{

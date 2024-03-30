@@ -10,8 +10,11 @@ using Basalt.Raylib.Components;
 using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Sound;
 using Basalt.Types;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Raylib_cs;
 using System.Numerics;
+using System.Reflection;
 
 var builder = new EngineBuilder();
 
@@ -69,6 +72,7 @@ var child2 = new Entity();
 child2.Transform.Position = new Vector3(0, 5, 0);
 child2.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = -Vector3.UnitY * 2 - child1.Transform.Right });
 
+
 Engine.CreateEntity(entity);
 Engine.CreateEntity(child1);
 Engine.CreateEntity(child2);
@@ -91,10 +95,17 @@ for (int i = 0; i < MaxColumns; i++)
 }
 
 
+var result = File.ReadAllText("test.json");
 
+var target = Entity.DeserializeFromJson(result);
+
+Engine.CreateEntity(target);
 
 Thread engineThread = new Thread(() => engine.Run());
 engineThread.Start();
 
 soundSystem.LoadAudio("testaudio.mp3", AudioType.SoundEffect);
 soundSystem.LoadAudio("testsong.mp3", AudioType.Music);
+
+
+

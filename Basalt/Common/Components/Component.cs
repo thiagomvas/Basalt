@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions;
+using Newtonsoft.Json;
 
 namespace Basalt.Common.Components
 {
     public abstract class Component : IObserver
     {
+        [JsonIgnore]
         public Entity Entity;
 		protected Component(Entity entity)
         {

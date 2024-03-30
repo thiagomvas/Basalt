@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Basalt.Core\Basalt.Core.csproj" />
     <ProjectReference Include="..\Basalt.Raylib\Basalt.Raylib.csproj" />
     <ProjectReference Include="..\Basalt\Basalt.csproj" />
