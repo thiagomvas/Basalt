@@ -63,12 +63,13 @@ entity.AddComponent(new Rigidbody(entity) { IsKinematic = false });
 
 var child1 = new Entity();
 child1.Transform.Position = new Vector3(0, 5, 0);
-child1.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = -Vector3.UnitY * 2 + child1.Transform.Right });
+child1.AddComponent(new SphereRenderer(child1) { Size = new Vector3(0.5f), Color = Color.Blue, Offset = -Vector3.UnitY * 2 + child1.Transform.Right });
 entity.AddChildren(child1);
 
 var child2 = new Entity();
 child2.Transform.Position = new Vector3(0, 5, 0);
-child2.AddComponent(new SphereRenderer(child1) { Radius = 0.5f, Color = Color.Blue, Offset = -Vector3.UnitY * 2 - child1.Transform.Right });
+child2.AddComponent(new SphereRenderer(child1) { Size = new Vector3(0.5f), Color = Color.Blue, Offset = -Vector3.UnitY * 2 - child1.Transform.Right });
+
 
 
 Engine.CreateEntity(entity);
@@ -92,7 +93,7 @@ for (int i = 0; i < MaxColumns; i++)
 	Engine.CreateEntity(e);
 }
 
-var result = ResourceCache.GetResourceString("test.json");	
+var result = ResourceCache.GetResourceString("testentity.json");	
 
 var target = Entity.DeserializeFromJson(result);
 

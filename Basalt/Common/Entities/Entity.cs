@@ -41,8 +41,21 @@ namespace Basalt.Common.Entities
 					Data = component
 				});
 			}
-			return JsonConvert.SerializeObject(this, Formatting.Indented);
 
+			List<JObject> childrenObjects = new List<JObject>();
+
+			foreach (var child in Children)
+			{
+				JObject childObject = JObject.Parse(child.SerializeToJson());
+				childrenObjects.Add(childObject);
+				Console.WriteLine($"CHILD: {child}"); // Output the original JSON string
+			}
+
+			var entityJson = new JObject();
+			entityJson["Components"] = JArray.FromObject(componentDtos);
+			entityJson["Children"] = JArray.FromObject(childrenObjects); // Use the parsed child objects
+
+			return entityJson.ToString(Formatting.Indented);
 		}
 
 		public static Entity DeserializeFromJson(string json)
@@ -72,7 +85,14 @@ namespace Basalt.Common.Entities
 					}
 				}
 
+
 				target.AddComponent(instance as Component);
+			}
+
+			foreach (var child in jObject["Children"])
+			{
+				var childEntity = DeserializeFromJson(child.ToString());
+				target.AddChildren(childEntity);
 			}
 
 			return target;
