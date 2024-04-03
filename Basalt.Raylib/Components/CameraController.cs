@@ -37,23 +37,6 @@ namespace Basalt.Raylib.Components
 		{
 			if (!IsActive)
 				return;
-			Vector3 movement = Vector3.Zero;
-
-			var f = Transform.Forward;
-			f = Vector3.Normalize(new(f.X, 0, f.Z));
-
-			var r = Transform.Right;
-			r = Vector3.Normalize(new(r.X, 0, r.Z));
-
-			if (IsKeyDown(KeyboardKey.W))
-				Transform.Position += f * Time.DeltaTime * MovementSpeed;
-			if(IsKeyDown(KeyboardKey.S))
-				Transform.Position -= f * Time.DeltaTime * MovementSpeed;
-			if (IsKeyDown(KeyboardKey.A))
-				Transform.Position -= r * Time.DeltaTime * MovementSpeed;
-			if(IsKeyDown(KeyboardKey.D))
-				Transform.Position += r * Time.DeltaTime * MovementSpeed;
-
 
 			Vector3 rotation = new(GetMouseDelta().X * sensitivity,                            // Rotation: yaw
 								   GetMouseDelta().Y * sensitivity,                            // Rotation: pitch

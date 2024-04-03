@@ -60,6 +60,7 @@ entity.Transform.Position = new Vector3(0, 5, 0);
 entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
 entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(1, 1, 1), Offset = new Vector3(0, -2, 0) });
 entity.AddComponent(new Rigidbody(entity) { IsKinematic = false });
+entity.AddComponent(new PlayerController(entity));
 
 var child1 = new Entity();
 child1.Transform.Position = new Vector3(0, 5, 0);
@@ -92,12 +93,6 @@ for (int i = 0; i < MaxColumns; i++)
 
 	Engine.CreateEntity(e);
 }
-
-var result = ResourceCache.GetResourceString("testentity.json");	
-
-var target = Entity.DeserializeFromJson(result);
-
-Engine.CreateEntity(target);
 
 Thread engineThread = new Thread(() => engine.Run());
 engineThread.Start();

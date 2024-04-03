@@ -22,17 +22,18 @@ namespace Basalt.Common.Logging
 		public void Log(LogLevel level, string message, string callerName = "")
 		{
 			var frame = new StackTrace(1).GetFrame(1);
+			string levelString = "";
+			if (logLevel == LogLevel.Debug)
+				levelString = $"[{level} : {new StackTrace(1).GetFrame(1)?.GetMethod()?.DeclaringType.Name}.{callerName}]";
+			else
+				levelString = $"[{level}]";
+
+			string log = $"{levelString} [{DateTime.Now}]  {message}";
+			logLines.Add(log);
+
 			if (level >= logLevel)
 			{
 				SetAppropriateColor(level);
-				string levelString = "";
-				if (logLevel == LogLevel.Debug)
-					levelString = $"[{level} : {new StackTrace(1).GetFrame(1)?.GetMethod()?.DeclaringType.Name}.{callerName}]";
-				else
-					levelString = $"[{level}]";
-
-				string log = $"{levelString} [{DateTime.Now}]  {message}";
-				logLines.Add(log);
 				Console.WriteLine(log);
 				Console.ResetColor();
 			}

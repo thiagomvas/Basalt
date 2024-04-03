@@ -38,6 +38,7 @@ namespace Basalt.Raylib.Graphics
 			enablePostProcessing = config.PostProcessing;
 			instance = this;
 			SetTraceLogCallback(&LogCustom);
+			SetTraceLogLevel(TraceLogLevel.All);
 			if (config.Borderless)
 				SetConfigFlags(ConfigFlags.UndecoratedWindow);
 
