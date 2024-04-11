@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace Basalt.Common.Utils
 {
@@ -48,5 +43,6 @@ namespace Basalt.Common.Utils
 			Vector3 rightVector = Vector3.Transform(new Vector3(-1, 0, 0), quaternion);
 			return rightVector;
 		}
+
 	}
 }

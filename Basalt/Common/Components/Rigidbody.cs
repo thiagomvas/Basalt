@@ -46,7 +46,7 @@ namespace Basalt.Common.Components
 				return;
 			}
 
-			Vector3? acceleration = -Vector3.UnitY * Engine.PhysicsEngine?.Gravity;
+			Vector3? acceleration = -Vector3.UnitY * Engine.Instance.PhysicsEngine?.Gravity;
 
 			if (acceleration.HasValue)
 			{

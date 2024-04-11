@@ -105,7 +105,6 @@ namespace Basalt.Raylib.Graphics
 				if (IsKeyPressed(KeyboardKey.G))
 				{
 					Engine.Instance.SoundSystem?.PlayAudio("testaudio.mp3", AudioType.SoundEffect);
-					int foo = 1 / (int)GetFrameTime();
 				}
 
 				if (IsKeyPressed(KeyboardKey.H))
@@ -178,6 +177,7 @@ namespace Basalt.Raylib.Graphics
 				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 45, 10, Color.White);
 				DrawText($"Pos: {control.Transform.Position} - {control.camera.Position}", 15, 60, 10, Color.White);
 				DrawText($"Rot: {control.Transform.Rotation}", 15, 75, 10, Color.White);
+				DrawText($"Velo: {control.Rigidbody.Velocity}", 15, 90, 10, Color.White);
 
 				EndDrawing();
 				//----------------------------------------------------------------------------------

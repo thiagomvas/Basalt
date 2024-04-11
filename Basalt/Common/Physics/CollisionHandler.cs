@@ -19,9 +19,9 @@ namespace Basalt.Common.Physics
 		/// Dictionary to store collision handler delegates for different collider types.
 		/// </summary>
 		private readonly static Dictionary<(Type, Type), CollisionHandlerDelegate> handlers = new()
-			{
-				{(typeof(BoxCollider), typeof(BoxCollider)), BoxBoxCollision},
-			};
+						{
+							{(typeof(BoxCollider), typeof(BoxCollider)), BoxBoxCollision},
+						};
 
 		/// <summary>
 		/// Handles collision between two colliders.
@@ -36,7 +36,7 @@ namespace Basalt.Common.Physics
 			}
 			else
 			{
-				Engine.Instance.logger?.LogError($"No collision handler for {col1.GetType()} and {col2.GetType()}");
+				Engine.Instance.Logger?.LogError($"No collision handler for {col1.GetType()} and {col2.GetType()}");
 			}
 		}
 
@@ -103,6 +103,23 @@ namespace Basalt.Common.Physics
 			}
 			else
 			{
+				float totalMass = (rb1?.Mass ?? 0) + (rb2?.Mass ?? 0);
+				float massRatio1 = (rb2?.Mass ?? 0) / totalMass;
+				float massRatio2 = (rb1?.Mass ?? 0) / totalMass;
+
+				Vector3 relativeVelocity = (rb2?.Velocity ?? Vector3.Zero) - (rb1?.Velocity ?? Vector3.Zero);
+				Vector3 impulse = (1 + massRatio1) * massRatio2 * Vector3.Dot(relativeVelocity, separationDirection) * separationDirection;
+
+				if (rb1 != null)
+				{
+					rb1.Velocity += impulse / rb1.Mass;
+				}
+
+				if (rb2 != null)
+				{
+					rb2.Velocity -= impulse / rb2.Mass;
+				}
+
 				box1.Entity.Transform.Position += separationDirection * separationDistance / 2f;
 				box2.Entity.Transform.Position -= separationDirection * separationDistance / 2f;
 			}

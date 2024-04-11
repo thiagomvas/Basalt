@@ -4,7 +4,6 @@ using Basalt.Common.Entities;
 using Basalt.Common.Events;
 using Basalt.Common.Logging;
 using Basalt.Common.Physics;
-using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Core.Common.Types;
 using Basalt.Raylib.Components;
@@ -14,7 +13,6 @@ using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
 
-var builder = new EngineBuilder();
 
 var initParams = new WindowInitParams
 {
@@ -35,17 +33,16 @@ var physicsEngine = new PhysicsEngine(logger);
 var soundSystem = new RaylibSoundSystem(logger);
 
 
-builder.WithGraphicsEngine(graphicsEngine);
-builder.WithPhysicsEngine(physicsEngine);
-builder.WithSoundEngine(soundSystem);
-
-builder.WithLogger(logger);
-
 EventBus eventBus = new EventBus();
 
-builder.EventBus = eventBus;
-
-var engine = builder.Build();
+Engine engine = new()
+{
+	GraphicsEngine = graphicsEngine,
+	PhysicsEngine = physicsEngine,
+	SoundSystem = soundSystem,
+	Logger = logger,
+	EventBus = eventBus
+};
 
 var ground = new Entity();
 ground.Transform.Position = new Vector3(0, -1, 0);
