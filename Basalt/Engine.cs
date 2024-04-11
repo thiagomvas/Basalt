@@ -14,14 +14,40 @@ namespace Basalt
 		/// </summary>
 		public bool Running { get; private set; } = false;
 
+		#region Components & Singleton
+
 		private static Engine? _instance;
+		/// <summary>
+		/// Gets the instance of the engine.
+		/// </summary>
+		public static Engine Instance
+		{
+			get
+			{
+				if (_instance == null)
+				{
+					throw new InvalidOperationException("Engine has not been initialized.");
+				}
+				return _instance;
+			}
+		}
+
 		private readonly IGraphicsEngine? _graphicsEngine;
-		public readonly ISoundSystem? SoundSystem;
+		private readonly ISoundSystem? _soundSystem;
 		private readonly IPhysicsEngine? _physicsEngine;
-		internal ILogger? logger;
+		private readonly ILogger? _logger;
 		private readonly IEventBus? _eventBus;
-		private bool _exceptionOccurred = false;
+
+        public IGraphicsEngine? GraphicsEngine { get => _graphicsEngine; init => _graphicsEngine = value; }
+		public ISoundSystem? SoundSystem { get => _soundSystem; init => _soundSystem = value; }
+		public IPhysicsEngine? PhysicsEngine { get => _physicsEngine; init => _physicsEngine = value; }
+		public ILogger? Logger { get => _logger; init => _logger = value; }
+		public IEventBus? EventBus { get => _eventBus; init => _eventBus = value; }
+
+        private bool _exceptionOccurred = false;
 		public readonly EntityManager EntityManager = new();
+
+		#endregion
 
 		public Action<Entity> OnCreateEntity;
 
@@ -37,25 +63,16 @@ namespace Basalt
 		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
 		{
 			_graphicsEngine = graphicsEngine;
-			SoundSystem = soundSystem;
+			_soundSystem = soundSystem;
 			_physicsEngine = physicsEngine;
 			_eventBus = eventBus;
 		}
 
-		/// <summary>
-		/// Gets the instance of the engine.
-		/// </summary>
-		public static Engine Instance
-		{
-			get
-			{
-				if (_instance == null)
-				{
-					throw new InvalidOperationException("Engine has not been initialized.");
-				}
-				return _instance;
-			}
-		}
+        public Engine()
+        {
+			_instance = this;
+        }
+
 
 		/// <summary>
 		/// Initializes the engine with the specified graphics engine, sound system, physics engine, and event bus.
@@ -78,21 +95,22 @@ namespace Basalt
 		/// </summary>
 		public void Run()
 		{
-			logger?.LogInformation("Engine Initializing");
+			_logger?.LogInformation("Engine Initializing");
 			if (_graphicsEngine == null)
 			{
-				logger?.LogFatal("Graphics engine not specified! Cannot run engine.");
-				return;
+				throw new Exception("Graphics engine not specified! Cannot run engine.");
 			}
-			if (SoundSystem == null)
+			if (_soundSystem == null)
 			{
-				logger?.LogWarning("Sound system not specified! Engine will run without sound.");
+				_logger?.LogWarning("Sound system not specified! Engine will run without sound.");
 			}
 
 			if (_physicsEngine == null)
 			{
-				logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
+				_logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
 			}
+
+			_logger?.LogInformation("Engine starting");
 
 			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
 			graphicsThread.Start();
@@ -102,7 +120,7 @@ namespace Basalt
 
 			Running = true;
 
-			SoundSystem?.Initialize();
+			_soundSystem?.Initialize();
 
 			_eventBus?.NotifyStart();
 
@@ -123,10 +141,10 @@ namespace Basalt
 		{
 			// Shut down services in reverse order of initialization
 			Running = false;
-			logger?.LogWarning("Engine shutting down");
+			_logger?.LogWarning("Engine shutting down");
 
 			
-			Task.Run(() => SoundSystem?.Shutdown());
+			Task.Run(() => _soundSystem?.Shutdown());
 			if (physicsThread != null && physicsThread.IsAlive)
 			{
 				_physicsEngine?.Shutdown();
@@ -138,7 +156,7 @@ namespace Basalt
 			}
 
 
-			logger?.LogInformation("Engine shut down");
+			_logger?.LogInformation("Engine shut down");
 		}
 
 		/// <summary>
@@ -174,37 +192,14 @@ namespace Basalt
 			{
 				_exceptionOccurred = true;
 #if DEBUG
-				logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}\n {e.StackTrace}");
-				#else
+				_logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}\n {e.StackTrace}");
+#else
 				logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}");
-				#endif
+#endif
+				_logger?.SaveLog($"CRASH_REPORT_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt");
+				_logger?.LogInformation("Saved crash report");
 				Shutdown();
 			}
-			finally
-			{
-				logger?.SaveLog($"CRASH_REPORT_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt");
-				logger?.LogInformation("Saved crash report");
-			}
 		}
-
-		/// <summary>
-		/// Gets the event bus.
-		/// </summary>
-		public IEventBus? EventBus => _eventBus;
-
-		/// <summary>
-		/// Gets the logger.
-		/// </summary>
-		public static ILogger? Logger => _instance?.logger;
-
-		/// <summary>
-		/// Gets the physics engine.
-		/// </summary>
-		public static IPhysicsEngine? PhysicsEngine => _instance?._physicsEngine;
-
-		/// <summary>
-		/// Gets the graphics engine.
-		/// </summary>
-		public static IGraphicsEngine? GraphicsEngine => _instance?._graphicsEngine;
 	}
 }

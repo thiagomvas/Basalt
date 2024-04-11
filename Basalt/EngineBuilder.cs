@@ -19,11 +19,16 @@ namespace Basalt
 
 		public IEngine Build()
 		{
-			Engine.Initialize(GraphicsEngine, SoundEngine, PhysicsEngine, EventBus);
+			Engine result = new()
+			{
+				GraphicsEngine = GraphicsEngine,
+				PhysicsEngine = PhysicsEngine,
+				SoundSystem = SoundEngine,
+				Logger = Logger,
+				EventBus = EventBus
+			};
 
-			Engine.Instance.logger = Logger;
-
-			return Engine.Instance;
+			return result;
 		}
 
 		public IEngineBuilder WithGraphicsEngine(IGraphicsEngine graphicsEngine)
