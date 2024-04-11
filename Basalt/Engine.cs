@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions;
+using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Abstractions.Sound;
 
 namespace Basalt
@@ -37,19 +38,19 @@ namespace Basalt
 		private readonly IPhysicsEngine? _physicsEngine;
 		private readonly ILogger? _logger;
 		private readonly IEventBus? _eventBus;
+		private readonly IInputSystem? _inputSystem;
 
         public IGraphicsEngine? GraphicsEngine { get => _graphicsEngine; init => _graphicsEngine = value; }
 		public ISoundSystem? SoundSystem { get => _soundSystem; init => _soundSystem = value; }
 		public IPhysicsEngine? PhysicsEngine { get => _physicsEngine; init => _physicsEngine = value; }
 		public ILogger? Logger { get => _logger; init => _logger = value; }
 		public IEventBus? EventBus { get => _eventBus; init => _eventBus = value; }
+		public IInputSystem? InputSystem { get => _inputSystem; init => _inputSystem = value; }
 
         private bool _exceptionOccurred = false;
 		public readonly EntityManager EntityManager = new();
 
 		#endregion
-
-		public Action<Entity> OnCreateEntity;
 
 		private Thread graphicsThread, physicsThread;
 
@@ -110,6 +111,7 @@ namespace Basalt
 				_logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
 			}
 
+
 			_logger?.LogInformation("Engine starting");
 
 			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
@@ -121,7 +123,7 @@ namespace Basalt
 			Running = true;
 
 			_soundSystem?.Initialize();
-
+			_inputSystem?.Initialize();
 			_eventBus?.NotifyStart();
 
 			physicsThread.Join();
@@ -166,7 +168,8 @@ namespace Basalt
 		public static void CreateEntity(Entity entity)
 		{
 			Instance.EntityManager.AddEntity(entity);
-			Instance.OnCreateEntity?.Invoke(entity);
+			if(Instance.Running)
+				entity.CallOnStart();
 		}
 
 		/// <summary>
