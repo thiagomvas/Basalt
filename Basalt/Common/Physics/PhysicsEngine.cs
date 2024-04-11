@@ -39,7 +39,6 @@ namespace Basalt.Common.Physics
 		{
 			logger?.LogInformation("Physics Engine Initialized");
 
-			Engine.Instance.OnCreateEntity += OnCreateEntity;
 			Simulate();
 
 			logger?.LogWarning("Shut down physics engine");
@@ -105,12 +104,5 @@ namespace Basalt.Common.Physics
 			}
 		}
 
-		/// <summary>
-		/// Handles the creation of an entity.
-		/// </summary>
-		/// <param name="entity">The entity that was created.</param>
-		public void OnCreateEntity(Entity entity)
-		{
-		}
 	}
 }

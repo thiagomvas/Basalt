@@ -215,6 +215,13 @@ namespace Basalt.Common.Entities
 			}
 		}
 
+		internal void CallOnStart()
+		{
+			foreach (var component in components)
+			{
+				component.OnStart();
+			}
+		}
 
 		private static Type ByName(string name)
 		{

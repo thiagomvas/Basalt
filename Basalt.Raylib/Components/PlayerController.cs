@@ -18,6 +18,7 @@ namespace Basalt.Raylib.Components
 		public float MoveSpeed = 5;
 		public PlayerController(Entity entity) : base(entity)
 		{
+
 		}
 
 		public override void OnStart()

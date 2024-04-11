@@ -136,6 +136,7 @@ namespace Basalt.Raylib.Graphics
 				// Update
 				//----------------------------------------------------------------------------------
 				Engine.Instance.EventBus?.NotifyUpdate();
+				Engine.Instance.InputSystem?.Update();
 
 				//----------------------------------------------------------------------------------
 				// Draw

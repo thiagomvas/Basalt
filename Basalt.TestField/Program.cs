@@ -4,11 +4,14 @@ using Basalt.Common.Entities;
 using Basalt.Common.Events;
 using Basalt.Common.Logging;
 using Basalt.Common.Physics;
+using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Core.Common.Types;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Graphics;
+using Basalt.Raylib.Input;
 using Basalt.Raylib.Sound;
+using Basalt.TestField.Components;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -21,7 +24,8 @@ var initParams = new WindowInitParams
 	Height = 1080,
 	TargetFps = 120,
 	Fullscreen = true,
-	MSAA4X = true
+	MSAA4X = true,
+	PostProcessing = false,
 };
 
 var logger = new ConsoleLogger(LogLevel.Info);
@@ -35,13 +39,17 @@ var soundSystem = new RaylibSoundSystem(logger);
 
 EventBus eventBus = new EventBus();
 
+RaylibInputSystem inputSystem = new();
+
+
 Engine engine = new()
 {
 	GraphicsEngine = graphicsEngine,
 	PhysicsEngine = physicsEngine,
 	SoundSystem = soundSystem,
 	Logger = logger,
-	EventBus = eventBus
+	EventBus = eventBus,
+	InputSystem = inputSystem
 };
 
 var ground = new Entity();
@@ -57,7 +65,7 @@ entity.Transform.Position = new Vector3(0, 5, 0);
 entity.AddComponent(new BoxRenderer(entity) { Color = Color.Red, Offset = new(0, -2, 0)});
 entity.AddComponent(new BoxCollider(entity) { Size = new Vector3(1, 1, 1), Offset = new Vector3(0, -2, 0) });
 entity.AddComponent(new Rigidbody(entity) { IsKinematic = false });
-entity.AddComponent(new PlayerController(entity));
+entity.AddComponent(new Basalt.TestField.Components.PlayerController(entity));
 
 var child1 = new Entity();
 child1.Transform.Position = new Vector3(0, 5, 0);
@@ -68,11 +76,13 @@ var child2 = new Entity();
 child2.Transform.Position = new Vector3(0, 5, 0);
 child2.AddComponent(new SphereRenderer(child1) { Size = new Vector3(0.5f), Color = Color.Blue, Offset = -Vector3.UnitY * 2 - child1.Transform.Right });
 
-
+File.ReadAllText("test.txt");
 
 Engine.CreateEntity(entity);
 Engine.CreateEntity(child1);
 Engine.CreateEntity(child2);
+
+
 
 int MaxColumns = 12;
 
