@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using Basalt.Raylib.Graphics;
+using Basalt.Common.Utils;
 
 namespace Basalt.Raylib.Components
 {
@@ -37,13 +38,14 @@ namespace Basalt.Raylib.Components
 		{
 			if (!Engine.Instance.Running)
 				return;
-			if(!init)
+			if (!init)
 			{
 				ModelsCache.Instance.CacheModel("cube", LoadModelFromMesh(GenMeshCube(1, 1, 1)));
 				cube = ModelsCache.Instance.GetModel("cube");
 				init = true;
 			}
-			DrawModelEx(cube, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
+			cube.Transform = Raymath.MatrixRotateXYZ(Raymath.QuaternionToEuler(Entity.Transform.Rotation));
+			DrawModelEx(cube, Entity.Transform.Position + Offset, Entity.Transform.Up, 0, Size, Color);
 		}
 	}
 }
