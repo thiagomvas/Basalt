@@ -1,6 +1,8 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Common.Utils;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -21,10 +23,7 @@ namespace Basalt.Common.Components
 			{
 				var offset = value - position;
 				position = value;
-				foreach (var child in Entity.Children)
-				{
-					child.Transform.Position += offset;
-				}
+				UpdateChildTransforms(offset, Quaternion.Identity);
 			}
 		}
 
@@ -35,7 +34,29 @@ namespace Basalt.Common.Components
 		public Quaternion Rotation
 		{
 			get => rotation;
-			set => rotation = value;
+			set
+			{
+				Quaternion oldRotation = rotation;
+				rotation = value;
+				Quaternion rotationChange = value * Quaternion.Inverse(oldRotation);
+				UpdateChildTransforms(Vector3.Zero, rotationChange);
+			}
+		}
+		private void UpdateChildTransforms(Vector3 positionOffset, Quaternion rotationChange)
+		{
+			foreach (var child in Entity.Children)
+			{
+				// Apply rotation change to child's position offset from parent
+				Vector3 offsetFromParent = child.Transform.Position - position;
+				Vector3 newPositionOffsetRotated = Vector3.Transform(offsetFromParent, rotationChange);
+
+				// Calculate the new position of the child
+				Vector3 newPosition = position + newPositionOffsetRotated + positionOffset;
+				child.Transform.Position = newPosition;
+
+				// Apply rotation change to child's rotation
+				child.Transform.Rotation *= rotationChange;
+			}
 		}
 
 		/// <summary>
@@ -49,6 +70,9 @@ namespace Basalt.Common.Components
 		/// </summary>
 		[JsonIgnore]
 		public Vector3 Right => MathExtended.GetRightVector(Rotation);
+
+		[JsonIgnore]
+		public Vector3 Up => Vector3.Cross(Forward, Right);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Transform"/> class.
