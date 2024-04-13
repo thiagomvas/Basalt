@@ -47,6 +47,9 @@ namespace Basalt.Common.Components
 				return;
 			}
 
+			if(Velocity.X == float.NaN || Velocity.Y == float.NaN || Velocity.Z == float.NaN)
+				Velocity = Vector3.Zero;
+
 			Vector3? acceleration = -Vector3.UnitY * Engine.Instance.PhysicsEngine?.Gravity;
 
 			if (acceleration.HasValue)
@@ -57,7 +60,11 @@ namespace Basalt.Common.Components
 			Vector3 prevPos = Entity.Transform.Position;
 			Entity.Transform.Position += Velocity * Time.PhysicsDeltaTime;
 
-			Vector3 delta = Entity.Transform.Position - prevPos;
+			if(Velocity.LengthSquared() > 0)
+			{
+				Velocity -= Velocity * Drag * Time.PhysicsDeltaTime;
+			}
+
 		}
 
 		/// <summary>

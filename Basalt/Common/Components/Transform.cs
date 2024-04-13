@@ -12,6 +12,7 @@ namespace Basalt.Common.Components
 	/// </summary>
 	public sealed class Transform : Component
 	{
+		public bool IsFixedPoint { get; set; } = false;
 		private Vector3 position;
 		/// <summary>
 		/// Gets or sets the position of the transform.
@@ -21,6 +22,11 @@ namespace Basalt.Common.Components
 			get => position;
 			set
 			{
+				if(IsFixedPoint)
+				{
+					return;
+				}
+
 				var offset = value - position;
 				position = value;
 				UpdateChildTransforms(offset, Quaternion.Identity);
@@ -98,7 +104,8 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnUpdate()
 		{
-
+			if(Position.X == float.NaN)
+				Position = Vector3.Zero;
 		}
 	}
 }

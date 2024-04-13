@@ -1,4 +1,6 @@
 ﻿using Basalt.Common.Entities;
+using Basalt.Common.Utils.Extensions;
+using System;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -7,6 +9,7 @@ namespace Basalt.Common.Components
 	{
 		public Entity AnchoredEntity { get; set; }
 		public float Distance { get; set; }
+		public float JointForceMultiplier { get; set; } = 1.0f;
 		public FixedLink(Entity entity) : base(entity)
 		{
 		}
@@ -18,30 +21,32 @@ namespace Basalt.Common.Components
 
 		public override void OnUpdate()
 		{
-			Vector3 dir = AnchoredEntity.Transform.Position - Entity.Transform.Position;
+			// Optional: Add any behavior you want to occur during regular updates
+		}
 
-			var currentDistance = dir.Length();
+		public override void OnPhysicsUpdate()
+		{
+			// Calculate the vector between the two entities
+			Vector3 anchorToEntity = AnchoredEntity.Transform.Position - Entity.Transform.Position;
 
-			Vector3 displacement = Vector3.Normalize(dir) * (currentDistance - Distance);
+			// Calculate the current distance between the entities
+			float currentDistance = anchorToEntity.Length();
 
-			Entity.Transform.Position += displacement * 0.5f;
-			AnchoredEntity.Transform.Position -= displacement * 0.5f;
+			// Calculate the difference in distance from the desired distance
+			float difference = currentDistance - Distance;
 
-			// Check if the entities have Rigidbody components
-			Rigidbody? entityRigidbody = Entity.Rigidbody;
-			Rigidbody? anchoredEntityRigidbody = AnchoredEntity.Rigidbody;
-
-			if (entityRigidbody != null && anchoredEntityRigidbody != null)
+			// If the difference is positive, entities are too close, if negative, too far
+			if (MathF.Abs(difference) > 0.01f) // Add a small tolerance to prevent oscillations
 			{
-				// Calculate the total mass of the entities
-				float totalMass = entityRigidbody.Mass + anchoredEntityRigidbody.Mass;
+				// Normalize the vector
+				Vector3 forceDirection = Vector3.Normalize(anchorToEntity);
 
-				// Calculate the velocity adjustment based on the mass ratio
-				float velocityAdjustment = displacement.Length() * (entityRigidbody.Mass / totalMass);
-
-				// Remove velocity from the entities
-				entityRigidbody.Velocity += displacement * (entityRigidbody.Mass / totalMass);
-				anchoredEntityRigidbody.Velocity -= displacement * (anchoredEntityRigidbody.Mass / totalMass);
+				// Calculate the force magnitude based on mass
+				float forceMagnitude = difference * (Entity.Rigidbody.Mass + AnchoredEntity.Rigidbody.Mass) * JointForceMultiplier;
+				// Apply force to both entities in the correct direction to maintain the fixed distance
+				Vector3 force = forceDirection * forceMagnitude;
+				Entity.Rigidbody.AddForce(force);
+				AnchoredEntity.Rigidbody.AddForce(-force); // Apply equal and opposite force
 			}
 		}
 	}
