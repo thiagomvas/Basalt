@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Raylib-cs" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

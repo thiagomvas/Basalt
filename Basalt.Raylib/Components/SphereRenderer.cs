@@ -50,6 +50,7 @@ namespace Basalt.Raylib.Components
 				sphere = ModelsCache.Instance.GetModel("sphere");
 				init = true;
 			}
+			if(Entity.Parent != null) Raylib_cs.Raylib.DrawLine3D(Entity.Transform.Position, Entity.Parent.Transform.Position, Color);
 			Raylib_cs.Raylib.DrawModelEx(sphere, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
 		}
 	}

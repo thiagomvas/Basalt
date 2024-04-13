@@ -32,6 +32,9 @@ namespace Basalt.Common.Entities
 		[JsonIgnore]
 		public Rigidbody? Rigidbody;
 
+		[JsonIgnore]
+		public Entity? Parent { get; private set; }
+
 		/// <summary>
 		/// The children entities of the entity.
 		/// </summary>
@@ -187,6 +190,7 @@ namespace Basalt.Common.Entities
 		public void AddChildren(Entity child)
 		{
 			Children.Add(child);
+			child.Parent = this;
 		}
 
 		/// <summary>

@@ -44,5 +44,34 @@ namespace Basalt.Common.Utils
 			return rightVector;
 		}
 
+		public static Vector3 RotateVectorByQuaternionVariation(Vector3 vector, Quaternion startRotation, Quaternion finalRotation)
+		{
+			// Convert quaternions to rotation matrices
+			Matrix4x4 startRotationMatrix = Matrix4x4.CreateFromQuaternion(startRotation);
+			Matrix4x4 finalRotationMatrix = Matrix4x4.CreateFromQuaternion(finalRotation);
+
+			// Calculate the variation in rotation
+			Matrix4x4 rotationVariationMatrix = finalRotationMatrix * Matrix4x4.Transpose(startRotationMatrix);
+
+			// Rotate the vector by the rotation variation
+			Vector3 rotatedVector = Vector3.Transform(vector, rotationVariationMatrix);
+
+			return rotatedVector;
+		}
+
+
+		public static float AngleBetweenVectors(Vector3 vector1, Vector3 vector2)
+		{
+			// Calculate the dot product
+			float dotProduct = Vector3.Dot(vector1, vector2);
+
+			// Normalize the vectors
+			float magnitude1 = vector1.Length();
+			float magnitude2 = vector2.Length();
+
+			// Calculate the angle in radians
+			float angle = (float)Math.Acos(dotProduct / (magnitude1 * magnitude2));
+			return angle;
+		}
 	}
 }

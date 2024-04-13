@@ -4,6 +4,7 @@ using Basalt.Common.Entities;
 using Basalt.Common.Utils.Extensions;
 using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Types;
+using System.Numerics;
 
 namespace Basalt.TestField.Components
 {
@@ -36,6 +37,11 @@ namespace Basalt.TestField.Components
 				InputKey.D,
 				ActionType.Hold),
 				() => Entity.Transform.Position += Entity.Transform.Right.XZNormalized() * Time.DeltaTime * MoveSpeed);
+
+			Engine.Instance.InputSystem?.RegisterKeybind(new(
+				InputKey.Space,
+				ActionType.Press),
+				() => Entity.Rigidbody.Velocity += Vector3.UnitY * MoveSpeed);
 		}
 
 		public override void OnUpdate()

@@ -1,6 +1,5 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Types;
-using Raylib_cs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +50,7 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnRender()
 		{
-			Raylib.DrawCubeWires(Position, Size.X, Size.Y, Size.Z, Color.Pink);
+
 		}
 	}
 
