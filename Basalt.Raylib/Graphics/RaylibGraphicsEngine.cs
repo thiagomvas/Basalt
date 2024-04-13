@@ -42,6 +42,9 @@ namespace Basalt.Raylib.Graphics
 			if (config.Borderless)
 				SetConfigFlags(ConfigFlags.UndecoratedWindow);
 
+			if (config.MSAA4X)
+				SetConfigFlags(ConfigFlags.Msaa4xHint);
+
 			InitWindow(config.Width, config.Height, config.Title);
 
 			SetTargetFPS(config.TargetFps);
@@ -51,8 +54,6 @@ namespace Basalt.Raylib.Graphics
 			if (config.VSync)
 				SetConfigFlags(ConfigFlags.VSyncHint);
 
-			if (config.MSAA4X)
-				SetConfigFlags(ConfigFlags.Msaa4xHint);
 
 			if (enablePostProcessing)
 				PostProcessShader = LoadShader(PostProcessingVertexShaderPath, PostProcessingFragmentShaderPath);
