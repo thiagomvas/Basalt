@@ -1,4 +1,5 @@
 ﻿using Basalt.Common.Entities;
+using Basalt.Common.Physics;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -71,6 +72,25 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnUpdate()
 		{
+		}
+
+		public void AddForce(Vector3 force, ForceType type = ForceType.Force)
+		{
+			if (IsKinematic)
+			{
+				return;
+			}
+
+			switch (type)
+			{
+				case ForceType.Force:
+					Velocity += force / Mass;
+					break;
+				case ForceType.Impulse:
+					Velocity += force;
+					break;
+			}
+
 		}
 	}
 }
