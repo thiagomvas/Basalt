@@ -23,7 +23,6 @@ namespace Basalt.Common.Components
 		protected Component(Entity entity)
 		{
 			this.Entity = entity;
-			Engine.Instance.EventBus?.Subscribe(this);
 
 			if (Engine.Instance.Running)
 			{

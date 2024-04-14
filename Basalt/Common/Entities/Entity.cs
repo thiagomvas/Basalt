@@ -19,7 +19,8 @@ namespace Basalt.Common.Entities
 		private List<ComponentDto> componentDtos = new();
 		private HashSet<Component> components = new();
 
-
+		[JsonProperty("Id")]
+		public string Id { get; set; } = System.Guid.NewGuid().ToString();
 		/// <summary>
 		/// The transform component of the entity.
 		/// </summary>
@@ -74,12 +75,12 @@ namespace Basalt.Common.Entities
 			{
 				JObject childObject = JObject.Parse(child.SerializeToJson());
 				childrenObjects.Add(childObject);
-				Console.WriteLine($"CHILD: {child}"); // Output the original JSON string
 			}
 
 			var entityJson = new JObject();
 			entityJson["Components"] = JArray.FromObject(componentDtos);
 			entityJson["Children"] = JArray.FromObject(childrenObjects); // Use the parsed child objects
+			entityJson["Id"] = Id;
 
 			return entityJson.ToString(Formatting.Indented);
 		}
@@ -94,6 +95,7 @@ namespace Basalt.Common.Entities
 			JObject jObject = JObject.Parse(json);
 
 			var target = new Entity();
+			target.Id = jObject["Id"].Value<string>();
 
 			foreach (var component in jObject["Components"])
 			{

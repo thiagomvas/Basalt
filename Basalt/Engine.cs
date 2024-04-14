@@ -197,7 +197,7 @@ namespace Basalt
 #if DEBUG
 				_logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}\n {e.StackTrace}");
 #else
-				logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}");
+				_logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}");
 #endif
 				_logger?.SaveLog($"CRASH_REPORT_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt");
 				_logger?.LogInformation("Saved crash report");

@@ -24,6 +24,8 @@ namespace Basalt.Common.Entities
 			lock (lockObject)
 			{
 				entities.Add(entity);
+				foreach(var component in entity.GetComponents())
+					Engine.Instance.EventBus?.Subscribe(component);
 			}
 		}
 
@@ -36,6 +38,8 @@ namespace Basalt.Common.Entities
 			lock (lockObject)
 			{
 				entities.Remove(entity);
+				foreach (var component in entity.GetComponents())
+					Engine.Instance.EventBus?.Unsubscribe(component);
 			}
 		}
 

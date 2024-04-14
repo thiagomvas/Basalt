@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Newtonsoft.Json;
 using Raylib_cs;
 using System.Numerics;
 using static Raylib_cs.Raylib;
@@ -8,7 +9,24 @@ namespace Basalt.Raylib.Components
 {
 	public class EntityLineRenderer : Component
 	{
-		public Entity Target { get; set; }
+		[JsonProperty("TargetId")]
+		public string TargetId { get; set; }
+
+		[JsonIgnore]
+		private Entity? target;
+		[JsonIgnore]
+		public Entity? Target
+		{
+			get => target;
+			set 
+			{
+				target = value;
+				if (target != null)
+				{
+					TargetId = target.Id;
+				}
+			}
+		}
 		public float StartRadius { get; set; } = 1f;
 		public float EndRadius { get; set; } = 1f;
 		public int RenderSideCount { get; set; } = 16;
@@ -19,10 +37,16 @@ namespace Basalt.Raylib.Components
 
 		public EntityLineRenderer(Entity entity) : base(entity)
 		{
+
 		}
 
 		public override void OnStart()
 		{
+			if(Target == null)
+			{
+				Engine.Instance.Logger?.LogFatal($"Looking for {TargetId} in EntityManager");
+				Target = Engine.Instance.EntityManager.GetEntities().Find(e => e.Id == TargetId);
+			}
 		}
 
 		public override void OnUpdate()
