@@ -1,11 +1,6 @@
 ﻿using Basalt.Common.Entities;
-using Basalt.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basalt.Common.Components
 {
@@ -17,11 +12,12 @@ namespace Basalt.Common.Components
 		/// <summary>
 		/// The size of the box collider.
 		/// </summary>
-		public Vector3 Size = Vector3.One;
+		public Vector3 Size { get; set; } = Vector3.One;
 
 		/// <summary>
 		/// The position of the box collider.
 		/// </summary>
+		[JsonIgnore]
 		private Vector3 pos => Entity.Transform.Position + Offset;
 
 		/// <summary>
@@ -50,7 +46,7 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnRender()
 		{
-
+			
 		}
 	}
 
