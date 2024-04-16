@@ -34,14 +34,21 @@ namespace Basalt.Raylib.Components
 		{
 		}
 
-		public override void OnRender()
+		public override unsafe void OnRender()
 		{
 			if (!Engine.Instance.Running)
 				return;
 			if (!init)
 			{
-				ModelsCache.Instance.CacheModel("cube", LoadModelFromMesh(GenMeshCube(1, 1, 1)));
-				cube = ModelsCache.Instance.GetModel("cube");
+				if(RaylibCache.Instance.HasModelKey("cube"))
+				cube = RaylibCache.Instance.GetModel("cube")!.Value;
+				else
+				{
+					Model c = LoadModelFromMesh(GenMeshCube(1, 1, 1));
+					c.Materials[0].Shader = RaylibCache.Instance.GetShader("lighting")!.Value;
+					RaylibCache.Instance.CacheModel("cube", c);
+					cube = c;
+				}
 				init = true;
 			}
 			cube.Transform = Raymath.MatrixRotateXYZ(Raymath.QuaternionToEuler(Entity.Transform.Rotation));

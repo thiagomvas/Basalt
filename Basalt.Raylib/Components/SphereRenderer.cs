@@ -40,14 +40,22 @@ namespace Basalt.Raylib.Components
 		{
 		}
 
-		public override void OnRender()
+		public override unsafe void OnRender()
 		{
 			if (!Engine.Instance.Running)
 				return;
 			if (!init)
 			{
-				ModelsCache.Instance.CacheModel("sphere", Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(1, Rings, Slices)));
-				sphere = ModelsCache.Instance.GetModel("sphere");
+				if(RaylibCache.Instance.HasModelKey("sphere"))
+					sphere = RaylibCache.Instance.GetModel("sphere")!.Value;
+
+				else
+				{
+					Model s = Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(1, Rings, Slices));
+					s.Materials[0].Shader = RaylibCache.Instance.GetShader("lighting")!.Value;
+					RaylibCache.Instance.CacheModel("sphere", s);
+				}
+				
 				init = true;
 			}
 			if(Entity.Parent != null) Raylib_cs.Raylib.DrawLine3D(Entity.Transform.Position, Entity.Parent.Transform.Position, Color);
