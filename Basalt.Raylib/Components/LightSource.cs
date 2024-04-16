@@ -36,10 +36,10 @@ namespace Basalt.Raylib.Components
 			Source = new Light(); 
 			Source = Rlights.CreateLight(
 				_index,
-				LightType.Point,
+				Type,
 				new Vector3(-2, 1, -2),
 				Vector3.Zero,
-				Color.Yellow,
+				Color,
 				shader);
 			init = true;
 		}

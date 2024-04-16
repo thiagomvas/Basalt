@@ -10,18 +10,21 @@ using System.Threading.Tasks;
 using System.Numerics;
 using Basalt.Raylib.Graphics;
 using Basalt.Common.Utils;
+using Basalt.Common.Exceptions;
 
 namespace Basalt.Raylib.Components
 {
-	public class BoxRenderer : Component
+	public class ModelRenderer : Component
 	{
 		public Vector3 Size { get; set; } = Vector3.One;
 		public Vector3 Offset { get; set; }
-		public Color Color { get; set; }
+		public Color ColorTint { get; set; } = Color.White;
+		public string ModelCacheKey { get; set; }
+		public string LightingShaderCacheKey { get; set; }
 		public float Scale = 1;
 		Model cube;
 		bool init = false;
-		public BoxRenderer(Entity entity) : base(entity)
+		public ModelRenderer(Entity entity) : base(entity)
 		{
 		}
 
@@ -40,19 +43,16 @@ namespace Basalt.Raylib.Components
 				return;
 			if (!init)
 			{
-				if (RaylibCache.Instance.HasModelKey("cube"))
-					cube = RaylibCache.Instance.GetModel("cube")!.Value;
-
+				if (RaylibCache.Instance.HasModelKey(ModelCacheKey))
+					cube = RaylibCache.Instance.GetModel(ModelCacheKey)!.Value;
 				else
 				{
-					Model c = LoadModelFromMesh(GenMeshCube(1, 1, 1));
-					RaylibCache.Instance.CacheModel("cube", c);
+					throw new InvalidResourceKeyException(nameof(ModelCacheKey));
 				}
-
 				init = true;
 			}
 			cube.Transform = Raymath.MatrixRotateXYZ(Raymath.QuaternionToEuler(Entity.Transform.Rotation));
-			DrawModelEx(cube, Entity.Transform.Position + Offset, Entity.Transform.Up, 0, Size, Color);
+			DrawModelEx(cube, Entity.Transform.Position + Offset, Entity.Transform.Up, 0, Size, ColorTint);
 		}
 	}
 }

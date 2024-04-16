@@ -52,13 +52,11 @@ namespace Basalt.Raylib.Components
 				else
 				{
 					Model s = Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(1, Rings, Slices));
-					s.Materials[0].Shader = RaylibCache.Instance.GetShader("lighting")!.Value;
 					RaylibCache.Instance.CacheModel("sphere", s);
 				}
 				
 				init = true;
 			}
-			if(Entity.Parent != null) Raylib_cs.Raylib.DrawLine3D(Entity.Transform.Position, Entity.Parent.Transform.Position, Color);
 			Raylib_cs.Raylib.DrawModelEx(sphere, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
 		}
 	}

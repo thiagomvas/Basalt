@@ -54,11 +54,10 @@ namespace Basalt.Raylib.Graphics
 
 			RaylibCache.Instance.LoadQueued();
 
-
-			LightShader = LoadShader(
-			@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.vs",
-			@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.fs"
-		);
+			if(RaylibCache.Instance.HasShaderKey(LightingShaderCacheKey))
+			{
+				LightShader = RaylibCache.Instance.GetShader(LightingShaderCacheKey)!.Value;
+			}
 
 			RaylibCache.Instance.CacheShader("lighting", LightShader);
 

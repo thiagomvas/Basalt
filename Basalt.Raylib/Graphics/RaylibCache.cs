@@ -31,7 +31,12 @@ namespace Basalt.Raylib.Graphics
 			{
 				Model m = Raylib_cs.Raylib.LoadModel(req.Value.modelPath);
 				if (!string.IsNullOrWhiteSpace(req.Value.shaderCacheKey))
-					m.Materials[0].Shader = shaderDictionary[req.Value.shaderCacheKey];
+				{
+					for(int i = 0; i < m.MaterialCount; i++)
+					{
+						m.Materials[i].Shader = shaderDictionary[req.Value.shaderCacheKey];
+					}
+				}
 
 					modelDictionary.Add(req.Key, m);
 			}
