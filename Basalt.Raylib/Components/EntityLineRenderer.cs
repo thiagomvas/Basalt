@@ -44,7 +44,6 @@ namespace Basalt.Raylib.Components
 		{
 			if(Target == null)
 			{
-				Engine.Instance.Logger?.LogFatal($"Looking for {TargetId} in EntityManager");
 				Target = Engine.Instance.EntityManager.GetEntities().Find(e => e.Id == TargetId);
 			}
 		}
