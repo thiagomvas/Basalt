@@ -33,8 +33,8 @@ graphicsEngine.PostProcessingShaderCacheKey = "postprocess";
 graphicsEngine.LightingShaderCacheKey = "lighting";
 
 RaylibCache.Instance.LoadShader("lighting",
-	@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.vs",
-	@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.fs");
+	@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.fs",
+	@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.vs");
 //RaylibCache.Instance.LoadShader("postprocess", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/shaders/grayscale.fs"), string.Empty);
 
 var physicsEngine = new PhysicsEngine(logger);
@@ -58,7 +58,7 @@ Engine engine = new()
 
 var ground = new Entity();
 ground.Transform.Position = new Vector3(0, -1, 0);
-ground.AddComponent(new BoxRenderer(ground) { Size = new Vector3(30, 2, 30), Color = Color.Gray });
+ground.AddComponent(new ModelRenderer(ground) { ModelCacheKey = "plane", Size = new Vector3(30, 1, 30), ColorTint = Color.Gray });
 ground.AddComponent(new BoxCollider(ground) { Size = new Vector3(30, 2, 30) });
 ground.AddComponent(new Rigidbody(ground) { IsKinematic = true });
 
@@ -66,7 +66,7 @@ Engine.CreateEntity(ground);
 
 var prop = new Entity();
 prop.Transform.Position = new Vector3(3);
-prop.AddComponent(new BoxRenderer(prop) { Size = new Vector3(3), Color = Color.Blue });
+prop.AddComponent(new ModelRenderer(prop) { ModelCacheKey = "robot", Size = new Vector3(1), LightingShaderCacheKey = "lighting", Offset = Vector3.UnitY * -1 });
 prop.AddComponent(new BoxCollider(prop) { Size = new Vector3(3) });
 prop.AddComponent(new Rigidbody(prop) { IsKinematic = false, Mass = 1 });
 
@@ -82,9 +82,6 @@ player.AddComponent(new Basalt.TestField.Components.PlayerController(player));
 //player.AddComponent(new TrailRenderer(player) { StartRadius = 0.5f, EndRadius = 0.1f, Color = Color.Red, TrailSegmentCount = 25, Offset = offset, TrailRefreshRate = 0.025f });
 player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Type = LightType.Point });
 
-
-
-prop.AddComponent(new EntityLineRenderer(prop) { Color = Color.Red, RenderSideCount = 16, StartRadius = 0.1f, EndRadius = 0.1f, EndOffset = offset, Target = player });
 var json = player.SerializeToJson();
 File.WriteAllText("./resources/player.json", json);
 var propjson = prop.SerializeToJson();
@@ -100,7 +97,7 @@ for (int i = 0; i < boxes.Length; i++)
 	boxes[i] = new Entity();
 	boxes[i].Transform.Position = new Vector3(-18, 10 + i, -10);
 	boxes[i].Transform.Rotation = new Quaternion(0, -0.70710677f, 0, 0.70710677f);
-	boxes[i].AddComponent(new SphereRenderer(boxes[i]) { Size = new Vector3(i == 0 ? 1 : 0.5f), Color = Color.Yellow });
+	boxes[i].AddComponent(new SphereRenderer(boxes[i]) { Size = new Vector3(i == 0 ? 1 : 0.5f), Color = Color.Yellow});
 	boxes[i].AddComponent(new BoxCollider(boxes[i]) { Size = new Vector3( i == 0 ? 1 : 0.5f) });
 
 	if(i > 0)
@@ -123,7 +120,7 @@ for (int i = 0; i < boxes.Length; i++)
 	Engine.CreateEntity(boxes[i]);
 }
 
-RaylibCache.Instance.LoadModel("test", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/dodecahedron.obj"), "lighting");
-
+RaylibCache.Instance.LoadModel("plane", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/plane.glb"), "lighting");
+RaylibCache.Instance.LoadModel("robot", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/robot.glb"), "lighting");
 Thread engineThread = new Thread(() => engine.Run());
 engineThread.Start();
