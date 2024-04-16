@@ -4,6 +4,7 @@ using Basalt.Core.Common.Abstractions;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Sound;
+using Basalt.Raylib.Utils;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -14,18 +15,21 @@ namespace Basalt.Raylib.Graphics
 {
 	public class RaylibGraphicsEngine : IGraphicsEngine
 	{
+		
 		public const int MaxColumns = 20;
 		private bool enablePostProcessing = false;
-		public string PostProcessingVertexShaderPath { get; set; } = string.Empty;
-		public string PostProcessingFragmentShaderPath { get; set; } = string.Empty;
+
+		public string LightingShaderCacheKey { get; set; } = string.Empty;
+		public string PostProcessingShaderCacheKey { get; set; } = string.Empty;
 
 		private readonly WindowInitParams config;
 		private readonly ILogger? logger;
-		private static RaylibGraphicsEngine instance;
+		internal static RaylibGraphicsEngine instance;
 
-		Shader PostProcessShader;
+		Shader PostProcessShader, LightShader;
 		bool ShouldRun = true;
-
+		internal List<LightSource> sources = new();
+		List<LightSource> sourcesToInit = new();
 
 		public RaylibGraphicsEngine(WindowInitParams initConfig, ILogger? logger = null)
 		{
@@ -42,10 +46,24 @@ namespace Basalt.Raylib.Graphics
 			if (config.Borderless)
 				SetConfigFlags(ConfigFlags.UndecoratedWindow);
 
+
 			if (config.MSAA4X)
 				SetConfigFlags(ConfigFlags.Msaa4xHint);
 
 			InitWindow(config.Width, config.Height, config.Title);
+
+			RaylibCache.Instance.LoadQueued();
+
+
+			LightShader = LoadShader(
+			@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.vs",
+			@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.fs"
+		);
+
+			RaylibCache.Instance.CacheShader("lighting", LightShader);
+
+			Engine.Instance.count.Signal();
+
 
 			SetTargetFPS(config.TargetFps);
 
@@ -54,9 +72,8 @@ namespace Basalt.Raylib.Graphics
 			if (config.VSync)
 				SetConfigFlags(ConfigFlags.VSyncHint);
 
-
 			if (enablePostProcessing)
-				PostProcessShader = LoadShader(PostProcessingVertexShaderPath, PostProcessingFragmentShaderPath);
+				PostProcessShader = RaylibCache.Instance.GetShader(PostProcessingShaderCacheKey)!.Value;
 
 			DisableCursor();
 
@@ -77,7 +94,7 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
-		public void Render()
+		public unsafe void Render()
 		{
 			Camera3D camera = new();
 			var control = Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e is CameraController) as CameraController;
@@ -88,11 +105,21 @@ namespace Basalt.Raylib.Graphics
 
 			//--------------------------------------------------------------------------------------
 
+
+
 			bool hasSoundSystem = Engine.Instance.SoundSystem is not null;
 
 			logger?.LogInformation("Starting raylib rendering loop...");
 
-			Model model = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
+			// Get some required shader loactions
+			LightShader.Locs[(int)ShaderLocationIndex.VectorView] = GetShaderLocation(LightShader, "viewPos");
+
+			// ambient light level
+			int ambientLoc = GetShaderLocation(LightShader, "ambient");
+			float[] ambient = new[] { 0.1f, 0.1f, 0.1f, 1.0f };
+			SetShaderValue(LightShader, ambientLoc, ambient, ShaderUniformDataType.Vec4);
+
+
 			// Main game loop
 			while (ShouldRun)
 			{
@@ -139,6 +166,23 @@ namespace Basalt.Raylib.Graphics
 				Engine.Instance.EventBus?.NotifyUpdate();
 				Engine.Instance.InputSystem?.Update();
 
+
+
+				// MANUALLY UPDATING LIGHTS HERE SO IT ACTUALLY WORKS. DOES NOT WORK IF UPDATES OUTSIDE THIS THREAD
+				// TO-DO: FIND A WAY TO REMOVE THIS FROM HERE.
+				if(sourcesToInit.Count > 0)
+				{
+					foreach (var source in sourcesToInit)
+					{
+						source.Setup();
+					}
+					sourcesToInit.Clear();
+				}
+				foreach(var source in sources)
+					Rlights.UpdateLightValues(LightShader, source.Source);
+
+				SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], control.Transform.Position, ShaderUniformDataType.Vec3);
+
 				//----------------------------------------------------------------------------------
 				// Draw
 				//----------------------------------------------------------------------------------
@@ -149,8 +193,9 @@ namespace Basalt.Raylib.Graphics
 
 				BeginMode3D(control.camera);
 
-				DrawModel(model, Vector3.One, 1.0f, Color.Red);
-
+#if DEBUG
+				DrawGrid(100, 1.0f);
+#endif
 
 				Engine.Instance.EventBus?.NotifyRender();
 
@@ -222,6 +267,14 @@ namespace Basalt.Raylib.Graphics
 
 		}
 
+		internal static void instantiateLight(LightSource source)
+		{
+			instance.sourcesToInit.Add(source);
+			instance.sources.Add(source);
+		}
+
+		internal static void destroyLight(LightSource source) => instance.sources.Remove(source);
+
 		public static T InvokeOnThread<T>(Func<T> delegateFunc)
 		{
 			return instance.invoke(delegateFunc);
@@ -234,7 +287,7 @@ namespace Basalt.Raylib.Graphics
 		public void Shutdown()
 		{
 			ShouldRun = false;
-			ModelsCache.Instance.UnloadAllModels();
+			RaylibCache.Instance.UnloadAllModels();
 			logger?.LogWarning("Shutting down graphics engine...");
 		}
 	}

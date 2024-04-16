@@ -16,7 +16,7 @@ namespace Basalt
 		public bool Running { get; private set; } = false;
 
 		#region Components & Singleton
-
+		public CountdownEvent count = new(1);
 		private static Engine? _instance;
 		/// <summary>
 		/// Gets the instance of the engine.
@@ -116,7 +116,7 @@ namespace Basalt
 
 			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
 			graphicsThread.Start();
-
+			count.Wait();
 			physicsThread = new Thread(() => SafeInitialize(_physicsEngine));
 			physicsThread.Start();
 
