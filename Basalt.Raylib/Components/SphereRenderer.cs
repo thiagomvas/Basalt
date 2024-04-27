@@ -49,7 +49,7 @@ namespace Basalt.Raylib.Components
 			{
 				if (!RaylibCache.Instance.HasModelKey("sphere"))
 				{
-					sphere = LoadModelFromMesh(GenMeshCube(1, 1, 1));
+					sphere = LoadModelFromMesh(GenMeshSphere(1, 16, 16));
 					RaylibCache.Instance.CacheModel("sphere", sphere);
 				}
 				else

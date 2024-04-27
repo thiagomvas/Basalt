@@ -47,6 +47,9 @@ namespace Basalt.Common.Physics
 		/// <param name="col2">The second box collider.</param>
 		private static void BoxBoxCollision(Collider col1, Collider col2)
 		{
+			if (!col1.Enabled || !col2.Enabled)
+				return;
+
 			BoxCollider box1 = (BoxCollider)col1;
 			BoxCollider box2 = (BoxCollider)col2;
 

@@ -16,6 +16,8 @@ namespace Basalt.Common.Components
 		[JsonIgnore]
 		public Entity Entity;
 
+		public bool Enabled { get; set; } = true;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Component"/> class.
 		/// </summary>
