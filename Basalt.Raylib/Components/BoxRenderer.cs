@@ -41,13 +41,17 @@ namespace Basalt.Raylib.Components
 				return;
 			if (!init)
 			{
-				cube = LoadModelFromMesh(GenMeshCube(1, 1, 1));
 				if(!RaylibCache.Instance.HasModelKey("box"))
 				{
+					cube = LoadModelFromMesh(GenMeshCube(1, 1, 1));
 					RaylibCache.Instance.CacheModel("box", cube);
 				}
+				else
+					cube = RaylibCache.Instance.GetModel("box")!.Value;
+
+
+				init = true;
 			}
-			
 			cube.Transform = Raymath.MatrixRotateXYZ(Raymath.QuaternionToEuler(Entity.Transform.Rotation));
 
 			DrawModelEx(cube, Entity.Transform.Position + Offset, Entity.Transform.Up, 0, Size, Color);

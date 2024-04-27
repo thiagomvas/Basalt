@@ -4,6 +4,7 @@ using Basalt.Common.Physics;
 using Basalt.Raylib.Graphics;
 using Raylib_cs;
 using System.Numerics;
+using static Raylib_cs.Raylib;
 
 namespace Basalt.Raylib.Components
 {
@@ -46,18 +47,17 @@ namespace Basalt.Raylib.Components
 				return;
 			if (!init)
 			{
-				if(RaylibCache.Instance.HasModelKey("sphere"))
+				if (!RaylibCache.Instance.HasModelKey("sphere"))
+				{
+					sphere = LoadModelFromMesh(GenMeshCube(1, 1, 1));
+					RaylibCache.Instance.CacheModel("sphere", sphere);
+				}
+				else
 					sphere = RaylibCache.Instance.GetModel("sphere")!.Value;
 
-				else
-				{
-					Model s = Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshSphere(1, Rings, Slices));
-					RaylibCache.Instance.CacheModel("sphere", s);
-				}
-				
 				init = true;
 			}
-			Raylib_cs.Raylib.DrawModelEx(sphere, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
+			DrawModelEx(sphere, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
 		}
 	}
 }
