@@ -234,6 +234,12 @@ namespace Basalt.Common.Entities
 			}
 		}
 
+		internal void CallOnCollision(Collider other)
+		{
+			foreach(var component in components)
+				component.OnCollision(other);
+		}
+
 		private static Type ByName(string name)
 		{
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Reverse())

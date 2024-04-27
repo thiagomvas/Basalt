@@ -25,5 +25,12 @@ namespace Basalt.Common.Components
 		protected Collider(Entity entity) : base(entity)
 		{
 		}
+
+		/// <summary>
+		/// Called when the collider has collided with another collider or is still colliding.
+		/// </summary>
+		/// <param name="other"></param>
+		internal void InternalOnCollision(Collider other) => Entity.CallOnCollision(other);
+
 	}
 }

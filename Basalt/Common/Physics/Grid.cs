@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Basalt.Common.Physics
 {
-	public class Grid
+	public class Grid : IChunkingMechanism
 	{
 		public List<Entity> Entities = new List<Entity>();
 
@@ -20,7 +20,7 @@ namespace Basalt.Common.Physics
 			Entities.Add(entity);
 		}
 
-		public void UpdateGrid()
+		public void Update()
 		{
 			chunks.Clear();
 
@@ -41,13 +41,13 @@ namespace Basalt.Common.Physics
 
 		public List<Entity> GetEntitiesNearPoint(Vector3 point)
 		{
-			
+
 
 			List<Entity> e = new();
 
-			for(int x = -1; x <= 1; x++)
+			for (int x = -1; x <= 1; x++)
 			{
-				for(int z = -1; z <= 1; z++)
+				for (int z = -1; z <= 1; z++)
 				{
 					var chunk = new Point((int)point.X / sideLength + x, (int)point.Z / sideLength + z);
 
@@ -80,7 +80,7 @@ namespace Basalt.Common.Physics
 							chunkedEntities.Add(new List<Entity>());
 						}
 					}
-				} 
+				}
 			}
 
 			return chunkedEntities;

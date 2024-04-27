@@ -49,5 +49,10 @@ namespace Basalt.TestField.Components
 			if (!Entity.IsActive)
 				return;
 		}
+
+		public override void OnCollision(Collider other)
+		{
+			Console.WriteLine("WE COLLIDED!");
+		}
 	}
 }

@@ -53,6 +53,11 @@ namespace Basalt.Common.Physics
 			Rigidbody? rb1 = box1.Entity.Rigidbody;
 			Rigidbody? rb2 = box2.Entity.Rigidbody;
 
+			if (rb1 == null || rb2 == null)
+			{
+				return; // Cannot collide with something that is not a rigidbody
+			}
+
 			Vector3 extents1 = box1.Size / 2f;
 			Vector3 extents2 = box2.Size / 2f;
 
@@ -71,6 +76,10 @@ namespace Basalt.Common.Physics
 			{
 				return; // No overlap, no need to perform separation or movement calculations
 			}
+
+			// From this point onward, the colliders are colliding
+			col1.InternalOnCollision(col2);
+			col2.InternalOnCollision(col1);
 
 			// Calculate the direction of least penetration
 			Vector3 separationDirection = Vector3.Zero;
@@ -91,12 +100,13 @@ namespace Basalt.Common.Physics
 			// Move the colliders to separate them along the direction of least penetration
 			float separationDistance = Math.Abs(minOverlap);
 
-			if (rb1 != null && rb1.IsKinematic)
+
+			if (rb1.IsKinematic && !rb2.IsKinematic)
 			{
 				box2.Entity.Transform.Position -= separationDirection * separationDistance;
 				rb2.Velocity *= 0.5f;
 			}
-			else if (rb2 != null && rb2.IsKinematic)
+			else if (rb2.IsKinematic && !rb1.IsKinematic)
 			{
 				box1.Entity.Transform.Position += separationDirection * separationDistance;
 				rb1.Velocity *= 0.5f;

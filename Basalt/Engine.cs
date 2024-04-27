@@ -8,7 +8,7 @@ namespace Basalt
 	/// <summary>
 	/// Represents the main game engine. Responsible for initializing any engine components and overall management.
 	/// </summary>
-	public class Engine : IEngine
+	public class Engine
 	{
 		/// <summary>
 		/// Gets a value indicating whether the engine has started.

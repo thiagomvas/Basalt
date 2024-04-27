@@ -66,7 +66,7 @@ namespace Basalt.Common.Physics
 
 				entityGrid.Entities = Engine.Instance.EntityManager.GetEntities();
 
-				entityGrid.UpdateGrid();
+				entityGrid.Update();
 
 				// Check for collisions
 				foreach (var chunk in entityGrid.GetEntitiesChunked())

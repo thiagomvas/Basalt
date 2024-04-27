@@ -54,6 +54,10 @@ namespace Basalt.Common.Components
 		{
 		}
 
+		public virtual void OnCollision(Collider other)
+		{
+		}
+
 		internal void onDestroy()
 		{
 			Engine.Instance.EventBus?.Unsubscribe(this);
