@@ -26,6 +26,8 @@ namespace Basalt.Common.Entities
 				entities.Add(entity);
 				foreach(var component in entity.GetComponents())
 					Engine.Instance.EventBus?.Subscribe(component);
+				foreach (var child in entity.Children)
+					AddEntity(child);
 			}
 		}
 

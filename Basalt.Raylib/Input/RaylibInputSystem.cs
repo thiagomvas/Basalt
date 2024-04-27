@@ -7,20 +7,31 @@ namespace Basalt.Raylib.Input
 	public class RaylibInputSystem : IInputSystem
 	{
 		private Dictionary<InputAction, Action> _actions = new();
+		private Dictionary<InputAction, Action> registerQueue = new();
+		private object _lock = new object();
 
 		public void Initialize()
 		{
 
 		}
 
-		public void RegisterKeybind(InputAction input, Action action) => _actions.Add(input, action);
+		public void RegisterKeybind(InputAction input, Action action)
+		{
+			lock (_lock)
+			{
+				registerQueue.Add(input, action);
+			}
+		}
 
 		public void ReplaceKeybind(InputAction oldKey, InputAction newKey)
 		{
-			if (_actions.ContainsKey(oldKey))
+			lock (_lock)
 			{
-				_actions.Add(newKey, _actions[oldKey]);
-				_actions.Remove(oldKey);
+				if (_actions.ContainsKey(oldKey))
+				{
+					_actions.Add(newKey, _actions[oldKey]);
+					_actions.Remove(oldKey);
+				}
 			}
 		}
 
@@ -31,6 +42,15 @@ namespace Basalt.Raylib.Input
 
 		public void Update()
 		{
+			lock (_lock)
+			{
+				foreach (var (input, action) in registerQueue)
+				{
+					_actions.Add(input, action);
+				}
+				registerQueue.Clear();
+			}
+
 			foreach (var (input, action) in _actions)
 			{
 				switch (input.Type)
@@ -38,7 +58,7 @@ namespace Basalt.Raylib.Input
 					case ActionType.Press:
 						if (IsKeyPressed((KeyboardKey)input.Key))
 						{
-							action?.Invoke() ;
+							action?.Invoke();
 						}
 						break;
 					case ActionType.Release:

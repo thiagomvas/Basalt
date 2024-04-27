@@ -17,7 +17,7 @@ namespace Basalt.Raylib.Components
 	{
 		public Vector3 Size { get; set; } = Vector3.One;
 		public Vector3 Offset { get; set; }
-		public Color Color { get; set; }
+		public Color Color { get; set; } = Color.White;
 		public float Scale = 1;
 		Model cube;
 		bool init = false;

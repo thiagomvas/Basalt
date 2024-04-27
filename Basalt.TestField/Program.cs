@@ -21,7 +21,8 @@ var initParams = new WindowInitParams
 	Width = 1920,
 	Height = 1080,
 	TargetFps = 120,
-	Fullscreen = true,
+	Fullscreen = false,
+	Borderless = true,
 	MSAA4X = true,
 	PostProcessing = false,
 };
@@ -35,7 +36,7 @@ graphicsEngine.LightingShaderCacheKey = "lighting";
 RaylibCache.Instance.LoadShader("lighting",
 	@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.fs",
 	@"C:\Users\Thiago\source\repos\CSharpTest\bin\Debug\net8.0\resources\shaders\lighting.vs");
-//RaylibCache.Instance.LoadShader("postprocess", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/shaders/grayscale.fs"), string.Empty);
+RaylibCache.Instance.LoadShader("postprocess", "resources/shaders/testshader.fs", string.Empty);
 
 var physicsEngine = new PhysicsEngine(logger);
 var soundSystem = new RaylibSoundSystem(logger);
@@ -59,16 +60,22 @@ Engine engine = new()
 var ground = new Entity();
 ground.Transform.Position = new Vector3(0, -1, 0);
 ground.AddComponent(new ModelRenderer(ground) { ModelCacheKey = "plane", Size = new Vector3(30, 1, 30), ColorTint = Color.Gray });
-ground.AddComponent(new BoxCollider(ground) { Size = new Vector3(30, 2, 30) });
+ground.AddComponent(new BoxCollider(ground) { Size = new Vector3(60, 2, 60) });
 ground.AddComponent(new Rigidbody(ground) { IsKinematic = true });
 
 Engine.CreateEntity(ground);
 
 var prop = new Entity();
 prop.Transform.Position = new Vector3(3);
-prop.AddComponent(new ModelRenderer(prop) { ModelCacheKey = "robot", Size = new Vector3(1), LightingShaderCacheKey = "lighting", Offset = Vector3.UnitY * -1 });
-prop.AddComponent(new BoxCollider(prop) { Size = new Vector3(3) });
+prop.AddComponent(new BoxRenderer(prop));
+prop.AddComponent(new BoxCollider(prop) { Size = new Vector3(1) });
 prop.AddComponent(new Rigidbody(prop) { IsKinematic = false, Mass = 1 });
+
+var propchild = new Entity();
+propchild.Transform.Position = prop.Transform.Position + Vector3.UnitY;
+propchild.AddComponent(new BoxRenderer(propchild) { Size = new(3)});
+propchild.AddComponent(new BoxCollider(propchild) { Size = new Vector3(3) });
+prop.AddChildren(propchild);
 
 
 var player = new CameraController();
@@ -90,35 +97,6 @@ File.WriteAllText("./resources/prop.json", propjson);
 
 Engine.CreateEntity(player);
 Engine.CreateEntity(Entity.DeserializeFromJson(File.ReadAllText("./resources/prop.json")));
-
-Entity[] boxes = new Entity[25];
-for (int i = 0; i < boxes.Length; i++)
-{
-	boxes[i] = new Entity();
-	boxes[i].Transform.Position = new Vector3(-18, 10 + i, -10);
-	boxes[i].Transform.Rotation = new Quaternion(0, -0.70710677f, 0, 0.70710677f);
-	boxes[i].AddComponent(new SphereRenderer(boxes[i]) { Size = new Vector3(i == 0 ? 1 : 0.5f), Color = Color.Yellow});
-	boxes[i].AddComponent(new BoxCollider(boxes[i]) { Size = new Vector3( i == 0 ? 1 : 0.5f) });
-
-	if(i > 0)
-	{
-		boxes[i].AddComponent(new Rigidbody(boxes[i]) { Mass = 1, Drag = 0.1f, IsKinematic = false });
-		boxes[i].AddComponent(new ChainLink(boxes[i]) { AnchoredEntity = boxes[i - 1], MaxDistance = 1f, JointForceMultiplier = 10 });
-		boxes[i].AddComponent(new EntityLineRenderer(boxes[i]) { Color = Color.DarkGreen, Target = boxes[i - 1], RenderSideCount = 16, StartRadius = 0.05f, EndRadius = 0.05f });
-		if(i == boxes.Length - 1)
-		{
-			boxes[i].Transform.IsFixedPoint = true;
-
-		}
-	}
-	else
-	{
-		boxes[i].AddComponent(new Rigidbody(boxes[i]) { Mass = 1, Drag = 0.1f, IsKinematic = true });
-		boxes[i].Transform.IsFixedPoint = true;
-	}
-
-	Engine.CreateEntity(boxes[i]);
-}
 
 RaylibCache.Instance.LoadModel("plane", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/plane.glb"), "lighting");
 RaylibCache.Instance.LoadModel("robot", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources/robot.glb"), "lighting");

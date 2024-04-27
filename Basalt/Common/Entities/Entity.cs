@@ -77,9 +77,13 @@ namespace Basalt.Common.Entities
 				childrenObjects.Add(childObject);
 			}
 
+			foreach(var child in childrenObjects)
+			{
+				Console.WriteLine(child.ToString(Formatting.Indented));
+			}
 			var entityJson = new JObject();
 			entityJson["Components"] = JArray.FromObject(componentDtos);
-			entityJson["Children"] = JArray.FromObject(childrenObjects); // Use the parsed child objects
+			entityJson["Children"] = new JArray(childrenObjects.ToArray()); // Use the parsed child objects
 			entityJson["Id"] = Id;
 
 			return entityJson.ToString(Formatting.Indented);
@@ -125,6 +129,7 @@ namespace Basalt.Common.Entities
 			foreach (var child in jObject["Children"])
 			{
 				var childEntity = DeserializeFromJson(child.ToString());
+				Console.WriteLine($"Deserialized entity with id {childEntity.Id}");
 				target.AddChildren(childEntity);
 			}
 

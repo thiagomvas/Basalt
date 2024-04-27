@@ -216,14 +216,12 @@ namespace Basalt.Raylib.Graphics
 				DrawRectangle(5, 5, 330, 100, ColorAlpha(Color.SkyBlue, 0.5f));
 				DrawRectangleLines(10, 10, 330, 100, Color.Blue);
 
-				DrawRectangle(600, 5, 195, 100, Fade(Color.SkyBlue, 0.5f));
-				DrawRectangleLines(600, 5, 195, 100, Color.Blue);
-
 				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 30, 10, Color.White);
 				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 45, 10, Color.White);
 				DrawText($"Pos: {control.Transform.Position} - {control.camera.Position}", 15, 60, 10, Color.White);
 				DrawText($"Rot: {control.Transform.Rotation}", 15, 75, 10, Color.White);
 				DrawText($"Velo: {control.Rigidbody.Velocity}", 15, 90, 10, Color.White);
+				DrawFPS(15, 105);
 
 				EndDrawing();
 				//----------------------------------------------------------------------------------
