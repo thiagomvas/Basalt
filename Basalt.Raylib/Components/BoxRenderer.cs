@@ -21,6 +21,7 @@ namespace Basalt.Raylib.Components
 		public float Scale = 1;
 		Model cube;
 		bool init = false;
+		public bool LockRotation { get; set; } = false;
 		public BoxRenderer(Entity entity) : base(entity)
 		{
 		}
@@ -40,18 +41,15 @@ namespace Basalt.Raylib.Components
 				return;
 			if (!init)
 			{
-				if (RaylibCache.Instance.HasModelKey("cube"))
-					cube = RaylibCache.Instance.GetModel("cube")!.Value;
-
-				else
+				cube = LoadModelFromMesh(GenMeshCube(1, 1, 1));
+				if(!RaylibCache.Instance.HasModelKey("box"))
 				{
-					Model c = LoadModelFromMesh(GenMeshCube(1, 1, 1));
-					RaylibCache.Instance.CacheModel("cube", c);
+					RaylibCache.Instance.CacheModel("box", cube);
 				}
-
-				init = true;
 			}
+			
 			cube.Transform = Raymath.MatrixRotateXYZ(Raymath.QuaternionToEuler(Entity.Transform.Rotation));
+
 			DrawModelEx(cube, Entity.Transform.Position + Offset, Entity.Transform.Up, 0, Size, Color);
 		}
 	}

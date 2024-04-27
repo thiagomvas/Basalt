@@ -15,7 +15,7 @@ namespace Basalt.Raylib.Graphics
 {
 	public class RaylibGraphicsEngine : IGraphicsEngine
 	{
-		
+
 		public const int MaxColumns = 20;
 		private bool enablePostProcessing = false;
 
@@ -30,6 +30,8 @@ namespace Basalt.Raylib.Graphics
 		bool ShouldRun = true;
 		internal List<LightSource> sources = new();
 		List<LightSource> sourcesToInit = new();
+
+		bool useLighting = false;
 
 		public RaylibGraphicsEngine(WindowInitParams initConfig, ILogger? logger = null)
 		{
@@ -54,9 +56,10 @@ namespace Basalt.Raylib.Graphics
 
 			RaylibCache.Instance.LoadQueued();
 
-			if(RaylibCache.Instance.HasShaderKey(LightingShaderCacheKey))
+			if (RaylibCache.Instance.HasShaderKey(LightingShaderCacheKey))
 			{
 				LightShader = RaylibCache.Instance.GetShader(LightingShaderCacheKey)!.Value;
+				useLighting = true;
 			}
 
 			RaylibCache.Instance.CacheShader("lighting", LightShader);
@@ -111,12 +114,15 @@ namespace Basalt.Raylib.Graphics
 			logger?.LogInformation("Starting raylib rendering loop...");
 
 			// Get some required shader loactions
-			LightShader.Locs[(int)ShaderLocationIndex.VectorView] = GetShaderLocation(LightShader, "viewPos");
+			if (useLighting)
+			{
+				LightShader.Locs[(int)ShaderLocationIndex.VectorView] = GetShaderLocation(LightShader, "viewPos");
 
-			// ambient light level
-			int ambientLoc = GetShaderLocation(LightShader, "ambient");
-			float[] ambient = new[] { 0.1f, 0.1f, 0.1f, 1.0f };
-			SetShaderValue(LightShader, ambientLoc, ambient, ShaderUniformDataType.Vec4);
+				// ambient light level
+				int ambientLoc = GetShaderLocation(LightShader, "ambient");
+				float[] ambient = new[] { 0.1f, 0.1f, 0.1f, 1.0f };
+				SetShaderValue(LightShader, ambientLoc, ambient, ShaderUniformDataType.Vec4);
+			}
 
 
 			// Main game loop
@@ -169,7 +175,7 @@ namespace Basalt.Raylib.Graphics
 
 				// MANUALLY UPDATING LIGHTS HERE SO IT ACTUALLY WORKS. DOES NOT WORK IF UPDATES OUTSIDE THIS THREAD
 				// TO-DO: FIND A WAY TO REMOVE THIS FROM HERE.
-				if(sourcesToInit.Count > 0)
+				if (sourcesToInit.Count > 0)
 				{
 					foreach (var source in sourcesToInit)
 					{
@@ -177,10 +183,15 @@ namespace Basalt.Raylib.Graphics
 					}
 					sourcesToInit.Clear();
 				}
-				foreach(var source in sources)
-					Rlights.UpdateLightValues(LightShader, source.Source);
 
-				SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], control.Transform.Position, ShaderUniformDataType.Vec3);
+				if (useLighting)
+				{
+
+					foreach (var source in sources)
+						Rlights.UpdateLightValues(LightShader, source.Source);
+
+					SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], control.Transform.Position, ShaderUniformDataType.Vec3);
+				}
 
 				//----------------------------------------------------------------------------------
 				// Draw
@@ -218,9 +229,6 @@ namespace Basalt.Raylib.Graphics
 
 				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 30, 10, Color.White);
 				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 45, 10, Color.White);
-				DrawText($"Pos: {control.Transform.Position} - {control.camera.Position}", 15, 60, 10, Color.White);
-				DrawText($"Rot: {control.Transform.Rotation}", 15, 75, 10, Color.White);
-				DrawText($"Velo: {control.Rigidbody.Velocity}", 15, 90, 10, Color.White);
 				DrawFPS(15, 105);
 
 				EndDrawing();

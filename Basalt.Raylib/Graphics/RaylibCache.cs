@@ -18,30 +18,40 @@ namespace Basalt.Raylib.Graphics
 		private List<KeyValuePair<string, ModelLoadRequest>> modelLoadQueue = new();
 		private List<KeyValuePair<string, ShaderLoadRequest>> shaderLoadQueue = new();
 
+		private object modelLock = new object();
+		private object shaderLock = new object();
+
 		internal void LoadQueued()
 		{
-			foreach (var req in shaderLoadQueue)
+			lock (shaderLock)
 			{
-				Shader s = Raylib_cs.Raylib.LoadShader(req.Value.vertexShaderPath, req.Value.fragmentShaderPath);
-				shaderDictionary.Add(req.Key, s);
-			}
-			shaderLoadQueue.Clear();
-
-			foreach (var req in modelLoadQueue)
-			{
-				Model m = Raylib_cs.Raylib.LoadModel(req.Value.modelPath);
-				if (!string.IsNullOrWhiteSpace(req.Value.shaderCacheKey))
+				foreach (var req in shaderLoadQueue)
 				{
-					for(int i = 0; i < m.MaterialCount; i++)
-					{
-						m.Materials[i].Shader = shaderDictionary[req.Value.shaderCacheKey];
-					}
+					Shader s = Raylib_cs.Raylib.LoadShader(req.Value.vertexShaderPath, req.Value.fragmentShaderPath);
+					shaderDictionary.Add(req.Key, s);
 				}
+				shaderLoadQueue.Clear();
+			}
+
+			lock (modelLock)
+			{
+				foreach (var req in modelLoadQueue)
+				{
+					Model m = Raylib_cs.Raylib.LoadModel(req.Value.modelPath);
+					if (!string.IsNullOrWhiteSpace(req.Value.shaderCacheKey))
+					{
+						for (int i = 0; i < m.MaterialCount; i++)
+						{
+							m.Materials[i].Shader = shaderDictionary[req.Value.shaderCacheKey];
+						}
+					}
 
 					modelDictionary.Add(req.Key, m);
+				}
+				modelLoadQueue.Clear();
 			}
-			modelLoadQueue.Clear();
 		}
+
 		private RaylibCache()
 		{
 		}
@@ -60,46 +70,58 @@ namespace Basalt.Raylib.Graphics
 
 		public Model? GetModel(string modelName)
 		{
-			if (modelDictionary.ContainsKey(modelName))
+			lock (modelLock)
 			{
-				return modelDictionary[modelName];
-			}
-			else
-			{
-				return null;
+				if (modelDictionary.ContainsKey(modelName))
+				{
+					return modelDictionary[modelName];
+				}
+				else
+				{
+					return null;
+				}
 			}
 		}
 
 		public void CacheModel(string modelName, Model model)
 		{
-			if (!modelDictionary.ContainsKey(modelName))
+			lock (modelLock)
 			{
-				modelDictionary.Add(modelName, model);
+				if (!modelDictionary.ContainsKey(modelName))
+				{
+					modelDictionary.Add(modelName, model);
+				}
 			}
 		}
 
 		public void UnloadAllModels()
 		{
-			foreach (var model in modelDictionary.Values)
+			lock (modelLock)
 			{
-				Raylib_cs.Raylib.UnloadModel(model);
+				foreach (var model in modelDictionary.Values)
+				{
+					Raylib_cs.Raylib.UnloadModel(model);
+				}
+				modelDictionary.Clear();
 			}
-			modelDictionary.Clear();
 		}
 
 		public void UnloadModel(string modelName)
 		{
-			if (modelDictionary.ContainsKey(modelName))
+			lock (modelLock)
 			{
-				Raylib_cs.Raylib.UnloadModel(modelDictionary[modelName]);
-				modelDictionary.Remove(modelName);
+				if (modelDictionary.ContainsKey(modelName))
+				{
+					Raylib_cs.Raylib.UnloadModel(modelDictionary[modelName]);
+					modelDictionary.Remove(modelName);
+				}
 			}
 		}
 
 		public void LoadModel(string modelName, string modelPath, string shaderCacheKey = "")
 		{
-            if (!Raylib_cs.Raylib.IsWindowReady())
-            {
+			if (!Raylib_cs.Raylib.IsWindowReady())
+			{
 				ModelLoadRequest request = new()
 				{
 					modelName = modelName,
@@ -107,58 +129,76 @@ namespace Basalt.Raylib.Graphics
 					shaderCacheKey = shaderCacheKey
 				};
 
-				modelLoadQueue.Add(new KeyValuePair<string, ModelLoadRequest>(modelName, request));
-				return;
-                
-            }
-            Model model = Raylib_cs.Raylib.LoadModel(modelPath);
-			modelDictionary.Add(modelName, model);
+				lock (modelLock)
+				{
+					modelLoadQueue.Add(new KeyValuePair<string, ModelLoadRequest>(modelName, request));
+					return;
+				}
+			}
+
+			Model model = Raylib_cs.Raylib.LoadModel(modelPath);
+
+			lock (modelLock)
+			{
+				modelDictionary.Add(modelName, model);
+			}
 		}
 
 		public Shader? GetShader(string shaderName)
 		{
-			if (shaderDictionary.ContainsKey(shaderName))
+			lock (shaderLock)
 			{
-				return shaderDictionary[shaderName];
-			}
-			else
-			{
-				return null;
+				if (shaderDictionary.ContainsKey(shaderName))
+				{
+					return shaderDictionary[shaderName];
+				}
+				else
+				{
+					return null;
+				}
 			}
 		}
 
 		public void CacheShader(string shaderName, Shader shader)
 		{
-			if (!shaderDictionary.ContainsKey(shaderName))
+			lock (shaderLock)
 			{
-				shaderDictionary.Add(shaderName, shader);
-				return;
+				if (!shaderDictionary.ContainsKey(shaderName))
+				{
+					shaderDictionary.Add(shaderName, shader);
+					return;
+				}
+				shaderDictionary[shaderName] = shader;
 			}
-			shaderDictionary[shaderName] = shader;
-
 		}
 
 		public void UnloadAllShaders()
 		{
-			foreach (var shader in shaderDictionary.Values)
+			lock (shaderLock)
 			{
-				Raylib_cs.Raylib.UnloadShader(shader);
+				foreach (var shader in shaderDictionary.Values)
+				{
+					Raylib_cs.Raylib.UnloadShader(shader);
+				}
+				shaderDictionary.Clear();
 			}
-			shaderDictionary.Clear();
 		}
 
 		public void UnloadShader(string shaderName)
 		{
-			if (shaderDictionary.ContainsKey(shaderName))
+			lock (shaderLock)
 			{
-				Raylib_cs.Raylib.UnloadShader(shaderDictionary[shaderName]);
-				shaderDictionary.Remove(shaderName);
+				if (shaderDictionary.ContainsKey(shaderName))
+				{
+					Raylib_cs.Raylib.UnloadShader(shaderDictionary[shaderName]);
+					shaderDictionary.Remove(shaderName);
+				}
 			}
 		}
 
 		public Shader LoadShader(string shaderName, string fragmentShaderPath, string vertexShaderPath)
 		{
-			if(!Raylib_cs.Raylib.IsWindowReady())
+			if (!Raylib_cs.Raylib.IsWindowReady())
 			{
 				var request = new ShaderLoadRequest()
 				{
@@ -166,16 +206,39 @@ namespace Basalt.Raylib.Graphics
 					fragmentShaderPath = fragmentShaderPath,
 					vertexShaderPath = vertexShaderPath
 				};
-				shaderLoadQueue.Add(new (shaderName, request) );
-				return new Shader();
+				lock (shaderLock)
+				{
+					shaderLoadQueue.Add(new(shaderName, request));
+					return new Shader();
+				}
 			}
+
 			Shader shader = Raylib_cs.Raylib.LoadShader(vertexShaderPath, fragmentShaderPath);
-			shaderDictionary.Add(shaderName, shader);
+
+			lock (shaderLock)
+			{
+				shaderDictionary.Add(shaderName, shader);
+			}
+
 			return shader;
 		}
 
-		public bool HasModelKey(string key) => modelDictionary.ContainsKey(key);
-		public bool HasShaderKey(string key) => shaderDictionary.ContainsKey(key);
+		public bool HasModelKey(string key)
+		{
+			lock (modelLock)
+			{
+				return modelDictionary.ContainsKey(key);
+			}
+		}
+
+		public bool HasShaderKey(string key)
+		{
+			lock (shaderLock)
+			{
+				return shaderDictionary.ContainsKey(key);
+			}
+		}
+
 		private struct ModelLoadRequest
 		{
 			public string modelName;

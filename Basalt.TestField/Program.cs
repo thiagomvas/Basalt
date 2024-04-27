@@ -66,23 +66,18 @@ ground.AddComponent(new Rigidbody(ground) { IsKinematic = true });
 Engine.CreateEntity(ground);
 
 var prop = new Entity();
-prop.Transform.Position = new Vector3(3);
+prop.Transform.Position = new Vector3(0, 3, 3);
 prop.AddComponent(new BoxRenderer(prop));
 prop.AddComponent(new BoxCollider(prop) { Size = new Vector3(1) });
 prop.AddComponent(new Rigidbody(prop) { IsKinematic = false, Mass = 1 });
 
-var propchild = new Entity();
-propchild.Transform.Position = prop.Transform.Position + Vector3.UnitY;
-propchild.AddComponent(new BoxRenderer(propchild) { Size = new(3)});
-propchild.AddComponent(new BoxCollider(propchild) { Size = new Vector3(3) });
-prop.AddChildren(propchild);
 
 
 var player = new CameraController();
 player.Id = "entity.player";
-Vector3 offset = Vector3.UnitY * -2;
+Vector3 offset = Vector3.UnitY * -1;
 player.Transform.Position = new Vector3(0, 5, 0);
-player.AddComponent(new BoxRenderer(player) { Size = new Vector3(1, 1, 1), Color = Color.Red, Offset = offset });
+player.AddComponent(new BoxRenderer(player) { Size = new Vector3(0.5f), Color = Color.Red, Offset = offset });
 player.AddComponent(new BoxCollider(player) { Size = new Vector3(1, 1, 1), Offset = offset });
 player.AddComponent(new Rigidbody(player) { IsKinematic = false, Mass = 25 });
 player.AddComponent(new Basalt.TestField.Components.PlayerController(player));
