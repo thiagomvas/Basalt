@@ -61,7 +61,6 @@ namespace Basalt.Raylib.Graphics
 				LightShader = RaylibCache.Instance.GetShader(LightingShaderCacheKey)!.Value;
 				useLighting = true;
 			}
-
 			RaylibCache.Instance.CacheShader("lighting", LightShader);
 
 			Engine.Instance.count.Signal();
@@ -123,6 +122,30 @@ namespace Basalt.Raylib.Graphics
 				float[] ambient = new[] { 0.1f, 0.1f, 0.1f, 1.0f };
 				SetShaderValue(LightShader, ambientLoc, ambient, ShaderUniformDataType.Vec4);
 			}
+
+
+
+			Image image = LoadImage("perlin_noise.png");
+			Image imageinvert = LoadImage("perlin_noise_colored.png");
+			var texture = LoadTextureFromImage(image);
+			var textureinvert = LoadTextureFromImage(imageinvert);
+
+			Mesh mesh = GenMeshHeightmap(image, new Vector3(256, 32, 256));
+			Model model = LoadModelFromMesh(mesh);
+
+			model.Materials[0].Shader = LightShader;
+
+			SetMaterialTexture(ref model, 0, MaterialMapIndex.Albedo, ref textureinvert);
+
+			RaylibCache.Instance.CacheModel("heightmap", model);
+
+			Entity heightmap = new();
+			heightmap.AddComponent(new ModelRenderer(heightmap) { ModelCacheKey = "heightmap" });
+			heightmap.Transform.Position = new Vector3(-128, -16, -128);
+			Engine.CreateEntity(heightmap);
+
+			UnloadImage(image);
+			UnloadImage(imageinvert);
 
 
 			// Main game loop

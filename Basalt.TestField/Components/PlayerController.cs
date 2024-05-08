@@ -52,7 +52,7 @@ namespace Basalt.TestField.Components
 
 		public override void OnCollision(Collider other)
 		{
-			Console.WriteLine("WE COLLIDED!");
+
 		}
 	}
 }

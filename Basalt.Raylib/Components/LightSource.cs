@@ -19,12 +19,12 @@ namespace Basalt.Raylib.Components
 
 		public Color Color { get; set; } = Color.White;
 		public LightType Type { get; set; } = LightType.Point;
-		public string ShaderCacheKey { get; set; }
+		private string shaderCacheKey;
 		Shader shader;
 		bool init = false;
 		public LightSource(Entity entity, string shaderKey) : base(entity)
 		{
-			ShaderCacheKey = shaderKey;
+			shaderCacheKey = shaderKey;
 		}
 		public override void OnStart()
 		{
@@ -32,7 +32,7 @@ namespace Basalt.Raylib.Components
 		}
 		internal void Setup()
 		{
-			shader = RaylibCache.Instance.GetShader(ShaderCacheKey)!.Value;
+			shader = RaylibCache.Instance.GetShader(shaderCacheKey)!.Value;
 			Source = new Light(); 
 			Source = Rlights.CreateLight(
 				_index,
