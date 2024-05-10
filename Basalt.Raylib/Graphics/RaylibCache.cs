@@ -196,7 +196,7 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
-		public Shader LoadShader(string shaderName, string fragmentShaderPath, string vertexShaderPath)
+		public void LoadShader(string shaderName, string fragmentShaderPath, string vertexShaderPath)
 		{
 			if (!Raylib_cs.Raylib.IsWindowReady())
 			{
@@ -209,7 +209,7 @@ namespace Basalt.Raylib.Graphics
 				lock (shaderLock)
 				{
 					shaderLoadQueue.Add(new(shaderName, request));
-					return new Shader();
+					return;
 				}
 			}
 
@@ -219,8 +219,6 @@ namespace Basalt.Raylib.Graphics
 			{
 				shaderDictionary.Add(shaderName, shader);
 			}
-
-			return shader;
 		}
 
 		public bool HasModelKey(string key)

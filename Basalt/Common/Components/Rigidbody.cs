@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Common.Physics;
+using Basalt.Core.Common.Abstractions.Engine;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -35,7 +36,19 @@ namespace Basalt.Common.Components
 		/// <param name="entity">The entity that the rigidbody belongs to.</param>
 		public Rigidbody(Entity entity) : base(entity)
 		{
+			var physics = Engine.Instance.GetEngineComponent<IPhysicsEngine>();
+			if (physics != null)
+			{
+				physicsEngine = physics;
+			}
+			else
+			{
+				Engine.Instance.Logger?.LogError("Could not find a physics engine component that implements IPhysicsEngine. Changed rigidbody to be kinematic");
+				IsKinematic = true;
+			}
 		}
+
+		private IPhysicsEngine physicsEngine;
 
 		/// <summary>
 		/// Called on each physics update frame.
@@ -50,7 +63,7 @@ namespace Basalt.Common.Components
 			if(Velocity.X == float.NaN || Velocity.Y == float.NaN || Velocity.Z == float.NaN)
 				Velocity = Vector3.Zero;
 
-			Vector3? acceleration = -Vector3.UnitY * Engine.Instance.PhysicsEngine?.Gravity;
+			Vector3? acceleration = -Vector3.UnitY * physicsEngine.Gravity;
 
 			if (acceleration.HasValue)
 			{
@@ -72,6 +85,7 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnStart()
 		{
+
 		}
 
 		/// <summary>

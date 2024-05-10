@@ -1,4 +1,4 @@
-﻿using Basalt.Core.Common.Abstractions;
+﻿using Basalt.Core.Common.Abstractions.Engine;
 namespace Basalt.Common.Events
 {
 	/// <summary>
@@ -99,6 +99,16 @@ namespace Basalt.Common.Events
 			{
 				observers.Remove(observer);
 			}
+		}
+
+		public void Initialize()
+		{
+
+		}
+
+		public void Shutdown()
+		{
+
 		}
 	}
 }

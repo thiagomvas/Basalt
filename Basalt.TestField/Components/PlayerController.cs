@@ -11,38 +11,47 @@ namespace Basalt.TestField.Components
 	public class PlayerController : Component
 	{
 		public float MoveSpeed = 5;
+		private IInputSystem inputSystem;
 		public PlayerController(Entity entity) : base(entity)
 		{
 
 		}
-
-		public override void OnStart()
+		public override  void OnStart()
 		{
-			Engine.Instance.InputSystem?.RegisterKeybind(new(
-				InputKey.W,
-				ActionType.Hold),
-				() => Entity.Transform.Position += Entity.Transform.Forward.XZNormalized() * Time.DeltaTime * MoveSpeed);
+			var input = Engine.Instance.GetEngineComponent<IInputSystem>();
+			if (input != null)
+			{
+				inputSystem = input;
 
-			Engine.Instance.InputSystem?.RegisterKeybind(new(
-				InputKey.S,
-				ActionType.Hold),
-				() => Entity.Transform.Position -= Entity.Transform.Forward.XZNormalized() * Time.DeltaTime * MoveSpeed);
 
-			Engine.Instance.InputSystem?.RegisterKeybind(new(
-				InputKey.A,
-				ActionType.Hold),
-				() => Entity.Transform.Position -= Entity.Transform.Right.XZNormalized() * Time.DeltaTime * MoveSpeed);
+				inputSystem?.RegisterKeybind(new(
+					InputKey.W,
+					ActionType.Hold),
+					() => Entity.Transform.Position += Entity.Transform.Forward.XZNormalized() * Time.DeltaTime * MoveSpeed);
 
-			Engine.Instance.InputSystem?.RegisterKeybind(new(
-				InputKey.D,
-				ActionType.Hold),
-				() => Entity.Transform.Position += Entity.Transform.Right.XZNormalized() * Time.DeltaTime * MoveSpeed);
+				inputSystem?.RegisterKeybind(new(
+					InputKey.S,
+					ActionType.Hold),
+					() => Entity.Transform.Position -= Entity.Transform.Forward.XZNormalized() * Time.DeltaTime * MoveSpeed);
 
-			Engine.Instance.InputSystem?.RegisterKeybind(new(
-				InputKey.Space,
-				ActionType.Press),
-				() => Entity.Rigidbody.Velocity += Vector3.UnitY * MoveSpeed);
+				inputSystem?.RegisterKeybind(new(
+					InputKey.A,
+					ActionType.Hold),
+					() => Entity.Transform.Position -= Entity.Transform.Right.XZNormalized() * Time.DeltaTime * MoveSpeed);
+
+				inputSystem?.RegisterKeybind(new(
+					InputKey.D,
+					ActionType.Hold),
+					() => Entity.Transform.Position += Entity.Transform.Right.XZNormalized() * Time.DeltaTime * MoveSpeed);
+
+				inputSystem?.RegisterKeybind(new(
+					InputKey.Space,
+					ActionType.Press),
+					() => Entity.Rigidbody.Velocity += Vector3.UnitY * MoveSpeed);
+			}
 		}
+
+
 
 		public override void OnUpdate()
 		{
@@ -52,7 +61,7 @@ namespace Basalt.TestField.Components
 
 		public override void OnCollision(Collider other)
 		{
-			Console.WriteLine("WE COLLIDED!");
+
 		}
 	}
 }
