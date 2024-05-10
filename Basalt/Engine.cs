@@ -1,208 +1,77 @@
-﻿using Basalt.Common.Entities;
-using Basalt.Core.Common.Abstractions.Engine;
-using Basalt.Core.Common.Abstractions.Input;
-using Basalt.Core.Common.Abstractions.Sound;
+﻿using Basalt.Core.Common.Abstractions.Engine;
+using System.Diagnostics;
 
 namespace Basalt
 {
-    /// <summary>
-    /// Represents the main game engine. Responsible for initializing any engine components and overall management.
-    /// </summary>
-    public class Engine
+	public class Engine
 	{
-		/// <summary>
-		/// Gets a value indicating whether the engine has started.
-		/// </summary>
 		public bool Running { get; private set; } = false;
+		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
 
-		#region Components & Singleton
-		public CountdownEvent count = new(1);
-		private static Engine? _instance;
-		/// <summary>
-		/// Gets the instance of the engine.
-		/// </summary>
-		public static Engine Instance
+		private ILogger? _logger;
+
+		public ILogger? Logger
 		{
-			get
+			get { return _logger; }
+			private set { _logger = value; }
+		}
+
+
+		internal void AddComponent(Type type, IEngineComponent component, bool separateThread = false)
+		{
+			Components.Add(type, new(component, separateThread));
+		}
+
+		internal void AddLogger(ILogger logger) => Logger = logger;
+
+		public T? GetEngineComponent<T>() where T : IEngineComponent
+		{
+			if (Components.ContainsKey(typeof(T)))
 			{
-				if (_instance == null)
-				{
-					throw new InvalidOperationException("Engine has not been initialized.");
-				}
-				return _instance;
+				return (T)Components[typeof(T)].component;
+			}
+			else
+			{
+				Logger?.LogError($"Could not find component of type {typeof(T).Name}.");
+				return default;
 			}
 		}
 
-		private readonly IGraphicsEngine? _graphicsEngine;
-		private readonly ISoundSystem? _soundSystem;
-		private readonly IPhysicsEngine? _physicsEngine;
-		private readonly ILogger? _logger;
-		private readonly IEventBus? _eventBus;
-		private readonly IInputSystem? _inputSystem;
-
-        public IGraphicsEngine? GraphicsEngine { get => _graphicsEngine; init => _graphicsEngine = value; }
-		public ISoundSystem? SoundSystem { get => _soundSystem; init => _soundSystem = value; }
-		public IPhysicsEngine? PhysicsEngine { get => _physicsEngine; init => _physicsEngine = value; }
-		public ILogger? Logger { get => _logger; init => _logger = value; }
-		public IEventBus? EventBus { get => _eventBus; init => _eventBus = value; }
-		public IInputSystem? InputSystem { get => _inputSystem; init => _inputSystem = value; }
-
-        private bool _exceptionOccurred = false;
-		public readonly EntityManager EntityManager = new();
-
-		#endregion
-
-		private Thread graphicsThread, physicsThread;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Engine"/> class.
-		/// </summary>
-		/// <param name="graphicsEngine">The graphics engine.</param>
-		/// <param name="soundSystem">The sound system.</param>
-		/// <param name="physicsEngine">The physics engine.</param>
-		/// <param name="eventBus">The event bus.</param>
-		private Engine(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
+		public void Initialize()
 		{
-			_graphicsEngine = graphicsEngine;
-			_soundSystem = soundSystem;
-			_physicsEngine = physicsEngine;
-			_eventBus = eventBus;
-		}
-
-        public Engine()
-        {
-			_instance = this;
-        }
-
-
-		/// <summary>
-		/// Initializes the engine with the specified graphics engine, sound system, physics engine, and event bus.
-		/// </summary>
-		/// <param name="graphicsEngine">The graphics engine.</param>
-		/// <param name="soundSystem">The sound system.</param>
-		/// <param name="physicsEngine">The physics engine.</param>
-		/// <param name="eventBus">The event bus.</param>
-		public static void Initialize(IGraphicsEngine? graphicsEngine, ISoundSystem? soundSystem, IPhysicsEngine? physicsEngine, IEventBus? eventBus = null)
-		{
-			if (_instance != null)
+			// Block initialization if no graphics engine or event bus is found
+			if(!Components.ContainsKey(typeof(IGraphicsEngine)))
 			{
-				throw new InvalidOperationException("Engine has already been initialized.");
-			}
-			_instance = new Engine(graphicsEngine, soundSystem, physicsEngine, eventBus);
-		}
-
-		/// <summary>
-		/// Runs the engine.
-		/// </summary>
-		public void Run()
-		{
-			_logger?.LogInformation("Engine Initializing");
-			if (_graphicsEngine == null)
-			{
-				throw new Exception("Graphics engine not specified! Cannot run engine.");
-			}
-			if (_soundSystem == null)
-			{
-				_logger?.LogWarning("Sound system not specified! Engine will run without sound.");
-			}
-
-			if (_physicsEngine == null)
-			{
-				_logger?.LogWarning("Physics engine not specified! Engine will run without physics.");
-			}
-
-
-			_logger?.LogInformation("Engine starting");
-
-			graphicsThread = new Thread(() => SafeInitialize(_graphicsEngine));
-			graphicsThread.Start();
-			count.Wait();
-			physicsThread = new Thread(() => SafeInitialize(_physicsEngine));
-			physicsThread.Start();
-
-			Running = true;
-
-			_soundSystem?.Initialize();
-			_inputSystem?.Initialize();
-			_eventBus?.NotifyStart();
-
-			physicsThread.Join();
-			graphicsThread.Join();
-
-			if (_exceptionOccurred)
-			{
-				Shutdown();
+				Logger?.LogFatal("Could not find a Graphics Engine component that implements IGraphicsEngine. Cannot run without one.");
 				return;
 			}
-		}
 
-		/// <summary>
-		/// Shuts down the engine.
-		/// </summary>
-		public void Shutdown()
-		{
-			// Shut down services in reverse order of initialization
-			Running = false;
-			_logger?.LogWarning("Engine shutting down");
-
-			
-			Task.Run(() => _soundSystem?.Shutdown());
-			if (physicsThread != null && physicsThread.IsAlive)
+			if(!Components.ContainsKey(typeof(IEventBus)))
 			{
-				_physicsEngine?.Shutdown();
+				Logger?.LogFatal("Could not find an Event Bus component that implements IEventBus. Cannot run without one.");
+				return;
 			}
 
-			if (graphicsThread != null && graphicsThread.IsAlive)
+			// Move graphics engine to the front of the list
+			Components = Components.OrderBy(c => c.Key == typeof(IGraphicsEngine) ? 0 : 1).ToDictionary(c => c.Key, c => c.Value);
+
+			// Initialize other components
+			foreach (var component in Components)
 			{
-				_graphicsEngine?.Shutdown();
-			}
-
-
-			_logger?.LogInformation("Engine shut down");
-		}
-
-		/// <summary>
-		/// Creates an entity and adds it to the entity manager.
-		/// </summary>
-		/// <param name="entity">The entity to create.</param>
-		public static void CreateEntity(Entity entity)
-		{
-			Instance.EntityManager.AddEntity(entity);
-			if(Instance.Running)
-				entity.CallOnStart();
-		}
-
-		/// <summary>
-		/// Removes an entity from the entity manager.
-		/// </summary>
-		/// <param name="entity">The entity to remove.</param>
-		public static void RemoveEntity(Entity entity)
-		{
-			Instance.EntityManager.RemoveEntity(entity);
-		}
-
-		/// <summary>
-		/// Initializes the specified engine component safely.
-		/// </summary>
-		/// <param name="component">The engine component to initialize.</param>
-		private void SafeInitialize(IEngineComponent? component)
-		{
-			try
-			{
-				component?.Initialize();
-			}
-			catch (Exception e)
-			{
-				_exceptionOccurred = true;
-#if DEBUG
-				_logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}\n {e.StackTrace}");
-#else
-				_logger?.LogFatal($"EXCEPTION OCCURRED AT {component?.GetType().Name}: {e.GetType().Name} - {e.Message}");
-#endif
-				_logger?.SaveLog($"CRASH_REPORT_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt");
-				_logger?.LogInformation("Saved crash report");
-				Shutdown();
+				if (component.Value.separateThread)
+				{
+					Logger?.LogDebug($"Initializing {component.Value.component.GetType().Name} ({component.Key.Name}) on a separate thread.");
+					Thread thread = new(() => component.Value.component.Initialize());
+					thread.Start();
+				}
+				else
+				{
+					Logger?.LogDebug($"Initializing {component.Value.component.GetType().Name} ({component.Key.Name}) on the main thread.");
+					component.Value.component.Initialize();
+				}
 			}
 		}
 	}
+
+	internal record struct ComponentHolder(IEngineComponent component, bool separateThread);
 }

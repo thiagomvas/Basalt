@@ -15,6 +15,11 @@ namespace Basalt.Common
 			return this;
 		}
 
+		public EngineBuilder AddComponent<TType>(Func<TType> init, bool separateThread = false) where TType : IEngineComponent
+		{
+			_components.Add(typeof(TType), new(typeof(TType), () => init(), separateThread));
+			return this;
+		}
 		public EngineBuilder AddComponent<TType, TImpl>(Func<TImpl> init, bool separateThread = false) 
 			where TImpl : TType
 			where TType : IEngineComponent
