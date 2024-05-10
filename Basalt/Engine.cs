@@ -1,13 +1,19 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions.Engine;
-using System.Diagnostics;
 
 namespace Basalt
 {
+	/// <summary>
+	/// Represents the core engine of the game. This class is a singleton and cannot be created using a constructor. To set up the engine, use <see cref="Common.EngineBuilder"/>
+	/// </summary>
 	public class Engine
 	{
 		#region Singleton
 		private static Engine? _instance;
+
+		/// <summary>
+		/// The single instance of the engine class.
+		/// </summary>
 		public static Engine Instance
 		{
 			get
@@ -27,14 +33,22 @@ namespace Basalt
 
 		#endregion
 
+		/// <summary>
+		/// Indicates whether the engine has started succesfully and is running.
+		/// </summary>
 		public bool Running { get; private set; } = false;
 		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
-		public EntityManager EntityManager;
+
+		/// <summary>
+		/// The entity manager that holds all the entities.
+		/// </summary>
+		public EntityManager EntityManager { get; private set; } 
 		private ILogger? _logger;
 		private List<Entity> queuedEntities = new();
 
-		public CountdownEvent CountdownEvent { get; } = new(1);
-
+		/// <summary>
+		/// The logger associated with the engine.
+		/// </summary>
 		public ILogger? Logger
 		{
 			get { return _logger; }
@@ -49,6 +63,11 @@ namespace Basalt
 
 		internal void AddLogger(ILogger logger) => Logger = logger;
 
+		/// <summary>
+		/// Tries to get the reference to a component of the engine.
+		/// </summary>
+		/// <typeparam name="T">The interface responsible for holding the actual type, such as <see cref="IGraphicsEngine"/>, <see cref="IEventBus"/>. </typeparam>
+		/// <returns>The reference to the implementation of the specified interface if it is attached to the engine using the builder, returns <c>null</c> otherwise</returns>
 		public T? GetEngineComponent<T>() where T : IEngineComponent
 		{
 			if (Components.ContainsKey(typeof(T)))
@@ -62,6 +81,9 @@ namespace Basalt
 			}
 		}
 
+		/// <summary>
+		/// Initializes the engine.
+		/// </summary>
 		public void Initialize()
 		{
 			// Block initialization if no graphics engine or event bus is found
@@ -108,6 +130,9 @@ namespace Basalt
 			Instance.GetEngineComponent<IEventBus>()?.NotifyStart();
 		}
 
+		/// <summary>
+		/// Shuts down the engine.
+		/// </summary>
 		public void Shutdown()
 		{
 			Running = false;
@@ -118,6 +143,10 @@ namespace Basalt
 			}
 		}
 
+		/// <summary>
+		/// Creates an entity in the engine.
+		/// </summary>
+		/// <param name="entity">The entity to create.</param>
 		public static void CreateEntity(Entity entity)
 		{
 			if(!Instance.Running)
@@ -129,6 +158,10 @@ namespace Basalt
 			Instance.EntityManager.AddEntity(entity);
 		}
 
+		/// <summary>
+		/// Removes an entity from the engine.
+		/// </summary>
+		/// <param name="entity">The entity to remove.</param>
 		public static void RemoveEntity(Entity entity)
 		{
 			Instance.EntityManager.RemoveEntity(entity);

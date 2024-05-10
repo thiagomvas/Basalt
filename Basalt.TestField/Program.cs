@@ -33,10 +33,10 @@ var initParams = new WindowInitParams
 var builder = new EngineBuilder();
 
 builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine> (() => new RaylibGraphicsEngine(initParams), true);
-builder.AddComponent<IPhysicsEngine, PhysicsEngine>(() => new PhysicsEngine(), true);
-builder.AddComponent<IEventBus, EventBus>(() => new EventBus());
-builder.AddComponent<IInputSystem, RaylibInputSystem>(() => new RaylibInputSystem());
-builder.AddComponent<ISoundSystem, RaylibSoundSystem>(() => new RaylibSoundSystem());
+builder.AddComponent<IPhysicsEngine, PhysicsEngine>(true);
+builder.AddComponent<IEventBus, EventBus>();
+builder.AddComponent<IInputSystem, RaylibInputSystem>();
+builder.AddComponent<ISoundSystem, RaylibSoundSystem>();
 
 builder.AddLogger(new ConsoleLogger());
 
