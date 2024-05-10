@@ -1,6 +1,6 @@
 ﻿using Basalt.Common;
 using Basalt.Common.Entities;
-using Basalt.Core.Common.Abstractions;
+using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Sound;
@@ -13,7 +13,7 @@ using static Raylib_cs.Raylib;
 
 namespace Basalt.Raylib.Graphics
 {
-	public class RaylibGraphicsEngine : IGraphicsEngine
+    public class RaylibGraphicsEngine : IGraphicsEngine
 	{
 
 		public const int MaxColumns = 20;

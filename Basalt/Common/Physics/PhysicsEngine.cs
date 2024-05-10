@@ -1,13 +1,13 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
-using Basalt.Core.Common.Abstractions;
+using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Common.Physics
 {
-	/// <summary>
-	/// Default implementation for a basic physics engine.
-	/// </summary>
-	public class PhysicsEngine : IPhysicsEngine
+    /// <summary>
+    /// Default implementation for a basic physics engine.
+    /// </summary>
+    public class PhysicsEngine : IPhysicsEngine
 	{
 		private readonly ILogger? logger;
 		private bool ShouldRun = true;

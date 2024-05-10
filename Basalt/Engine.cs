@@ -1,14 +1,14 @@
 ﻿using Basalt.Common.Entities;
-using Basalt.Core.Common.Abstractions;
+using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Abstractions.Sound;
 
 namespace Basalt
 {
-	/// <summary>
-	/// Represents the main game engine. Responsible for initializing any engine components and overall management.
-	/// </summary>
-	public class Engine
+    /// <summary>
+    /// Represents the main game engine. Responsible for initializing any engine components and overall management.
+    /// </summary>
+    public class Engine
 	{
 		/// <summary>
 		/// Gets a value indicating whether the engine has started.
