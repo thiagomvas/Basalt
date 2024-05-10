@@ -5,6 +5,21 @@ namespace Basalt
 {
 	public class Engine
 	{
+		#region Singleton
+		private static Engine? _instance;
+		public static Engine Instance
+		{
+			get
+			{
+				if (_instance == null)
+				{
+					_instance = new Engine();
+				}
+				return _instance;
+			}
+		}
+		#endregion
+
 		public bool Running { get; private set; } = false;
 		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
 
