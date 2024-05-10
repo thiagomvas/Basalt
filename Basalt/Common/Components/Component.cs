@@ -62,7 +62,7 @@ namespace Basalt.Common.Components
 
 		internal void onDestroy()
 		{
-			Engine.Instance.EventBus?.Unsubscribe(this);
+			Engine.Instance.GetEngineComponent<IEventBus>()?.Unsubscribe(this);
 			OnDestroy();
 		}
 

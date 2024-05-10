@@ -226,13 +226,6 @@ namespace Basalt.Common.Entities
 			}
 		}
 
-		internal void CallOnStart()
-		{
-			foreach (var component in components)
-			{
-				component.OnStart();
-			}
-		}
 
 		internal void CallOnCollision(Collider other)
 		{

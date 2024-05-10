@@ -19,6 +19,7 @@ namespace Basalt.Raylib.Input
 		{
 			lock (_lock)
 			{
+				Engine.Instance.Logger?.LogDebug($"Registering keybind {input.Key} with action {action.Method.Name}");
 				registerQueue.Add(input, action);
 			}
 		}

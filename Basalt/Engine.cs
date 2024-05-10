@@ -1,4 +1,5 @@
-﻿using Basalt.Core.Common.Abstractions.Engine;
+﻿using Basalt.Common.Entities;
+using Basalt.Core.Common.Abstractions.Engine;
 using System.Diagnostics;
 
 namespace Basalt
@@ -18,12 +19,21 @@ namespace Basalt
 				return _instance;
 			}
 		}
+
+		internal Engine()
+		{
+			_instance = this;
+		}
+
 		#endregion
 
 		public bool Running { get; private set; } = false;
 		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
-
+		public EntityManager EntityManager;
 		private ILogger? _logger;
+		private List<Entity> queuedEntities = new();
+
+		public CountdownEvent CountdownEvent { get; } = new(1);
 
 		public ILogger? Logger
 		{
@@ -67,6 +77,15 @@ namespace Basalt
 				return;
 			}
 
+			Running = true;
+
+			// Initialize Entity Manager
+			EntityManager = new(GetEngineComponent<IEventBus>());
+			foreach(var e in queuedEntities)
+			{
+				CreateEntity(e);
+			}
+
 			// Move graphics engine to the front of the list
 			Components = Components.OrderBy(c => c.Key == typeof(IGraphicsEngine) ? 0 : 1).ToDictionary(c => c.Key, c => c.Value);
 
@@ -85,6 +104,34 @@ namespace Basalt
 					component.Value.component.Initialize();
 				}
 			}
+
+			Instance.GetEngineComponent<IEventBus>()?.NotifyStart();
+		}
+
+		public void Shutdown()
+		{
+			Running = false;
+			Logger?.LogWarning("Shutting down engine...");
+			foreach (var component in Components)
+			{
+				component.Value.component.Shutdown();
+			}
+		}
+
+		public static void CreateEntity(Entity entity)
+		{
+			if(!Instance.Running)
+			{
+				Instance.queuedEntities.Add(entity);
+				return;
+			}
+			Instance.Logger?.LogDebug($"Creating entity {entity.Id}...");
+			Instance.EntityManager.AddEntity(entity);
+		}
+
+		public static void RemoveEntity(Entity entity)
+		{
+			Instance.EntityManager.RemoveEntity(entity);
 		}
 	}
 

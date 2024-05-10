@@ -36,9 +36,9 @@ namespace Basalt.Common
 			_components.Add(typeof(TType), new(typeof(TImpl), () => Activator.CreateInstance<TImpl>(), separateThread));
 			return this;
 		}
-		public Engine2 Build()
+		public Engine Build()
 		{
-			var engine = new Engine2();
+			var engine = new Engine();
 			foreach (var component in _components)
 			{
 				engine.AddComponent(component.Key, component.Value.initFunc(), component.Value.separateThread);

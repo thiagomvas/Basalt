@@ -37,6 +37,7 @@ namespace Basalt.Common.Events
 		/// </summary>
 		public void NotifyStart()
 		{
+			Console.WriteLine($"Notifying start to {observers.Count} observers: {string.Join(", ", observers.Select(e => e.GetType().Name))}");
 			foreach (var observer in observers)
 			{
 				observer.OnStart();

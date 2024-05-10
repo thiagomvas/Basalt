@@ -1,6 +1,7 @@
 ﻿using Basalt.Common;
 using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions.Engine;
+using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Sound;
@@ -26,6 +27,11 @@ namespace Basalt.Raylib.Graphics
 		private readonly ILogger? logger;
 		internal static RaylibGraphicsEngine instance;
 
+		private EntityManager entityManager;
+		private ISoundSystem soundSystem;
+		private IInputSystem inputSystem;
+		private IEventBus eventBus;
+
 		Shader PostProcessShader, LightShader;
 		bool ShouldRun = true;
 		internal List<LightSource> sources = new();
@@ -41,6 +47,13 @@ namespace Basalt.Raylib.Graphics
 
 		public unsafe void Initialize()
 		{
+			soundSystem = Engine.Instance.GetEngineComponent<ISoundSystem>();
+			inputSystem = Engine.Instance.GetEngineComponent<IInputSystem>();
+			eventBus = Engine.Instance.GetEngineComponent<IEventBus>();
+			entityManager = Engine.Instance.EntityManager;
+
+
+
 			enablePostProcessing = config.PostProcessing;
 			instance = this;
 			SetTraceLogCallback(&LogCustom);
@@ -62,8 +75,6 @@ namespace Basalt.Raylib.Graphics
 				useLighting = true;
 			}
 			RaylibCache.Instance.CacheShader("lighting", LightShader);
-
-			Engine.Instance.count.Signal();
 
 
 			SetTargetFPS(config.TargetFps);
@@ -98,7 +109,7 @@ namespace Basalt.Raylib.Graphics
 		public unsafe void Render()
 		{
 			Camera3D camera = new();
-			var control = Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e is CameraController) as CameraController;
+			var control = entityManager.GetEntities().FirstOrDefault(e => e is CameraController) as CameraController;
 			camera = control.camera;
 			control.OnStart();
 
@@ -108,7 +119,7 @@ namespace Basalt.Raylib.Graphics
 
 
 
-			bool hasSoundSystem = Engine.Instance.SoundSystem is not null;
+			bool hasSoundSystem = soundSystem is not null;
 
 			logger?.LogInformation("Starting raylib rendering loop...");
 
@@ -123,65 +134,12 @@ namespace Basalt.Raylib.Graphics
 				SetShaderValue(LightShader, ambientLoc, ambient, ShaderUniformDataType.Vec4);
 			}
 
-
-
-			Image image = LoadImage("perlin_noise.png");
-			Image imageinvert = LoadImage("perlin_noise_colored.png");
-			var texture = LoadTextureFromImage(image);
-			var textureinvert = LoadTextureFromImage(imageinvert);
-
-			Mesh mesh = GenMeshHeightmap(image, new Vector3(256, 32, 256));
-			Model model = LoadModelFromMesh(mesh);
-
-			model.Materials[0].Shader = LightShader;
-
-			SetMaterialTexture(ref model, 0, MaterialMapIndex.Albedo, ref textureinvert);
-
-			RaylibCache.Instance.CacheModel("heightmap", model);
-
-			Entity heightmap = new();
-			heightmap.AddComponent(new ModelRenderer(heightmap) { ModelCacheKey = "heightmap" });
-			heightmap.Transform.Position = new Vector3(-128, -16, -128);
-			Engine.CreateEntity(heightmap);
-
-			UnloadImage(image);
-			UnloadImage(imageinvert);
-
-
 			// Main game loop
 			while (ShouldRun)
 			{
 				control.OnUpdate();
-				if (hasSoundSystem && Engine.Instance.SoundSystem!.IsMusicPlaying())
-				{
-					UpdateMusicStream((Music)Engine.Instance.SoundSystem.GetMusicPlaying()!);
-				}
 				Time.DeltaTime = GetFrameTime();
 
-				if (IsKeyPressed(KeyboardKey.G))
-				{
-					Engine.Instance.SoundSystem?.PlayAudio("testaudio.mp3", AudioType.SoundEffect);
-				}
-
-				if (IsKeyPressed(KeyboardKey.H))
-				{
-					Engine.Instance.SoundSystem?.PlayAudio("testsong.mp3", AudioType.Music);
-				}
-
-				if (IsKeyPressed(KeyboardKey.J))
-				{
-					Engine.Instance.SoundSystem?.PauseAudio(AudioType.Music);
-				}
-
-				if (IsKeyPressed(KeyboardKey.K))
-				{
-					Engine.Instance.SoundSystem?.ResumeAudio(AudioType.Music);
-				}
-
-				if (IsKeyPressed(KeyboardKey.L))
-				{
-					Engine.Instance.SoundSystem?.StopAudio(AudioType.Music);
-				}
 
 
 				if (IsKeyPressed(KeyboardKey.Escape))
@@ -191,8 +149,8 @@ namespace Basalt.Raylib.Graphics
 				}
 				// Update
 				//----------------------------------------------------------------------------------
-				Engine.Instance.EventBus?.NotifyUpdate();
-				Engine.Instance.InputSystem?.Update();
+				eventBus?.NotifyUpdate();
+				inputSystem?.Update();
 
 
 
@@ -230,7 +188,7 @@ namespace Basalt.Raylib.Graphics
 				DrawGrid(100, 1.0f);
 #endif
 
-				Engine.Instance.EventBus?.NotifyRender();
+				eventBus?.NotifyRender();
 
 
 				EndMode3D();
