@@ -10,21 +10,32 @@ namespace Basalt.Tests.Integration
 	[TestFixture]
 	internal class ComponentIntegrationTests
 	{
-		private IEventBus? eventBus;
 
-		[OneTimeSetUp]
+		[SetUp]
 		public void Setup()
 		{
-
-
-
 			var engine = new EngineBuilder()
 				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
 				.AddComponent<IEventBus, EventBus>()
 				.Build();
 
 			eventBus = engine.GetEngineComponent<IEventBus>();
-			
+		}
+
+		[Test]
+		public void ComponentAddedToEngine_ShouldBeSubscribedToEventBus()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+
+			// Act
+			Engine.Instance.Initialize();
+			Engine.CreateEntity(entity);
+			var component = entity.GetComponent<TestComponent>();
+
+			// Assert
+			Assert.IsTrue(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(component));
 		}
 
 		[Test]
@@ -42,22 +53,19 @@ namespace Basalt.Tests.Integration
 			Assert.IsTrue(entity.GetComponent<TestComponent>().HasStarted);
 		}
 
+
 		[Test]
-		public void ComponentCreated_WhenEngineNotRunning_ShouldCallStartOnInit()
+		public void ComponentCreated_WhenNotAddedToEngine_ShouldNotCallStart()
 		{
 			// Arrange
 			var entity = new Entity();
 			entity.AddComponent(new TestComponent(entity));
-			Engine.CreateEntity(entity);
 
 			// Act
-			bool beforeInit = entity.GetComponent<TestComponent>().HasStarted;
 			Engine.Instance.Initialize();
-			bool afterInit = entity.GetComponent<TestComponent>().HasStarted;
 
 			// Assert
-			Assert.IsFalse(beforeInit);
-			Assert.IsTrue(afterInit);
+			Assert.IsFalse(entity.GetComponent<TestComponent>().HasStarted);
 		}
 	}
 }

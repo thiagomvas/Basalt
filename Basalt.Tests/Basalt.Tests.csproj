@@ -23,10 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Unit\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Basalt.Core\Basalt.Core.csproj" />
     <ProjectReference Include="..\Basalt\Basalt.csproj" />
   </ItemGroup>

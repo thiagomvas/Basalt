@@ -8,10 +8,11 @@ namespace Basalt.Tests.Common
 		public TestComponent(Entity entity) : base(entity)
 		{
 		}
-
+		public bool HasStarted;
 		public int OnStartCount = 0, OnUpdateCount = 0, OnRenderCount = 0, OnPhysicsUpdateCount = 0;
 		public override void OnStart()
 		{
+			HasStarted = true;
 			OnStartCount++;
 		}
 

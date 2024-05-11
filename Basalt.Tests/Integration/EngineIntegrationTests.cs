@@ -4,7 +4,6 @@ using Basalt.Common.Events;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Basalt.Tests.Integration
 {
@@ -12,7 +11,7 @@ namespace Basalt.Tests.Integration
 	public class EngineIntegrationTests
 	{
 		[Test]
-		public void TestEngineInitialization()
+		public void EngineInitialize_WithRequiredComponents_ShouldRunSuccessfully()
 		{
 			// Arrange
 			var logger = new Mock<ILogger>();
@@ -38,7 +37,7 @@ namespace Basalt.Tests.Integration
 		}
 
 		[Test]
-		public void TestEngineFailsToStartWithoutGraphicsEngine()
+		public void EngineInitialize_WhenMissingGraphicsEngine_ShouldNotInit()
 		{
 			// Arrange
 			var loggerMock = new Mock<ILogger>();
@@ -56,7 +55,7 @@ namespace Basalt.Tests.Integration
 		}
 
 		[Test]
-		public void TestEngineFailsToStartWithoutEventBus()
+		public void EngineInitialize_WhenMissingEventBus_ShouldNotInit()
 		{
 			// Arrange
 			var loggerMock = new Mock<ILogger>();
@@ -74,7 +73,7 @@ namespace Basalt.Tests.Integration
 		}
 
 		[Test]
-		public void TestEngineShutdown()
+		public void EngineShutdown_ShouldShutdownSuccessfuly()
 		{
 			// Arrange
 			var engine = new EngineBuilder()
@@ -94,37 +93,34 @@ namespace Basalt.Tests.Integration
 		}
 
 		[Test]
-		public void TestEngineCreateEntity()
+		public void EngineCreateEntity_WhenInitialized_ShouldCreateEntity()
 		{
 			// Arrange
-			var entityPostInit = new Entity();
-			var entityPreInit = new Entity();
+			var entity = new Entity();
 
-			entityPostInit.Id = "entity.post";
-			entityPreInit.Id = "entity.pre";
+			entity.Id = "entity1";
 
 			var engine = new EngineBuilder()
 				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
 				.AddComponent<IEventBus, EventBus>()
 				.Build();
 
-			Engine.CreateEntity(entityPreInit);
 
 			engine.Initialize();
 
 
 			// Act
-			Engine.CreateEntity(entityPostInit);
+			Engine.CreateEntity(entity);
 
 			// Assert
-			Assert.IsNotNull(entityPostInit, "Entity was null");
-			Assert.That(engine.EntityManager.GetEntities().Count, Is.EqualTo(2));
-			Assert.IsNotNull(engine.EntityManager.GetEntity("entity.post"));
-			Assert.IsNotNull(engine.EntityManager.GetEntity("entity.pre"));
+			Assert.IsNotNull(entity, "Entity was null");
+			Assert.That(engine.EntityManager.GetEntities().Count, Is.EqualTo(1));
+			Assert.IsNotNull(engine.EntityManager.GetEntity("entity1"));
 		}
 
+
 		[Test]
-		public void TestEventBusNotifications()
+		public void EngineEventBus_WhenHasObservers_ShouldNotify()
 		{
 			// Arrange
 			var entity = new Entity();
@@ -146,7 +142,6 @@ namespace Basalt.Tests.Integration
 			var eventBus = engine.GetEngineComponent<IEventBus>();
 
 			// Act
-			eventBus?.NotifyStart();
 			for (int i = 0; i < physicsCalls; i++)
 			{
 				eventBus?.NotifyPhysicsUpdate();
@@ -167,6 +162,23 @@ namespace Basalt.Tests.Integration
 			Assert.That(entity.GetComponent<TestComponent>()!.OnPhysicsUpdateCount, Is.EqualTo(physicsCalls));
 			Assert.That(entity.GetComponent<TestComponent>()!.OnUpdateCount, Is.EqualTo(updareCalls));
 			Assert.That(entity.GetComponent<TestComponent>()!.OnRenderCount, Is.EqualTo(renderCalls));
+		}
+
+		[Test]
+		public void EngineCreateEntity_WhenNotInitialized_ShouldThrow()
+		{
+			// Arrange
+			var entity = new Entity();
+
+			entity.Id = "entity1";
+
+			var engine = new EngineBuilder()
+				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
+				.AddComponent<IEventBus, EventBus>()
+				.Build();
+
+			// Act
+			Assert.Throws<InvalidOperationException>(() => Engine.CreateEntity(entity));
 		}
 	}
 }
