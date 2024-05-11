@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Core.Common.Abstractions.Sound
 {
-	public interface ISoundSystem : IEngineComponent
+    public interface ISoundSystem : IEngineComponent
 	{
 		void LoadAudio(string filename, AudioType type);
 

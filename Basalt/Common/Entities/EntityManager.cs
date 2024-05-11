@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Common.Entities
 {
@@ -14,20 +9,32 @@ namespace Basalt.Common.Entities
 	{
 		private List<Entity> entities = new List<Entity>();
 		private readonly object lockObject = new object();
+		private readonly IEventBus eventBus;
 
-		/// <summary>
-		/// Adds an entity to the entity manager.
-		/// </summary>
-		/// <param name="entity">The entity to add</param>
-		public void AddEntity(Entity entity)
-		{
+		private List<Entity> queuedEntities = new List<Entity>();
+
+        public EntityManager(IEventBus eventBus)
+        {
+			this.eventBus = eventBus;
+        }
+
+        /// <summary>
+        /// Adds an entity to the entity manager.
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
+        public void AddEntity(Entity entity)
+		{ 
+			
 			lock (lockObject)
 			{
+				Engine.Instance.Logger?.LogDebug($"Adding entity {entity.Id} to the entity manager.");
 				entities.Add(entity);
-				foreach(var component in entity.GetComponents())
-					Engine.Instance.EventBus?.Subscribe(component);
+				foreach (var component in entity.GetComponents())
+					eventBus.Subscribe(component);
 				foreach (var child in entity.Children)
 					AddEntity(child);
+
+				Engine.Instance.Logger?.LogDebug($"Added entity {entity.Id} to the entity manager.");
 			}
 		}
 
@@ -41,7 +48,7 @@ namespace Basalt.Common.Entities
 			{
 				entities.Remove(entity);
 				foreach (var component in entity.GetComponents())
-					Engine.Instance.EventBus?.Unsubscribe(component);
+					eventBus.Unsubscribe(component);
 			}
 		}
 
@@ -53,7 +60,7 @@ namespace Basalt.Common.Entities
 		{
 			lock (lockObject)
 			{
-				return new List<Entity>(entities);
+				return entities;
 			}
 		}
 

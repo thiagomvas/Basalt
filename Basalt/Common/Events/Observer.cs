@@ -1,4 +1,4 @@
-﻿using Basalt.Core.Common.Abstractions;
+﻿using Basalt.Core.Common.Abstractions.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Basalt.Common.Events
 {
-	public class Observer : IObserver
+    public class Observer : IObserver
 	{
 		private readonly ILogger logger;
 		public int Id;

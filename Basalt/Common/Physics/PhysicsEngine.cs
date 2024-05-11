@@ -1,13 +1,13 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
-using Basalt.Core.Common.Abstractions;
+using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Common.Physics
 {
-	/// <summary>
-	/// Default implementation for a basic physics engine.
-	/// </summary>
-	public class PhysicsEngine : IPhysicsEngine
+    /// <summary>
+    /// Default implementation for a basic physics engine.
+    /// </summary>
+    public class PhysicsEngine : IPhysicsEngine
 	{
 		private readonly ILogger? logger;
 		private bool ShouldRun = true;
@@ -17,26 +17,27 @@ namespace Basalt.Common.Physics
 		const int targetFrameTimeMs = 16;
 
 		private Grid entityGrid = new(10);
+		private IEventBus eventBus;
+		
 
 		/// <summary>
 		/// Gets or sets the gravity value for the physics engine.
 		/// </summary>
 		public float Gravity { get; set; } = 9.81f;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class.
-		/// </summary>
-		/// <param name="logger">The logger to use for logging messages.</param>
-		public PhysicsEngine(ILogger? logger = null)
-		{
-			this.logger = logger;
-		}
 
 		/// <summary>
 		/// Initializes the physics engine.
 		/// </summary>
 		public void Initialize()
 		{
+			var bus = Engine.Instance.GetEngineComponent<IEventBus>();
+			if(bus == null)
+			{
+				logger?.LogError("Could not find an event bus component that implements IEventBus. Cannot run without one.");
+				return;
+			}
+			eventBus = bus;
 			logger?.LogInformation("Physics Engine Initialized");
 
 			Simulate();
@@ -62,7 +63,7 @@ namespace Basalt.Common.Physics
 			{
 				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-				Engine.Instance.EventBus?.NotifyPhysicsUpdate();
+				eventBus?.NotifyPhysicsUpdate();
 
 				entityGrid.Entities = Engine.Instance.EntityManager.GetEntities();
 

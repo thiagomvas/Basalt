@@ -1,14 +1,14 @@
-﻿using Basalt.Core.Common.Abstractions;
+﻿using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Types;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Basalt.Common.Logging
 {
-	/// <summary>
-	/// Represents a console logger implementation that logs messages to the console.
-	/// </summary>
-	public class ConsoleLogger : ILogger
+    /// <summary>
+    /// Represents a console logger implementation that logs messages to the console.
+    /// </summary>
+    public class ConsoleLogger : ILogger
 	{
 		private List<string> logLines = new List<string>();
 		private LogLevel logLevel;

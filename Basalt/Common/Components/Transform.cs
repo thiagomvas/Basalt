@@ -87,8 +87,6 @@ namespace Basalt.Common.Components
 		public Transform(Entity entity) : base(entity)
 		{
 			Position = new Vector3();
-
-			Engine.Instance.EventBus?.Subscribe(this);
 		}
 
 		/// <summary>
