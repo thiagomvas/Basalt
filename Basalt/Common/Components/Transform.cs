@@ -102,8 +102,7 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnUpdate()
 		{
-			if(Position.X == float.NaN)
-				Position = Vector3.Zero;
+
 		}
 	}
 }
