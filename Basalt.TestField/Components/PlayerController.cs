@@ -55,7 +55,7 @@ namespace Basalt.TestField.Components
 
 		public override void OnUpdate()
 		{
-			if (!Entity.IsActive)
+			if (!Entity.Enabled)
 				return;
 		}
 

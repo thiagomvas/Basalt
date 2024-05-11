@@ -35,7 +35,7 @@ namespace Basalt.Raylib.Components
 
 		public void OnUpdate()
 		{
-			if (!IsActive)
+			if (!Enabled)
 				return;
 
 			Vector3 rotation = new(GetMouseDelta().X * sensitivity,                            // Rotation: yaw
