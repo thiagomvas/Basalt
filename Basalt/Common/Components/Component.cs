@@ -26,7 +26,7 @@ namespace Basalt.Common.Components
 		{
 			this.Entity = entity;
 
-			if (Engine.Instance.Running)
+			if (Engine.Instance.Running && Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(this))
 			{
 				OnStart();
 			}

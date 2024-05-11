@@ -86,6 +86,10 @@ namespace Basalt.Common.Events
 			lock (lockObject)
 			{
 				observers.Add(observer);
+				if(Engine.Instance.Running)
+				{
+					observer.OnStart();
+				}
 			}
 		}
 
@@ -98,6 +102,14 @@ namespace Basalt.Common.Events
 			lock (lockObject)
 			{
 				observers.Remove(observer);
+			}
+		}
+
+		public bool IsSubscribed(IObserver observer)
+		{
+			lock (lockObject)
+			{
+				return observers.Contains(observer);
 			}
 		}
 
