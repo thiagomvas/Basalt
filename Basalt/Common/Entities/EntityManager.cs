@@ -56,5 +56,18 @@ namespace Basalt.Common.Entities
 				return new List<Entity>(entities);
 			}
 		}
+
+		/// <summary>
+		/// Gets an entity with a specified ID
+		/// </summary>
+		/// <param name="id">The id of the entity</param>
+		/// <returns>An entity whose id matches the specified <paramref name="id"/>, returns null if none were found</returns>
+		public Entity? GetEntity(string id)
+		{
+			lock (lockObject)
+			{
+				return entities.FirstOrDefault(e => e.Id == id);
+			}
+		}
 	}
 }
