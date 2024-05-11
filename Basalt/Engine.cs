@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions.Engine;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Basalt
 {
@@ -33,16 +34,24 @@ namespace Basalt
 
 		#endregion
 
+		private bool running = false;
+
 		/// <summary>
 		/// Indicates whether the engine has started succesfully and is running.
 		/// </summary>
-		public bool Running { get; private set; } = false;
+		public bool Running
+		{
+			get => running;
+			private set => running = value;
+		}
+
+		private bool fullyInitialized = false;
 		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
 
 		/// <summary>
 		/// The entity manager that holds all the entities.
 		/// </summary>
-		public EntityManager EntityManager { get; private set; } 
+		public EntityManager EntityManager { get; private set; }
 		private ILogger? _logger;
 		private List<Entity> queuedEntities = new();
 
@@ -87,26 +96,20 @@ namespace Basalt
 		public void Initialize()
 		{
 			// Block initialization if no graphics engine or event bus is found
-			if(!Components.ContainsKey(typeof(IGraphicsEngine)))
+			if (!Components.ContainsKey(typeof(IGraphicsEngine)))
 			{
 				Logger?.LogFatal("Could not find a Graphics Engine component that implements IGraphicsEngine. Cannot run without one.");
 				return;
 			}
 
-			if(!Components.ContainsKey(typeof(IEventBus)))
+			if (!Components.ContainsKey(typeof(IEventBus)))
 			{
 				Logger?.LogFatal("Could not find an Event Bus component that implements IEventBus. Cannot run without one.");
 				return;
 			}
 
-			Running = true;
-
 			// Initialize Entity Manager
 			EntityManager = new(GetEngineComponent<IEventBus>());
-			foreach(var e in queuedEntities)
-			{
-				CreateEntity(e);
-			}
 
 			// Move graphics engine to the front of the list
 			Components = Components.OrderBy(c => c.Key == typeof(IGraphicsEngine) ? 0 : 1).ToDictionary(c => c.Key, c => c.Value);
@@ -128,6 +131,8 @@ namespace Basalt
 			}
 
 			Instance.GetEngineComponent<IEventBus>()?.NotifyStart();
+
+			Running = true;
 		}
 
 		/// <summary>
@@ -149,10 +154,9 @@ namespace Basalt
 		/// <param name="entity">The entity to create.</param>
 		public static void CreateEntity(Entity entity)
 		{
-			if(!Instance.Running)
+			if (!Instance.Running)
 			{
-				Instance.queuedEntities.Add(entity);
-				return;
+				throw new InvalidOperationException("Cannot create entity when engine is not running.");
 			}
 			Instance.Logger?.LogDebug($"Creating entity {entity.Id}...");
 			Instance.EntityManager.AddEntity(entity);
