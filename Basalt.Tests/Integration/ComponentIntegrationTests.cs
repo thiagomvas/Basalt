@@ -18,8 +18,6 @@ namespace Basalt.Tests.Integration
 				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
 				.AddComponent<IEventBus, EventBus>()
 				.Build();
-
-			eventBus = engine.GetEngineComponent<IEventBus>();
 		}
 
 		[Test]
@@ -66,6 +64,23 @@ namespace Basalt.Tests.Integration
 
 			// Assert
 			Assert.IsFalse(entity.GetComponent<TestComponent>().HasStarted);
+		}
+
+		[Test]
+		public void ComponentDestroy_ShouldUnsubscribe()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+
+			// Act
+			Engine.Instance.Initialize();
+			Engine.CreateEntity(entity);
+			var component = entity.GetComponent<TestComponent>();
+			entity.Destroy();
+
+			// Assert
+			Assert.IsFalse(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(component));
 		}
 	}
 }
