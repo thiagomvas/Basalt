@@ -41,11 +41,22 @@ namespace Basalt.Common.Entities
 		/// </summary>
 		public List<Entity> Children { get; set; } = new();
 
-
+		private bool enabled;
 		/// <summary>
-		/// Whether the entity is active or not.
+		/// Whether the entity is enabled or not.
 		/// </summary>
-		public bool IsActive = true;
+		public bool Enabled
+		{
+			get => enabled;
+			set
+			{
+				enabled = value;
+				foreach (var child in Children)
+				{
+					child.Enabled = value;
+				}
+			}
+		}
 
 		public Entity()
 		{
@@ -162,6 +173,7 @@ namespace Basalt.Common.Entities
 		public void RemoveComponent(Component component)
 		{
 			components.Remove(component);
+			component.onDestroy();
 		}
 
 		/// <summary>
