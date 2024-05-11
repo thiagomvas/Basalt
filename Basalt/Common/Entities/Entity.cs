@@ -174,6 +174,9 @@ namespace Basalt.Common.Entities
 		{
 			components.Remove(component);
 			component.onDestroy();
+			if(component.GetType() == typeof(Rigidbody))
+				Rigidbody = null;
+			
 		}
 
 		/// <summary>
