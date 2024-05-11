@@ -25,11 +25,6 @@ namespace Basalt.Common.Components
 		protected Component(Entity entity)
 		{
 			this.Entity = entity;
-
-			if (Engine.Instance.Running && Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(this))
-			{
-				OnStart();
-			}
 		}
 
 		/// <summary>
