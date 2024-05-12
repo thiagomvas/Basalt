@@ -9,29 +9,49 @@ namespace Basalt.Common.Physics
     /// </summary>
     public class PhysicsEngine : IPhysicsEngine
 	{
-		private readonly ILogger? logger;
-		private bool ShouldRun = true;
 
 		public long startTime, elapsedTime;
 
 		const int targetFrameTimeMs = 16;
 
-		private Grid entityGrid = new(10);
+		private IChunkingMechanism chunking;
 		private IEventBus eventBus;
-		
+		private ILogger? logger;
+		private bool ShouldRun = true;
+
 
 		/// <summary>
 		/// Gets or sets the gravity value for the physics engine.
 		/// </summary>
 		public float Gravity { get; set; } = 9.81f;
 
-
 		/// <summary>
-		/// Initializes the physics engine.
+		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class using <see cref="Grid"/> as a <see cref="IChunkingMechanism"/>.
 		/// </summary>
-		public void Initialize()
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		public PhysicsEngine()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		{
+			chunking = new Grid(10);
+        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class using the specified <see cref="IChunkingMechanism"/>.
+		/// </summary>
+		/// <param name="chunkingMechanism">The chunking mechanism used to optimize collision handling</param>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		public PhysicsEngine(IChunkingMechanism chunkingMechanism)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		{
+			chunking = chunkingMechanism;
+        }
+
+        /// <summary>
+        /// Initializes the physics engine.
+        /// </summary>
+        public void Initialize()
 		{
 			var bus = Engine.Instance.GetEngineComponent<IEventBus>();
+			logger = Engine.Instance.Logger;
 			if(bus == null)
 			{
 				logger?.LogError("Could not find an event bus component that implements IEventBus. Cannot run without one.");
@@ -65,12 +85,10 @@ namespace Basalt.Common.Physics
 
 				eventBus?.NotifyPhysicsUpdate();
 
-				entityGrid.Entities = Engine.Instance.EntityManager.GetEntities();
-
-				entityGrid.Update();
+				chunking.Update();
 
 				// Check for collisions
-				foreach (var chunk in entityGrid.GetEntitiesChunked())
+				foreach (var chunk in chunking.GetEntitiesChunked())
 				{
 					for (int i = 0; i < chunk.Count; i++)
 					{
@@ -102,6 +120,14 @@ namespace Basalt.Common.Physics
 				{
 					Task.Delay((int)(targetFrameTimeMs - elapsedTime)).Wait();
 				}
+			}
+		}
+
+		public void AddEntityToSimulation(object entity)
+		{
+			if (entity is Entity e)
+			{
+				chunking.AddEntity(e);
 			}
 		}
 

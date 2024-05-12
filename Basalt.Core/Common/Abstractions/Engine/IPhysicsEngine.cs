@@ -9,6 +9,7 @@ namespace Basalt.Core.Common.Abstractions.Engine
     public interface IPhysicsEngine : IEngineComponent
     {
         float Gravity { get; set; }
+        void AddEntityToSimulation(object entity);
 
         void Simulate();
 
