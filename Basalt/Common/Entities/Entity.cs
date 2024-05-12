@@ -112,21 +112,26 @@ namespace Basalt.Common.Entities
 			var target = new Entity();
 			target.Id = jObject["Id"]?.Value<string>() ?? Guid.NewGuid().ToString();
 
-			foreach (var component in jObject["Components"])
+			if (jObject["Components"] == null)
+				return target;
+
+			foreach (var component in jObject["Components"]!)
 			{
-				var type = ByName(component["Type"]?.Value<string>().Split(',').First() ?? string.Empty);
+				var type = ByName(component["Type"]?.Value<string>()?.Split(',').First() ?? string.Empty);
 
 				if(type == null)
 				{
 					continue;
 				}
 
-				ConstructorInfo constructor = type.GetConstructor(new[] { typeof(Entity) });
+				ConstructorInfo constructor = type.GetConstructor(new[] { typeof(Entity) })!;
+
 
 				var typeProps = type.GetProperties();
 				var instance = constructor.Invoke([target]);
 
-				foreach (var prop in component["Data"] as JObject)
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+				foreach (var prop in component["Data"] as JObject) // CS8602: Dereference of a possibly null reference.
 				{
 					if (typeProps.Any(p => p.Name == prop.Key))
 					{
@@ -139,10 +144,10 @@ namespace Basalt.Common.Entities
 				}
 
 
-				target.AddComponent(instance as Component);
+				target.AddComponent((Component) instance);
 			}
 
-			foreach (var child in jObject["Children"])
+			foreach (var child in jObject["Children"]) // CS8602: Dereference of a possibly null reference.
 			{
 				var childEntity = DeserializeFromJson(child.ToString());
 				Console.WriteLine($"Deserialized entity with id {childEntity.Id}");
@@ -151,6 +156,7 @@ namespace Basalt.Common.Entities
 
 			return target;
 
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 		}
 
 		/// <summary>
