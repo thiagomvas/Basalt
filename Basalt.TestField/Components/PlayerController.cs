@@ -55,9 +55,8 @@ namespace Basalt.TestField.Components
 
 		public override void OnUpdate()
 		{
-			if (!Entity.Enabled)
-				return;
 		}
+
 
 		public override void OnCollision(Collider other)
 		{

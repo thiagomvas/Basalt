@@ -1,6 +1,5 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions.Engine;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Basalt
 {
@@ -45,7 +44,6 @@ namespace Basalt
 			private set => running = value;
 		}
 
-		private bool fullyInitialized = false;
 		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
 
 		/// <summary>
@@ -53,7 +51,6 @@ namespace Basalt
 		/// </summary>
 		public EntityManager EntityManager { get; private set; }
 		private ILogger? _logger;
-		private List<Entity> queuedEntities = new();
 
 		/// <summary>
 		/// The logger associated with the engine.
@@ -129,6 +126,8 @@ namespace Basalt
 					component.Value.component.Initialize();
 				}
 			}
+
+			Logger?.LogInformation("Engine finished initializing components.");
 
 			Instance.GetEngineComponent<IEventBus>()?.NotifyStart();
 

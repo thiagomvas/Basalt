@@ -36,12 +36,12 @@ builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine> (() => new RaylibGra
 builder.AddComponent<IPhysicsEngine, PhysicsEngine>(true);
 builder.AddComponent<IEventBus, EventBus>();
 builder.AddComponent<IInputSystem, RaylibInputSystem>();
-builder.AddComponent<ISoundSystem, RaylibSoundSystem>();
 
 builder.AddLogger(new ConsoleLogger());
 
 var engine = builder.Build();
 
+engine.Initialize();
 
 var ground = new Entity();
 ground.Transform.Position = new Vector3(0, -1, 0);
@@ -64,5 +64,3 @@ player.AddComponent(new Basalt.TestField.Components.PlayerController(player));
 player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Type = LightType.Point });
 
 Engine.CreateEntity(player);
-
-engine.Initialize();

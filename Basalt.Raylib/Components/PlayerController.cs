@@ -28,7 +28,7 @@ namespace Basalt.Raylib.Components
 		public override void OnUpdate()
 		{
 
-			if (!Entity.IsActive)
+			if (!Entity.Enabled)
 				return;
 			if (IsKeyDown(Forward))
 				Entity.Transform.Position += Entity.Transform.Forward.XZNormalized() * Time.DeltaTime * MoveSpeed;
