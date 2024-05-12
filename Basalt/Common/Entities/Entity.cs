@@ -41,7 +41,7 @@ namespace Basalt.Common.Entities
 		/// </summary>
 		public List<Entity> Children { get; set; } = new();
 
-		private bool enabled;
+		private bool enabled = true;
 		/// <summary>
 		/// Whether the entity is enabled or not.
 		/// </summary>
