@@ -88,8 +88,8 @@ namespace Basalt.Common.Physics
 
 		private struct Point(int X, int Z)
 		{
-			public int X { get; }
-			public int Z { get; }
+			public int X { get; } = X;
+			public int Z { get; } = Z;
 			public override string ToString()
 			{
 				return $"{X}, {Z}";

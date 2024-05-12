@@ -25,11 +25,11 @@ namespace Basalt.Raylib.Graphics
 
 		private readonly WindowInitParams config;
 		private readonly ILogger? logger;
-		internal static RaylibGraphicsEngine instance;
+		internal static RaylibGraphicsEngine instance = new(new());
 
 		private EntityManager entityManager;
-		private ISoundSystem soundSystem;
-		private IInputSystem inputSystem;
+		private ISoundSystem? soundSystem;
+		private IInputSystem? inputSystem;
 		private IEventBus eventBus;
 
 		Shader PostProcessShader, LightShader;
@@ -39,7 +39,9 @@ namespace Basalt.Raylib.Graphics
 
 		bool useLighting = false;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public RaylibGraphicsEngine(WindowInitParams initConfig, ILogger? logger = null)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			config = initConfig;
 			this.logger = logger;
@@ -49,7 +51,7 @@ namespace Basalt.Raylib.Graphics
 		{
 			soundSystem = Engine.Instance.GetEngineComponent<ISoundSystem>();
 			inputSystem = Engine.Instance.GetEngineComponent<IInputSystem>();
-			eventBus = Engine.Instance.GetEngineComponent<IEventBus>();
+			eventBus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			entityManager = Engine.Instance.EntityManager;
 
 
@@ -110,7 +112,7 @@ namespace Basalt.Raylib.Graphics
 		{
 			Camera3D camera = new();
 			var control = entityManager.GetEntities().FirstOrDefault(e => e is CameraController) as CameraController;
-			camera = control.camera;
+			camera = control!.camera;
 			control.OnStart();
 
 			RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());

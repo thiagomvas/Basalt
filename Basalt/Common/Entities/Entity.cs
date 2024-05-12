@@ -6,8 +6,8 @@ namespace Basalt.Common.Entities
 {
 	public class ComponentDto
 	{
-		public Type Type { get; set; }
-		public Component Data { get; set; }
+		public required Type Type { get; set; }
+		public required Component Data { get; set; }
 	}
 
 	/// <summary>
@@ -129,6 +129,11 @@ namespace Basalt.Common.Entities
 
 				var typeProps = type.GetProperties();
 				var instance = constructor.Invoke([target]);
+
+				if (component["Data"] == null)
+				{
+					continue;
+				}
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 				foreach (var prop in component["Data"] as JObject) // CS8602: Dereference of a possibly null reference.

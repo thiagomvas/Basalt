@@ -5,6 +5,8 @@ using Basalt.Common.Events;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
+using System.Numerics;
+using System.Text.RegularExpressions;
 
 namespace Basalt.Tests.Integration
 {
@@ -46,7 +48,7 @@ namespace Basalt.Tests.Integration
 			// Act
 			Engine.Instance.Initialize();
 			Engine.CreateEntity(entity);
-			var component = entity.GetComponent<TestComponent>();
+			var component = entity.GetComponent<TestComponent>()!;
 			entity.RemoveComponent(component);
 
 			// Assert
@@ -64,7 +66,7 @@ namespace Basalt.Tests.Integration
 			// Act
 			Engine.Instance.Initialize();
 			Engine.CreateEntity(entity);
-			entity.RemoveComponent(entity.Rigidbody);
+			entity.RemoveComponent(entity.Rigidbody!);
 
 			// Assert
 			Assert.IsNull(entity.Rigidbody);
@@ -84,8 +86,8 @@ namespace Basalt.Tests.Integration
 			entity.Destroy();
 
 			// Assert
-			Assert.IsFalse(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.GetComponent<TestComponent>()));
-			Assert.IsFalse(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.GetComponent<Rigidbody>()));
+			Assert.IsFalse(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.GetComponent<TestComponent>()!));
+			Assert.IsFalse(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.GetComponent<Rigidbody>()!));
 		}
 
 		[Test]
@@ -112,8 +114,10 @@ namespace Basalt.Tests.Integration
 		{
 			// Arrange
 			var entity = new Entity();
+			entity.Transform.Position = Vector3.One;
 			entity.AddComponent(new TestComponent(entity));
 			entity.AddComponent(new Rigidbody(entity));
+			IEqualityComparer<Vector3> comparer = new Vector3EqualityComparer();
 
 			// Act
 			Engine.Instance.Initialize();
@@ -125,6 +129,7 @@ namespace Basalt.Tests.Integration
 			Assert.IsNotNull(newEntity);
 			Assert.IsNotNull(newEntity.GetComponent<TestComponent>());
 			Assert.IsNotNull(newEntity.GetComponent<Rigidbody>());
+			Assert.That(newEntity.Transform.Position, Is.EqualTo(entity.Transform.Position).Using(comparer)); 
 		}
 
 		[Test]
@@ -203,5 +208,103 @@ namespace Basalt.Tests.Integration
 			Assert.That(newEntity.GetComponent<TestComponent>().Target.Id, Is.EqualTo(target.Id), "Ids are different");
 		}
 
+		[Test]
+		public void EntityDeserializeToJson_WhenMissingIdField_ShouldGenerateNew()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.Id = null!;
+
+			// Act
+			var json = entity.SerializeToJson();
+			var newEntity = Entity.DeserializeFromJson(json);
+
+			// Assert
+			Assert.IsNotNull(newEntity.Id);
+			Assert.That(newEntity.Id, Is.Not.EqualTo(entity.Id));
+		}
+
+		[Test]
+		public void EntityDeserializeToJson_WhenMissingComponentType_ShouldIgnore()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+
+			// Act
+			var json = entity.SerializeToJson();
+			var lines = json.Split('\n');
+			lines = lines.Select(l => l.Contains("TestComponent") ? string.Empty : l).ToArray();
+			var newJson = string.Join('\n', lines);
+			var newEntity = Entity.DeserializeFromJson(newJson);
+
+			// Assert
+			Assert.IsNotNull(newEntity);
+			Assert.IsNull(newEntity.GetComponent<TestComponent>());
+		}
+
+		[Test]
+		public void EntityDeserializeToJson_WhenMissingComponentsArray_ShouldReturnEmptyObject()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+			string pattern = @"""Components""\s*:\s*\[[^\]]*\],";
+
+			// Act
+			var json = entity.SerializeToJson();
+			var newJson = Regex.Replace(json, pattern, "");
+			var newEntity = Entity.DeserializeFromJson(newJson);
+
+			// Assert
+			Assert.IsNotNull(newEntity);
+			Assert.IsNull(newEntity.GetComponent<TestComponent>());
+			Assert.IsNotNull(newEntity.GetComponent<Transform>());
+			Assert.IsNotNull(newEntity.Transform);
+		}
+
+		[Test]
+		public void EntityDeserializeToJson_WhenMissingDataFromDTO_ShouldIgnore()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+			string jsonString = @"
+        {
+          ""Components"": [
+            {
+              ""Type"": ""Basalt.Common.Components.Transform, Basalt, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"",
+              ""Data"": {
+                ""IsFixedPoint"": false,
+                ""Position"": {
+                  ""X"": 0.0,
+                  ""Y"": 0.0,
+                  ""Z"": 0.0
+                },
+                ""Rotation"": {
+                  ""X"": 0.0,
+                  ""Y"": 0.0,
+                  ""Z"": 0.0,
+                  ""W"": 1.0,
+                  ""IsIdentity"": true
+                },
+                ""Enabled"": true
+              }
+            },
+			{
+			  ""Type"": ""Basalt.Tests.Common.TestComponent, Basalt.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"",
+			}
+          ],
+          ""Children"": [],
+          ""Id"": null
+        }";
+
+			// Act
+			var newEntity = Entity.DeserializeFromJson(jsonString);
+
+			// Assert
+			Assert.IsNotNull(newEntity);
+			Assert.IsNull(newEntity.GetComponent<TestComponent>());
+		}
 	}
 }

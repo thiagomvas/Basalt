@@ -26,7 +26,9 @@ namespace Basalt
 			}
 		}
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		internal Engine()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			_instance = this;
 		}
@@ -106,7 +108,7 @@ namespace Basalt
 			}
 
 			// Initialize Entity Manager
-			EntityManager = new(GetEngineComponent<IEventBus>());
+			EntityManager = new(GetEngineComponent<IEventBus>()!);
 
 			// Move graphics engine to the front of the list
 			Components = Components.OrderBy(c => c.Key == typeof(IGraphicsEngine) ? 0 : 1).ToDictionary(c => c.Key, c => c.Value);
