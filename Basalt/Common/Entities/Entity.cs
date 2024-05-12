@@ -110,11 +110,16 @@ namespace Basalt.Common.Entities
 			JObject jObject = JObject.Parse(json);
 
 			var target = new Entity();
-			target.Id = jObject["Id"].Value<string>();
+			target.Id = jObject["Id"]?.Value<string>() ?? Guid.NewGuid().ToString();
 
 			foreach (var component in jObject["Components"])
 			{
-				var type = ByName(component["Type"].Value<string>().Split(',').First());
+				var type = ByName(component["Type"]?.Value<string>().Split(',').First() ?? string.Empty);
+
+				if(type == null)
+				{
+					continue;
+				}
 
 				ConstructorInfo constructor = type.GetConstructor(new[] { typeof(Entity) });
 
@@ -248,8 +253,11 @@ namespace Basalt.Common.Entities
 				component.OnCollision(other);
 		}
 
-		private static Type ByName(string name)
+		private static Type? ByName(string name)
 		{
+			if (string.IsNullOrWhiteSpace(name))
+				return null;
+
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Reverse())
 			{
 				var tt = assembly.GetType(name);
