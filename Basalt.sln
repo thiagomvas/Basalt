@@ -11,7 +11,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basalt", "Basalt\Basalt.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basalt.Raylib", "Basalt.Raylib\Basalt.Raylib.csproj", "{ABC57AA9-86D5-42EB-9B53-29F2AD9F30CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basalt.Tests", "Basalt.Tests\Basalt.Tests.csproj", "{44BAADFB-3FA5-4519-BDB4-51B48EA1F6DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basalt.Tests", "Basalt.Tests\Basalt.Tests.csproj", "{44BAADFB-3FA5-4519-BDB4-51B48EA1F6DE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A56E5445-1340-4598-89C8-BCA1CC3DF28F}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Pictures\BasaltBanner.png = ..\..\..\Pictures\BasaltBanner.png
+		..\..\..\Pictures\basaltbannerwide.png = ..\..\..\Pictures\basaltbannerwide.png
+		..\..\..\Pictures\BasaltLogoBg.png = ..\..\..\Pictures\BasaltLogoBg.png
+		..\..\..\Pictures\BasaltLogoTransparent.png = ..\..\..\Pictures\BasaltLogoTransparent.png
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
