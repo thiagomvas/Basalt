@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Common.Utils;
+using Basalt.Core.Common.Attributes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Basalt.Common.Components
 	/// <summary>
 	/// Represents a component that defines the position and rotation of an entity in 3D space.
 	/// </summary>
+	[SingletonComponent]
 	public sealed class Transform : Component
 	{
 		public bool IsFixedPoint { get; set; } = false;

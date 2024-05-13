@@ -1,6 +1,7 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Common.Physics;
 using Basalt.Core.Common.Abstractions.Engine;
+using Basalt.Core.Common.Attributes;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -8,6 +9,7 @@ namespace Basalt.Common.Components
 	/// <summary>
 	/// Represents a rigidbody component that simulates physics behavior.
 	/// </summary>
+	[SingletonComponent]
 	public class Rigidbody : Component
 	{
 		/// <summary>

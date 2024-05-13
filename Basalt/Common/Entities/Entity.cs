@@ -1,4 +1,5 @@
 ﻿using Basalt.Common.Components;
+using Basalt.Core.Common.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
@@ -17,7 +18,7 @@ namespace Basalt.Common.Entities
 	{
 		[JsonProperty("Components")]
 		private List<ComponentDto> componentDtos = new();
-		private HashSet<Component> components = new();
+		private List<Component> components = new();
 
 		[JsonProperty("Id")]
 		public string Id { get; set; } = System.Guid.NewGuid().ToString();
@@ -170,6 +171,10 @@ namespace Basalt.Common.Entities
 		/// <param name="component">The component to add</param>
 		public void AddComponent(Component component)
 		{
+			// Check for singleton attribute
+			if (components.Any(c => c.GetType() == component.GetType()) && component.GetType().GetCustomAttribute<SingletonComponentAttribute>() != null)
+				return;
+
 			components.Add(component);
 			if(Rigidbody == null && component is Rigidbody rb)
 			{
