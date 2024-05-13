@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Basalt.Core.Common.Types
+﻿namespace Basalt.Core.Common.Types
 {
 	/// <summary>
 	/// This enum has all input buttons that can be used in the engine.

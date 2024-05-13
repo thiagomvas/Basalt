@@ -9,6 +9,9 @@ using System.Numerics;
 
 namespace Basalt.Raylib.Components
 {
+	/// <summary>
+	/// Represents a light source component.
+	/// </summary>
 	public class LightSource : Component
 	{
 		[JsonIgnore]
@@ -17,23 +20,42 @@ namespace Basalt.Raylib.Components
 		[JsonIgnore]
 		public Light Source;
 
+		/// <summary>
+		/// Gets or sets the color of the light source.
+		/// </summary>
 		public Color Color { get; set; } = Color.White;
+
+		/// <summary>
+		/// Gets or sets the type of the light source.
+		/// </summary>
 		public LightType Type { get; set; } = LightType.Point;
+
 		private string shaderCacheKey;
 		Shader shader;
 		bool init = false;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="LightSource"/> class.
+		/// </summary>
+		/// <param name="entity">The entity that the light source belongs to.</param>
+		/// <param name="shaderKey">The key of the shader used by the light source.</param>
 		public LightSource(Entity entity, string shaderKey) : base(entity)
 		{
 			shaderCacheKey = shaderKey;
 		}
+
+		/// <summary>
+		/// Called when the component starts.
+		/// </summary>
 		public override void OnStart()
 		{
 			RaylibGraphicsEngine.instantiateLight(this);
 		}
+
 		internal void Setup()
 		{
 			shader = RaylibCache.Instance.GetShader(shaderCacheKey)!.Value;
-			Source = new Light(); 
+			Source = new Light();
 			Source = Rlights.CreateLight(
 				_index,
 				Type,
@@ -43,6 +65,10 @@ namespace Basalt.Raylib.Components
 				shader);
 			init = true;
 		}
+
+		/// <summary>
+		/// Called every frame to update the component.
+		/// </summary>
 		public override void OnUpdate()
 		{
 			if (!init)
@@ -50,10 +76,12 @@ namespace Basalt.Raylib.Components
 			Source.Position = Entity.Transform.Position;
 		}
 
+		/// <summary>
+		/// Called when the component is destroyed.
+		/// </summary>
 		public override void OnDestroy()
 		{
 			RaylibGraphicsEngine.destroyLight(this);
 		}
-
 	}
 }

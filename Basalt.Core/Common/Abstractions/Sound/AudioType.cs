@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Basalt.Core.Common.Abstractions.Sound
+﻿namespace Basalt.Core.Common.Abstractions.Sound
 {
 
+	/// <summary>
+	/// Represents the type of audio.
+	/// </summary>
 	public enum AudioType
 	{
+		/// <summary>
+		/// Represents a sound effect audio type.
+		/// </summary>
 		SoundEffect,
+
+		/// <summary>
+		/// Represents a music audio type.
+		/// </summary>
 		Music
 	}
 }

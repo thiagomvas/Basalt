@@ -43,6 +43,10 @@ var engine = builder.Build();
 
 engine.Initialize();
 
+var test = new Entity();
+test.AddComponent(new Basalt.Common.Components.Transform(test));
+Console.WriteLine(test.GetComponents().Count);
+
 var ground = new Entity();
 ground.Transform.Position = new Vector3(0, -1, 0);
 ground.AddComponent(new BoxRenderer(ground) { Size = new Vector3(30, 1, 30), Color = Color.Gray });
@@ -52,7 +56,8 @@ ground.Id = "ground";
 
 Engine.CreateEntity(ground);
 
-var player = new CameraController();
+var player = new Entity();
+player.AddComponent(new CameraController(player));
 player.Id = "entity.player";
 Vector3 offset = Vector3.UnitY * -1;
 player.Transform.Position = new Vector3(0, 5, 0);

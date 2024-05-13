@@ -4,17 +4,22 @@ using Raylib_cs;
 using static Raylib_cs.Raylib;
 namespace Basalt.Raylib.Input
 {
+	/// <summary>
+	/// Represents a Raylib input system.
+	/// </summary>
 	public class RaylibInputSystem : IInputSystem
 	{
 		private Dictionary<InputAction, Action> _actions = new();
 		private Dictionary<InputAction, Action> registerQueue = new();
 		private object _lock = new object();
 
+		/// <inheritdoc/>
 		public void Initialize()
 		{
-
+			// TODO: Implement initialization logic
 		}
 
+		/// <inheritdoc/>
 		public void RegisterKeybind(InputAction input, Action action)
 		{
 			lock (_lock)
@@ -24,6 +29,7 @@ namespace Basalt.Raylib.Input
 			}
 		}
 
+		/// <inheritdoc/>
 		public void ReplaceKeybind(InputAction oldKey, InputAction newKey)
 		{
 			lock (_lock)
@@ -36,11 +42,13 @@ namespace Basalt.Raylib.Input
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Shutdown()
 		{
 
 		}
 
+		/// <inheritdoc/>
 		public void Update()
 		{
 			lock (_lock)

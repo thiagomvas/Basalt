@@ -8,32 +8,39 @@ using Basalt.Common;
 
 namespace Basalt.Raylib.Components
 {
-	public class CameraController : Entity
+	/// <summary>
+	/// Represents a camera controller component that allows controlling a camera in a 3D scene.
+	/// </summary>
+	public class CameraController : Component
 	{
 		internal Camera3D camera;
-		private float cameraSpeed = 5f;
 		private float sensitivity = 0.1f;
-		private float MovementSpeed = 5f;
 
-		private Vector3 forward, right;
-		public void OnStart()
+		public CameraController(Entity entity) : base(entity)
+		{
+		}
+
+		/// <summary>
+		/// Called when the component is started.
+		/// </summary>
+		public override void OnStart()
 		{
 			// Initialize the camera
 			camera = new Camera3D();
-			camera.Position = Transform.Position;
-			camera.Target = Transform.Position + Transform.Forward;
+			camera.Position = Entity.Transform.Position;
+			camera.Target = Entity.Transform.Position + Entity.Transform.Forward;
 			camera.Up = new Vector3(0f, 1f, 0f);
 			camera.FovY = 60f;
 			camera.Projection = CameraProjection.Perspective;
 
 			// Set the camera as the active camera in raylib
 			UpdateCamera(ref camera, CameraMode.FirstPerson);
-
-			forward = Vector3.UnitX * MovementSpeed;
-			right = Vector3.UnitY * MovementSpeed;
 		}
 
-		public void OnUpdate()
+		/// <summary>
+		/// Called every frame to update the component.
+		/// </summary>
+		public override void OnUpdate()
 		{
 			if (!Enabled)
 				return;
@@ -44,12 +51,12 @@ namespace Basalt.Raylib.Components
 
 			// Update the camera in raylib
 
-			camera.Position = Transform.Position;
-			camera.Target = camera.Position + Transform.Forward;
+			camera.Position = Entity.Transform.Position;
+			camera.Target = camera.Position + Entity.Transform.Forward;
 
 			UpdateCameraPro(ref camera, Vector3.Zero, rotation, 0);
 
-			Transform.Rotation = LookAtRotation(camera.Position, camera.Target, camera.Up);
+			Entity.Transform.Rotation = LookAtRotation(camera.Position, camera.Target, camera.Up);
 		}
 
 		private Quaternion LookAtRotation(Vector3 origin, Vector3 target, Vector3 up)

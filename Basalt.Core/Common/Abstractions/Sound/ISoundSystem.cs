@@ -1,35 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Basalt.Core.Common.Abstractions.Engine;
+﻿using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Core.Common.Abstractions.Sound
 {
-    public interface ISoundSystem : IEngineComponent
+	/// <summary>
+	/// Represents a sound system component that handles audio playback.
+	/// </summary>
+	public interface ISoundSystem : IEngineComponent
 	{
+		/// <summary>
+		/// Loads an audio resource from the specified file.
+		/// </summary>
+		/// <param name="filename">The path to the audio file.</param>
+		/// <param name="type">The type of audio.</param>
 		void LoadAudio(string filename, AudioType type);
 
-		// Play a loaded audio resource
+		/// <summary>
+		/// Plays a loaded audio resource.
+		/// </summary>
+		/// <param name="filename">The filename of the audio resource to play.</param>
+		/// <param name="type">The type of audio.</param>
 		void PlayAudio(string filename, AudioType type);
 
-		// Pause currently playing audio
+		/// <summary>
+		/// Pauses the currently playing audio.
+		/// </summary>
+		/// <param name="type">The type of audio.</param>
 		void PauseAudio(AudioType type);
 
-		// Resume paused audio
+		/// <summary>
+		/// Resumes paused audio.
+		/// </summary>
+		/// <param name="type">The type of audio.</param>
 		void ResumeAudio(AudioType type);
 
-		// Stop playing audio
+		/// <summary>
+		/// Stops playing audio.
+		/// </summary>
+		/// <param name="type">The type of audio.</param>
 		void StopAudio(AudioType type);
 
-		// Unload audio resource
+		/// <summary>
+		/// Unloads an audio resource.
+		/// </summary>
+		/// <param name="filename">The filename of the audio resource to unload.</param>
+		/// <param name="type">The type of audio.</param>
 		void UnloadAudio(string filename, AudioType type);
 
-		// Set volume for audio type
+		/// <summary>
+		/// Sets the volume for the specified audio type.
+		/// </summary>
+		/// <param name="volume">The volume level.</param>
+		/// <param name="type">The type of audio.</param>
 		void SetVolume(float volume, AudioType type);
 
+		/// <summary>
+		/// Checks if music is currently playing.
+		/// </summary>
+		/// <returns><c>true</c> if music is playing; otherwise, <c>false</c>.</returns>
 		bool IsMusicPlaying();
+
+		/// <summary>
+		/// Gets the currently playing music.
+		/// </summary>
+		/// <returns>The currently playing music.</returns>
 		object? GetMusicPlaying();
 	}
 }

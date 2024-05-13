@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Basalt.Core.Common.Abstractions.Engine
+﻿namespace Basalt.Core.Common.Abstractions.Engine
 {
-    public interface IGraphicsEngine : IEngineComponent
-    {
-        void Render();
-
-    }
+	/// <summary>
+	/// Represents a graphics engine component.
+	/// </summary>
+	public interface IGraphicsEngine : IEngineComponent
+	{
+		/// <summary>
+		/// Renders the graphics.
+		/// </summary>
+		void Render();
+	}
 }

@@ -150,7 +150,7 @@ namespace Basalt.Common.Entities
 				}
 
 
-				target.AddComponent((Component) instance);
+				target.ForceAddComponent((Component) instance);
 			}
 
 			foreach (var child in jObject["Children"]) // CS8602: Dereference of a possibly null reference.
@@ -182,6 +182,29 @@ namespace Basalt.Common.Entities
 			}
 
 			else if(component is Transform t)
+			{
+				Transform = t;
+			}
+		}
+
+		private void ForceAddComponent(Component component)
+		{
+
+			// Check for singleton attribute
+			if (components.Any(c => c.GetType() == component.GetType()) && component.GetType().GetCustomAttribute<SingletonComponentAttribute>() != null)
+			{
+				// Replace the existing component
+				components.Remove(components.First(c => c.GetType() == component.GetType()));
+			}
+
+
+			components.Add(component);
+			if (Rigidbody == null && component is Rigidbody rb)
+			{
+				Rigidbody = rb;
+			}
+
+			else if (component is Transform t)
 			{
 				Transform = t;
 			}

@@ -1,26 +1,50 @@
-﻿using Basalt.Raylib.Components;
-using Basalt.Raylib.Utils;
-using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Raylib_cs;
 
 namespace Basalt.Raylib.Graphics
 {
+	/// <summary>
+	/// Represents a cache for Raylib models and shaders.
+	/// </summary>
 	public unsafe class RaylibCache
 	{
+		/// <summary>
+		/// The singleton instance of the RaylibCache class.
+		/// </summary>
 		private static RaylibCache instance;
+
+		/// <summary>
+		/// The dictionary that stores the cached models.
+		/// </summary>
 		private Dictionary<string, Model> modelDictionary = new();
+
+		/// <summary>
+		/// The dictionary that stores the cached shaders.
+		/// </summary>
 		private Dictionary<string, Shader> shaderDictionary = new();
 
+		/// <summary>
+		/// The queue that stores the model load requests.
+		/// </summary>
 		private List<KeyValuePair<string, ModelLoadRequest>> modelLoadQueue = new();
+
+		/// <summary>
+		/// The queue that stores the shader load requests.
+		/// </summary>
 		private List<KeyValuePair<string, ShaderLoadRequest>> shaderLoadQueue = new();
 
+		/// <summary>
+		/// The lock object used for thread synchronization when accessing the model dictionary.
+		/// </summary>
 		private object modelLock = new object();
+
+		/// <summary>
+		/// The lock object used for thread synchronization when accessing the shader dictionary.
+		/// </summary>
 		private object shaderLock = new object();
 
+		/// <summary>
+		/// Loads the models and shaders from the load queues.
+		/// </summary>
 		internal void LoadQueued()
 		{
 			lock (shaderLock)
@@ -52,10 +76,16 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Private constructor to prevent direct instantiation of the RaylibCache class.
+		/// </summary>
 		private RaylibCache()
 		{
 		}
 
+		/// <summary>
+		/// Gets the singleton instance of the RaylibCache class.
+		/// </summary>
 		public static RaylibCache Instance
 		{
 			get
@@ -68,6 +98,11 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Gets the cached model with the specified name.
+		/// </summary>
+		/// <param name="modelName">The name of the model.</param>
+		/// <returns>The cached model, or null if the model is not found.</returns>
 		public Model? GetModel(string modelName)
 		{
 			lock (modelLock)
@@ -83,6 +118,11 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Caches the specified model with the given name.
+		/// </summary>
+		/// <param name="modelName">The name of the model.</param>
+		/// <param name="model">The model to cache.</param>
 		public void CacheModel(string modelName, Model model)
 		{
 			lock (modelLock)
@@ -94,6 +134,9 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Unloads all the cached models.
+		/// </summary>
 		public void UnloadAllModels()
 		{
 			lock (modelLock)
@@ -106,6 +149,10 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Unloads the cached model with the specified name.
+		/// </summary>
+		/// <param name="modelName">The name of the model to unload.</param>
 		public void UnloadModel(string modelName)
 		{
 			lock (modelLock)
@@ -118,6 +165,12 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Loads a model with the specified name, model path, and optional shader cache key.
+		/// </summary>
+		/// <param name="modelName">The name of the model.</param>
+		/// <param name="modelPath">The path to the model file.</param>
+		/// <param name="shaderCacheKey">The optional shader cache key.</param>
 		public void LoadModel(string modelName, string modelPath, string shaderCacheKey = "")
 		{
 			if (!Raylib_cs.Raylib.IsWindowReady())
@@ -144,6 +197,11 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Gets the cached shader with the specified name.
+		/// </summary>
+		/// <param name="shaderName">The name of the shader.</param>
+		/// <returns>The cached shader, or null if the shader is not found.</returns>
 		public Shader? GetShader(string shaderName)
 		{
 			lock (shaderLock)
@@ -159,6 +217,11 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Caches the specified shader with the given name.
+		/// </summary>
+		/// <param name="shaderName">The name of the shader.</param>
+		/// <param name="shader">The shader to cache.</param>
 		public void CacheShader(string shaderName, Shader shader)
 		{
 			lock (shaderLock)
@@ -172,6 +235,9 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Unloads all the cached shaders.
+		/// </summary>
 		public void UnloadAllShaders()
 		{
 			lock (shaderLock)
@@ -184,6 +250,10 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Unloads the cached shader with the specified name.
+		/// </summary>
+		/// <param name="shaderName">The name of the shader to unload.</param>
 		public void UnloadShader(string shaderName)
 		{
 			lock (shaderLock)
@@ -196,6 +266,12 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Loads a shader with the specified name, fragment shader path, and vertex shader path.
+		/// </summary>
+		/// <param name="shaderName">The name of the shader.</param>
+		/// <param name="fragmentShaderPath">The path to the fragment shader file.</param>
+		/// <param name="vertexShaderPath">The path to the vertex shader file.</param>
 		public void LoadShader(string shaderName, string fragmentShaderPath, string vertexShaderPath)
 		{
 			if (!Raylib_cs.Raylib.IsWindowReady())
@@ -221,6 +297,11 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Checks if the model dictionary contains the specified key.
+		/// </summary>
+		/// <param name="key">The key to check.</param>
+		/// <returns>True if the model dictionary contains the key, false otherwise.</returns>
 		public bool HasModelKey(string key)
 		{
 			lock (modelLock)
@@ -229,6 +310,11 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Checks if the shader dictionary contains the specified key.
+		/// </summary>
+		/// <param name="key">The key to check.</param>
+		/// <returns>True if the shader dictionary contains the key, false otherwise.</returns>
 		public bool HasShaderKey(string key)
 		{
 			lock (shaderLock)
@@ -237,6 +323,9 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		/// <summary>
+		/// Represents a model load request.
+		/// </summary>
 		private struct ModelLoadRequest
 		{
 			public string modelName;
@@ -244,6 +333,9 @@ namespace Basalt.Raylib.Graphics
 			public string shaderCacheKey;
 		}
 
+		/// <summary>
+		/// Represents a shader load request.
+		/// </summary>
 		private struct ShaderLoadRequest
 		{
 			public string shaderName;

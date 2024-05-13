@@ -111,7 +111,12 @@ namespace Basalt.Raylib.Graphics
 		public unsafe void Render()
 		{
 			Camera3D camera = new();
-			var control = entityManager.GetEntities().FirstOrDefault(e => e is CameraController) as CameraController;
+			var control = entityManager.GetEntities().FirstOrDefault(e => e.GetComponent<CameraController>() != null)?.GetComponent<CameraController>() ?? null;
+			if(control == null)
+			{
+				throw new NullReferenceException("No camera controller found in the scene.");
+			}
+			
 			camera = control!.camera;
 			control.OnStart();
 
@@ -173,7 +178,7 @@ namespace Basalt.Raylib.Graphics
 					foreach (var source in sources)
 						Rlights.UpdateLightValues(LightShader, source.Source);
 
-					SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], control.Transform.Position, ShaderUniformDataType.Vec3);
+					SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], control.Entity.Transform.Position, ShaderUniformDataType.Vec3);
 				}
 
 				//----------------------------------------------------------------------------------
