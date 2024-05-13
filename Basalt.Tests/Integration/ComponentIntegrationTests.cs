@@ -1,4 +1,5 @@
 ﻿using Basalt.Common;
+using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
 using Basalt.Core.Common.Abstractions.Engine;
@@ -81,6 +82,26 @@ namespace Basalt.Tests.Integration
 
 			// Assert
 			Assert.IsFalse(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(component));
+		}
+
+		[Test]
+		public void AddComponent_WhenSingleton_ShouldNotCreateAnotherInstance()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+			entity.AddComponent(new Rigidbody(entity));
+
+			// Act
+			entity.AddComponent(new TestComponent(entity));
+			entity.AddComponent(new Rigidbody(entity));
+			entity.AddComponent(new Transform(entity));
+
+
+			// Assert
+			Assert.That(entity.GetComponents().Where(c => c.GetType() == typeof(TestComponent)).Count(), Is.EqualTo(1), "Singleton attribute not working");
+			Assert.That(entity.GetComponents().Where(c => c.GetType() == typeof(Rigidbody)).Count(), Is.EqualTo(1), "Multiple transforms found");
+			Assert.That(entity.GetComponents().Where(c => c.GetType() == typeof(Transform)).Count(), Is.EqualTo(1), "Multiple rigidbodies found");
 		}
 	}
 }

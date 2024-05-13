@@ -1,9 +1,11 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Basalt.Core.Common.Attributes;
 using Newtonsoft.Json;
 
 namespace Basalt.Tests.Common
 {
+	[SingletonComponent]
 	internal class TestComponent : Component
 	{
 		public TestComponent(Entity entity) : base(entity)
