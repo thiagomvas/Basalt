@@ -12,13 +12,13 @@ namespace Basalt.Common.Physics
 
 		public long startTime, elapsedTime;
 
+		const float targetDeltaTime = 0.016f;
 		const int targetFrameTimeMs = 16;
 
 		private IChunkingMechanism chunking;
 		private IEventBus eventBus;
 		private ILogger? logger;
 		private bool ShouldRun = true;
-
 
 		/// <summary>
 		/// Gets or sets the gravity value for the physics engine.
@@ -114,11 +114,14 @@ namespace Basalt.Common.Physics
 				if (elapsedTime > targetFrameTimeMs)
 				{
 					logger?.LogWarning($"Physics engine is running behind. Elapsed time: {elapsedTime}ms");
+					Time.PhysicsDeltaTime = elapsedTime / 1000f;
+					continue;
 				}
 
 				if (elapsedTime < targetFrameTimeMs)
 				{
 					Task.Delay((int)(targetFrameTimeMs - elapsedTime)).Wait();
+					Time.PhysicsDeltaTime = targetDeltaTime;
 				}
 			}
 		}
