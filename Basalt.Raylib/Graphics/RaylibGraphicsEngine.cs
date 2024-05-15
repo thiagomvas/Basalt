@@ -207,15 +207,6 @@ namespace Basalt.Raylib.Graphics
 
 				}
 
-
-				// Draw info boxes
-				DrawRectangle(5, 5, 330, 100, ColorAlpha(Color.SkyBlue, 0.5f));
-				DrawRectangleLines(10, 10, 330, 100, Color.Blue);
-
-				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 30, 10, Color.White);
-				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 45, 10, Color.White);
-				DrawFPS(15, 105);
-
 				EndDrawing();
 				//----------------------------------------------------------------------------------
 			}
