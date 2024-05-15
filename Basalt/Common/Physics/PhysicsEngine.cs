@@ -131,5 +131,13 @@ namespace Basalt.Common.Physics
 			}
 		}
 
+		public void RemoveEntityFromSimulation(object entity)
+		{
+			if (entity is Entity e)
+			{
+				chunking.RemoveEntity(e);
+			}
+		}
+
 	}
 }
