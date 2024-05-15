@@ -1,4 +1,4 @@
-![Test](basaltBANNERWIDE.png)
+![Basalt Banner](basaltbannerwide.png)
 
 # Basalt - A Do-It-Yourself (DIY) Framework for developing games
 Basalt is a game development framework made in C# whose primary focus is a DIY aspect. It is designed with the idea that you can build your own game engine from the ground up, using Basalt as a foundation. It is not a game engine, but a framework that provides you with the tools to build your own game engine. It is designed to be simple, easy to use, and easy to understand. It is also designed to be flexible and extensible, so you can add your own features and functionality as needed.
