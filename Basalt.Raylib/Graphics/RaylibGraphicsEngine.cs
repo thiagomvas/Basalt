@@ -24,7 +24,7 @@ namespace Basalt.Raylib.Graphics
 		public string PostProcessingShaderCacheKey { get; set; } = string.Empty;
 
 		private readonly WindowInitParams config;
-		private readonly ILogger? logger;
+		private ILogger? logger;
 		internal static RaylibGraphicsEngine instance = new(new());
 
 		private EntityManager entityManager;
@@ -53,12 +53,13 @@ namespace Basalt.Raylib.Graphics
 			inputSystem = Engine.Instance.GetEngineComponent<IInputSystem>();
 			eventBus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			entityManager = Engine.Instance.EntityManager;
+			logger = Engine.Instance.Logger;
 
 
 
 			enablePostProcessing = config.PostProcessing;
 			instance = this;
-			SetTraceLogCallback(&LogCustom);
+			SetTraceLogCallback(&LogToLogger);
 			SetTraceLogLevel(TraceLogLevel.All);
 			if (config.Borderless)
 				SetConfigFlags(ConfigFlags.UndecoratedWindow);
@@ -191,10 +192,6 @@ namespace Basalt.Raylib.Graphics
 
 				BeginMode3D(control.camera);
 
-#if DEBUG
-				DrawGrid(100, 1.0f);
-#endif
-
 				eventBus?.NotifyRender();
 
 
@@ -210,15 +207,6 @@ namespace Basalt.Raylib.Graphics
 
 				}
 
-
-				// Draw info boxes
-				DrawRectangle(5, 5, 330, 100, ColorAlpha(Color.SkyBlue, 0.5f));
-				DrawRectangleLines(10, 10, 330, 100, Color.Blue);
-
-				DrawText($"Physics Elapsed time: {Time.PhysicsDeltaTime}s - Expected: 0.016s", 15, 30, 10, Color.White);
-				DrawText($"Update Elapsed time: {Time.DeltaTime}s - Expected: 0.00833s", 15, 45, 10, Color.White);
-				DrawFPS(15, 105);
-
 				EndDrawing();
 				//----------------------------------------------------------------------------------
 			}
@@ -228,7 +216,7 @@ namespace Basalt.Raylib.Graphics
 		}
 
 		[UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-		private static unsafe void LogCustom(int logLevel, sbyte* text, sbyte* args)
+		private static unsafe void LogToLogger(int logLevel, sbyte* text, sbyte* args)
 		{
 			var message = Logging.GetLogMessage(new IntPtr(text), new IntPtr(args));
 			switch ((TraceLogLevel)logLevel)

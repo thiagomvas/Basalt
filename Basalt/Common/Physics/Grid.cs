@@ -5,7 +5,9 @@ namespace Basalt.Common.Physics
 {
 	public class Grid : IChunkingMechanism
 	{
-		public List<Entity> Entities = new List<Entity>();
+		private List<Entity> Entities = new List<Entity>();
+		private List<Entity> entityAddQueue = new List<Entity>();
+		private List<Entity> entityRemoveQueue = new List<Entity>();
 
 		Dictionary<Point, List<Entity>> chunks = new Dictionary<Point, List<Entity>>();
 
@@ -17,12 +19,22 @@ namespace Basalt.Common.Physics
 
 		public void AddEntity(Entity entity)
 		{
-			Entities.Add(entity);
+			entityAddQueue.Add(entity);
+		}
+
+		public void RemoveEntity(Entity entity)
+		{
+			entityRemoveQueue.Add(entity);
 		}
 
 		public void Update()
 		{
 			chunks.Clear();
+			Entities.AddRange(entityAddQueue);
+			foreach(var entity in entityRemoveQueue)
+			{
+				Entities.Remove(entity);
+			}
 
 			foreach (var entity in Entities)
 			{
