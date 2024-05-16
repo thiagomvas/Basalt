@@ -35,6 +35,8 @@ namespace Basalt.Common.Physics
 			{
 				Entities.Remove(entity);
 			}
+			entityAddQueue.Clear();
+			entityRemoveQueue.Clear();
 
 			foreach (var entity in Entities)
 			{
