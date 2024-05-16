@@ -1,9 +1,12 @@
 ﻿using Basalt.Common;
+using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
+using Basalt.Common.Physics;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
+using System.Numerics;
 
 namespace Basalt.Tests.Integration
 {
@@ -180,5 +183,39 @@ namespace Basalt.Tests.Integration
 			// Act
 			Assert.Throws<InvalidOperationException>(() => Engine.CreateEntity(entity));
 		}
+
+		[Test]
+		public void EngineRemoveEntity_ShouldRemoveAnyReferences()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.Transform.Position = Vector3.Zero;
+			entity.AddComponent(new Rigidbody(entity));
+			IEqualityComparer<Vector3> comparer = new Vector3EqualityComparer();
+
+			entity.Id = "entity1";
+
+			var engine = new EngineBuilder()
+				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
+				.AddComponent<IEventBus, EventBus>()
+				.AddComponent<IPhysicsEngine, PhysicsEngine>(true)
+				.Build();
+
+			engine.Initialize();
+
+			Engine.CreateEntity(entity);
+
+			// Act
+			Engine.RemoveEntity(entity);
+			engine.GetEngineComponent<IEventBus>()!.NotifyPhysicsUpdate();
+
+			// Assert
+			Assert.That(engine.EntityManager.GetEntities().Count, Is.EqualTo(0));
+			Assert.IsNull(engine.EntityManager.GetEntity("entity1"));
+			Assert.That(engine.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.Transform), Is.False);
+			Assert.That(entity.Transform.Position, Is.EqualTo(Vector3.Zero).Using(comparer));
+		}
+
+
 	}
 }

@@ -17,6 +17,11 @@
 		void AddEntityToSimulation(object entity);
 
 		/// <summary>
+		/// Removes an entity from the physics simulation.
+		/// </summary>
+		void RemoveEntityFromSimulation(object entity);
+
+		/// <summary>
 		/// Simulates the physics behavior.
 		/// </summary>
 		void Simulate();

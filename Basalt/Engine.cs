@@ -171,6 +171,7 @@ namespace Basalt
 		public static void RemoveEntity(Entity entity)
 		{
 			Instance.EntityManager.RemoveEntity(entity);
+			Instance.GetEngineComponent<IPhysicsEngine>()?.RemoveEntityFromSimulation(entity);
 		}
 	}
 
