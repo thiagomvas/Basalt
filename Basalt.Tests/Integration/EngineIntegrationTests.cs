@@ -196,9 +196,7 @@ namespace Basalt.Tests.Integration
 			entity.Id = "entity1";
 
 			var engine = new EngineBuilder()
-				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
-				.AddComponent<IEventBus, EventBus>()
-				.AddComponent<IPhysicsEngine, PhysicsEngine>(true)
+				.UseMockPreset()
 				.Build();
 
 			engine.Initialize();
@@ -215,7 +213,5 @@ namespace Basalt.Tests.Integration
 			Assert.That(engine.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.Transform), Is.False);
 			Assert.That(entity.Transform.Position, Is.EqualTo(Vector3.Zero).Using(comparer));
 		}
-
-
 	}
 }
