@@ -10,7 +10,7 @@ namespace Basalt.Raylib.Sound
 	/// </summary>
 	public class RaylibSoundSystem : ISoundSystem
 	{
-		private readonly ILogger? logger;
+		private ILogger? logger;
 		private Dictionary<string, Raylib_cs.Sound> loadedSounds;
 		private Dictionary<string, Music> loadedMusic;
 		private Music? MusicPlaying;
@@ -22,6 +22,7 @@ namespace Basalt.Raylib.Sound
 		/// </summary>
 		public void Initialize()
 		{
+			logger = Engine.Instance.Logger;
 			InitAudioDevice();
 			foreach (var sound in queuedSounds)
 			{
@@ -55,9 +56,8 @@ namespace Basalt.Raylib.Sound
 		/// Initializes a new instance of the <see cref="RaylibSoundSystem"/> class.
 		/// </summary>
 		/// <param name="logger">The logger to use for logging.</param>
-		public RaylibSoundSystem(ILogger? logger = null)
+		public RaylibSoundSystem()
 		{
-			this.logger = logger;
 			loadedSounds = new Dictionary<string, Raylib_cs.Sound>();
 			loadedMusic = new Dictionary<string, Music>();
 		}
