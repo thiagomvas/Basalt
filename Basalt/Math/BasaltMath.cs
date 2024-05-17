@@ -1,16 +1,30 @@
 ﻿using System.Numerics;
 
-namespace Basalt.Common.Utils
+namespace Basalt.Math
 {
-	public static class MathExtended
+	public static class BasaltMaWth
 	{
 		/// <summary>
-		/// Returns the rotation from the origin if it was looking at a target
+		/// Scales a value from one range to another.
 		/// </summary>
-		/// <param name="origin">The origin coordinates</param>
-		/// <param name="target">The target's position to rotate towards</param>
-		/// <param name="up">The up vector from the origin</param>
-		/// <returns>A rotation representing the direction an object is looking at</returns>
+		/// <param name="value">The value to scale.</param>
+		/// <param name="min">The minimum value of the input range.</param>
+		/// <param name="max">The maximum value of the input range.</param>
+		/// <param name="newMin">The minimum value of the output range.</param>
+		/// <param name="newMax">The maximum value of the output range.</param>
+		/// <returns>The scaled value.</returns>
+		public static float Scale(float value, float min, float max, float newMin, float newMax)
+		{
+			return (value - min) / (max - min) * (newMax - newMin) + newMin;
+		}
+
+		/// <summary>
+		/// Returns the rotation from the origin if it was looking at a target.
+		/// </summary>
+		/// <param name="origin">The origin coordinates.</param>
+		/// <param name="target">The target's position to rotate towards.</param>
+		/// <param name="up">The up vector from the origin.</param>
+		/// <returns>A rotation representing the direction an object is looking at.</returns>
 		public static Quaternion LookAtRotation(Vector3 origin, Vector3 target, Vector3 up)
 		{
 			Vector3 forward = Vector3.Normalize(target - origin);
@@ -26,17 +40,23 @@ namespace Basalt.Common.Utils
 
 			return Quaternion.CreateFromRotationMatrix(matrix);
 		}
+
 		/// <summary>
 		/// Gets the forward vector of a rotation.
 		/// </summary>
-		/// <param name="rotation">The rotation</param>
-		/// <returns>The forward vector</returns>
+		/// <param name="rotation">The rotation.</param>
+		/// <returns>The forward vector.</returns>
 		public static Vector3 GetForwardVector(Quaternion rotation)
 		{
 			Vector3 rotatedForward = Vector3.Normalize(Vector3.Transform(Vector3.UnitZ, Quaternion.Normalize(rotation)));
 			return rotatedForward;
 		}
 
+		/// <summary>
+		/// Gets the right vector of a rotation.
+		/// </summary>
+		/// <param name="quaternion">The rotation.</param>
+		/// <returns>The right vector.</returns>
 		public static Vector3 GetRightVector(Quaternion quaternion)
 		{
 			// Apply the quaternion rotation to the right vector (1, 0, 0)
@@ -44,6 +64,13 @@ namespace Basalt.Common.Utils
 			return rightVector;
 		}
 
+		/// <summary>
+		/// Rotates a vector by the variation between two quaternions.
+		/// </summary>
+		/// <param name="vector">The vector to rotate.</param>
+		/// <param name="startRotation">The starting rotation.</param>
+		/// <param name="finalRotation">The final rotation.</param>
+		/// <returns>The rotated vector.</returns>
 		public static Vector3 RotateVectorByQuaternionVariation(Vector3 vector, Quaternion startRotation, Quaternion finalRotation)
 		{
 			// Convert quaternions to rotation matrices
@@ -59,7 +86,12 @@ namespace Basalt.Common.Utils
 			return rotatedVector;
 		}
 
-
+		/// <summary>
+		/// Calculates the angle between two vectors.
+		/// </summary>
+		/// <param name="vector1">The first vector.</param>
+		/// <param name="vector2">The second vector.</param>
+		/// <returns>The angle between the two vectors in radians.</returns>
 		public static float AngleBetweenVectors(Vector3 vector1, Vector3 vector2)
 		{
 			// Calculate the dot product
@@ -70,7 +102,7 @@ namespace Basalt.Common.Utils
 			float magnitude2 = vector2.Length();
 
 			// Calculate the angle in radians
-			float angle = (float)Math.Acos(dotProduct / (magnitude1 * magnitude2));
+			float angle = (float)System.Math.Acos(dotProduct / (magnitude1 * magnitude2));
 			return angle;
 		}
 	}

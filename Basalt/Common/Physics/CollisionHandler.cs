@@ -1,6 +1,8 @@
 ﻿using Basalt.Common.Components;
 using System.Numerics;
 
+using static System.Math;
+
 namespace Basalt.Common.Physics
 {
 	/// <summary>
@@ -76,9 +78,9 @@ namespace Basalt.Common.Physics
 			Vector3 max2 = box2.Position + extents2;
 
 			// Calculate the overlap along each axis
-			float overlapX = Math.Max(0, Math.Min(max1.X, max2.X) - Math.Max(min1.X, min2.X));
-			float overlapY = Math.Max(0, Math.Min(max1.Y, max2.Y) - Math.Max(min1.Y, min2.Y));
-			float overlapZ = Math.Max(0, Math.Min(max1.Z, max2.Z) - Math.Max(min1.Z, min2.Z));
+			float overlapX = Max(0, Min(max1.X, max2.X) - Max(min1.X, min2.X));
+			float overlapY = Max(0, Min(max1.Y, max2.Y) - Max(min1.Y, min2.Y));
+			float overlapZ = Max(0, Min(max1.Z, max2.Z) - Max(min1.Z, min2.Z));
 
 			if (overlapX == 0 || overlapY == 0 || overlapZ == 0)
 			{
@@ -91,7 +93,7 @@ namespace Basalt.Common.Physics
 
 			// Calculate the direction of least penetration
 			Vector3 separationDirection = Vector3.Zero;
-			float minOverlap = Math.Min(overlapX, Math.Min(overlapY, overlapZ));
+			float minOverlap = Min(overlapX, Min(overlapY, overlapZ));
 			if (minOverlap == overlapX)
 			{
 				separationDirection = (box1.Position.X < box2.Position.X) ? -Vector3.UnitX : Vector3.UnitX;
@@ -106,7 +108,7 @@ namespace Basalt.Common.Physics
 			}
 
 			// Move the colliders to separate them along the direction of least penetration
-			float separationDistance = Math.Abs(minOverlap);
+			float separationDistance = Abs(minOverlap);
 
 
 			if (rb1.IsKinematic && !rb2.IsKinematic)

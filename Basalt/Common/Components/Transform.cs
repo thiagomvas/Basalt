@@ -1,6 +1,7 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Common.Utils;
 using Basalt.Core.Common.Attributes;
+using Basalt.Math;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -71,13 +72,13 @@ namespace Basalt.Common.Components
 		/// Gets the forward vector of the transform based on its rotation.
 		/// </summary>
 		[JsonIgnore]
-		public Vector3 Forward => MathExtended.GetForwardVector(Rotation);
+		public Vector3 Forward => BasaltMath.GetForwardVector(Rotation);
 
 		/// <summary>
 		/// Gets the right vector of the transform based on its rotation.
 		/// </summary>
 		[JsonIgnore]
-		public Vector3 Right => MathExtended.GetRightVector(Rotation);
+		public Vector3 Right => BasaltMath.GetRightVector(Rotation);
 
 		[JsonIgnore]
 		public Vector3 Up => Vector3.Cross(Forward, Right);
