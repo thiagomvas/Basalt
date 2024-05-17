@@ -31,6 +31,8 @@ namespace Basalt.Common.Components
 		/// The velocity of the rigidbody.
 		/// </summary>
 		public Vector3 Velocity;
+		
+		private const float threshold = 0.0001f;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Rigidbody"/> class.
@@ -42,6 +44,8 @@ namespace Basalt.Common.Components
 			if (physics != null)
 			{
 				physicsEngine = physics;
+				if(physics is PhysicsEngine engine)
+					chunking = engine.chunking;
 			}
 			else
 			{
@@ -51,6 +55,7 @@ namespace Basalt.Common.Components
 		}
 
 		private IPhysicsEngine physicsEngine;
+		private IChunkingMechanism? chunking;
 
 		/// <summary>
 		/// Called on each physics update frame.
@@ -62,8 +67,12 @@ namespace Basalt.Common.Components
 				return;
 			}
 
-			if(Velocity.X == float.NaN || Velocity.Y == float.NaN || Velocity.Z == float.NaN)
+			var lengthSqr = Velocity.LengthSquared();
+
+			if(lengthSqr < threshold || lengthSqr == float.NaN)
+			{
 				Velocity = Vector3.Zero;
+			}
 
 			Vector3? acceleration = -Vector3.UnitY * physicsEngine.Gravity;
 
@@ -75,9 +84,10 @@ namespace Basalt.Common.Components
 			Vector3 prevPos = Entity.Transform.Position;
 			Entity.Transform.Position += Velocity * Time.PhysicsDeltaTime;
 
-			if(Velocity.LengthSquared() > 0)
+			if(lengthSqr > threshold)
 			{
 				Velocity -= Velocity * Drag * Time.PhysicsDeltaTime;
+				chunking?.MarkForUpdate(Entity);
 			}
 
 		}

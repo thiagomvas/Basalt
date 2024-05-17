@@ -1,6 +1,7 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions.Engine;
+using System.Numerics;
 
 namespace Basalt.Common.Physics
 {
@@ -15,7 +16,7 @@ namespace Basalt.Common.Physics
 		const float targetDeltaTime = 0.016f;
 		const int targetFrameTimeMs = 16;
 
-		private IChunkingMechanism chunking;
+		internal IChunkingMechanism chunking;
 		private IEventBus eventBus;
 		private ILogger? logger;
 		private bool ShouldRun = true;
@@ -32,7 +33,7 @@ namespace Basalt.Common.Physics
 		public PhysicsEngine()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-			chunking = new Grid(10);
+			chunking = new Octree(Vector3.Zero, 100);
         }
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class using the specified <see cref="IChunkingMechanism"/>.

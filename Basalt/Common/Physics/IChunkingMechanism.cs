@@ -10,5 +10,6 @@ namespace Basalt.Common.Physics
 		List<List<Entity>> GetEntitiesChunked();
 		List<Entity> GetEntitiesNearPoint(Vector3 point);
 		void Update();
+		void MarkForUpdate(Entity entity);
 	}
 }
