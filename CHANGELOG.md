@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.3.0"></a>
+## [1.3.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.3.0) (2024-05-17)
+
+### Features
+
+* Add PerlinNoise generator ([6723287](https://www.github.com/thiagomvas/Basalt/commit/6723287d88d0f99752000ea60a993706453b50f8))
+* Migrate MathExtended and add BasaltMath ([b73d175](https://www.github.com/thiagomvas/Basalt/commit/b73d175fa9ce18d4d96327d1c03d0cd0796f6dfd))
+
+### Bug Fixes
+
+* XML documentation wasn't included in package ([8f5192c](https://www.github.com/thiagomvas/Basalt/commit/8f5192ce75b156f8dea0c7059692ffd9e93596bc))
+
 <a name="1.2.0"></a>
 ## [1.2.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.2.0) (2024-05-17)
 
