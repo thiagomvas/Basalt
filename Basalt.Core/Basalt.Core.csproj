@@ -10,6 +10,11 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/thiagomvas/Basalt</RepositoryUrl>
   </PropertyGroup>
+
+
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 	
 	<ItemGroup>
 		<None Include="..\BasaltLogoBg.png">
