@@ -62,8 +62,8 @@ namespace Basalt.Common.Physics
 			{
 				return; // Cannot collide with something that is not a rigidbody
 			}
-			
-			if(rb1.Entity == rb2.Entity || rb1.Entity == rb2.Entity.Parent || rb1.Entity.Parent == rb1.Entity)
+
+			if (rb1.Entity == rb2.Entity || rb1.Entity == rb2.Entity.Parent || rb1.Entity.Parent == rb1.Entity)
 			{
 				return; // Cannot collide with itself
 			}

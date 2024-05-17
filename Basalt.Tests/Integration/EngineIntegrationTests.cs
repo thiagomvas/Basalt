@@ -2,7 +2,6 @@
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
-using Basalt.Common.Physics;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
@@ -22,7 +21,7 @@ namespace Basalt.Tests.Integration
 			var engine = new EngineBuilder()
 				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
 				.AddComponent<IEventBus, EventBus>()
-				.AddComponent<TestEngineComponent>(() => new() { Value = 10})
+				.AddComponent<TestEngineComponent>(() => new() { Value = 10 })
 				.AddLogger(logger.Object)
 				.Build();
 
@@ -35,7 +34,7 @@ namespace Basalt.Tests.Integration
 			Assert.IsNotNull(engine.GetEngineComponent<IGraphicsEngine>());
 			Assert.IsNotNull(engine.GetEngineComponent<IEventBus>());
 			Assert.IsNotNull(engine.GetEngineComponent<TestEngineComponent>());
-			Assert.That(engine.GetEngineComponent<TestEngineComponent>()!.Value, Is.EqualTo(10)); 
+			Assert.That(engine.GetEngineComponent<TestEngineComponent>()!.Value, Is.EqualTo(10));
 			Assert.IsTrue(engine.GetEngineComponent<TestEngineComponent>()!.Initialized);
 		}
 
@@ -82,7 +81,7 @@ namespace Basalt.Tests.Integration
 			var engine = new EngineBuilder()
 				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
 				.AddComponent<IEventBus, EventBus>()
-				.AddComponent<TestEngineComponent>(() => new() { Value = 10})
+				.AddComponent<TestEngineComponent>(() => new() { Value = 10 })
 				.Build();
 
 			engine.Initialize();

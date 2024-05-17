@@ -5,10 +5,10 @@ using Newtonsoft.Json;
 
 namespace Basalt.Common.Components
 {
-    /// <summary>
-    /// Represents a base class for components in the Basalt game engine.
-    /// </summary>
-    public abstract class Component : IObserver
+	/// <summary>
+	/// Represents a base class for components in the Basalt game engine.
+	/// </summary>
+	public abstract class Component : IObserver
 	{
 		/// <summary>
 		/// The entity that owns this component.

@@ -1,10 +1,7 @@
 ﻿using Basalt.Common.Entities;
-using Basalt.Common.Utils;
 using Basalt.Core.Common.Attributes;
 using Basalt.Math;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -25,7 +22,7 @@ namespace Basalt.Common.Components
 			get => position;
 			set
 			{
-				if(IsFixedPoint)
+				if (IsFixedPoint)
 				{
 					return;
 				}

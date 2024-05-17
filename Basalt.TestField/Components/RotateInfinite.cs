@@ -1,12 +1,7 @@
 ﻿using Basalt.Common;
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basalt.TestField.Components
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Basalt.Common
+﻿namespace Basalt.Common
 {
 	/// <summary>
 	/// Represents a class for managing time-related operations.

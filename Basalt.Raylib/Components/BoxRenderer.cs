@@ -1,15 +1,9 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
-using Raylib_cs;
-using static Raylib_cs.Raylib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Numerics;
 using Basalt.Raylib.Graphics;
-using Basalt.Common.Utils;
+using Raylib_cs;
+using System.Numerics;
+using static Raylib_cs.Raylib;
 
 namespace Basalt.Raylib.Components
 {

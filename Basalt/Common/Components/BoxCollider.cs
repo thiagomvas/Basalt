@@ -46,7 +46,7 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnRender()
 		{
-			
+
 		}
 	}
 

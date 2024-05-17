@@ -5,10 +5,10 @@ using System.Numerics;
 
 namespace Basalt.Common.Physics
 {
-    /// <summary>
-    /// Default implementation for a basic physics engine.
-    /// </summary>
-    public class PhysicsEngine : IPhysicsEngine
+	/// <summary>
+	/// Default implementation for a basic physics engine.
+	/// </summary>
+	public class PhysicsEngine : IPhysicsEngine
 	{
 
 		public long startTime, elapsedTime;
@@ -34,7 +34,7 @@ namespace Basalt.Common.Physics
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			chunking = new Octree(Vector3.Zero, 100);
-        }
+		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class using the specified <see cref="IChunkingMechanism"/>.
 		/// </summary>
@@ -44,16 +44,16 @@ namespace Basalt.Common.Physics
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			chunking = chunkingMechanism;
-        }
+		}
 
-        /// <summary>
-        /// Initializes the physics engine.
-        /// </summary>
-        public void Initialize()
+		/// <summary>
+		/// Initializes the physics engine.
+		/// </summary>
+		public void Initialize()
 		{
 			var bus = Engine.Instance.GetEngineComponent<IEventBus>();
 			logger = Engine.Instance.Logger;
-			if(bus == null)
+			if (bus == null)
 			{
 				logger?.LogError("Could not find an event bus component that implements IEventBus. Cannot run without one.");
 				return;

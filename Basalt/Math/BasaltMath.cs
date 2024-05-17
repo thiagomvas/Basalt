@@ -2,7 +2,7 @@
 
 namespace Basalt.Math
 {
-	public static class BasaltMaWth
+	public static class BasaltMath
 	{
 		/// <summary>
 		/// Scales a value from one range to another.

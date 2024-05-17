@@ -4,7 +4,6 @@ using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Raylib.Components;
-using Basalt.Raylib.Sound;
 using Basalt.Raylib.Utils;
 using Basalt.Types;
 using Raylib_cs;
@@ -14,7 +13,7 @@ using static Raylib_cs.Raylib;
 
 namespace Basalt.Raylib.Graphics
 {
-    public class RaylibGraphicsEngine : IGraphicsEngine
+	public class RaylibGraphicsEngine : IGraphicsEngine
 	{
 
 		public const int MaxColumns = 20;
@@ -113,11 +112,11 @@ namespace Basalt.Raylib.Graphics
 		{
 			Camera3D camera = new();
 			var control = entityManager.GetEntities().FirstOrDefault(e => e.GetComponent<CameraController>() != null)?.GetComponent<CameraController>() ?? null;
-			if(control == null)
+			if (control == null)
 			{
 				throw new NullReferenceException("No camera controller found in the scene.");
 			}
-			
+
 			camera = control!.camera;
 			control.OnStart();
 

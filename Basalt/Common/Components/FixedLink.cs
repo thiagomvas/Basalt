@@ -1,6 +1,4 @@
 ﻿using Basalt.Common.Entities;
-using Basalt.Common.Utils.Extensions;
-using System;
 using System.Numerics;
 
 namespace Basalt.Common.Components

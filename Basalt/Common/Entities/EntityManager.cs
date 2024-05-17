@@ -13,18 +13,18 @@ namespace Basalt.Common.Entities
 
 		private List<Entity> queuedEntities = new List<Entity>();
 
-        public EntityManager(IEventBus eventBus)
-        {
+		public EntityManager(IEventBus eventBus)
+		{
 			this.eventBus = eventBus;
-        }
+		}
 
-        /// <summary>
-        /// Adds an entity to the entity manager.
-        /// </summary>
-        /// <param name="entity">The entity to add</param>
-        public void AddEntity(Entity entity)
-		{ 
-			
+		/// <summary>
+		/// Adds an entity to the entity manager.
+		/// </summary>
+		/// <param name="entity">The entity to add</param>
+		public void AddEntity(Entity entity)
+		{
+
 			lock (lockObject)
 			{
 				Engine.Instance.Logger?.LogDebug($"Adding entity {entity.Id} to the entity manager.");

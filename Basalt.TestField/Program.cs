@@ -1,20 +1,13 @@
-﻿using Basalt;
-using Basalt.Common;
-using Basalt.Common.Components;
-using Basalt.Common.Entities;
+﻿using Basalt.Common;
 using Basalt.Common.Events;
 using Basalt.Common.Logging;
 using Basalt.Common.Physics;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Math;
-using Basalt.Raylib.Components;
 using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Input;
-using Basalt.Raylib.Utils;
 using Basalt.Types;
-using Raylib_cs;
-using System.Numerics;
 
 
 var initParams = new WindowInitParams
@@ -31,7 +24,7 @@ var initParams = new WindowInitParams
 
 var builder = new EngineBuilder();
 
-builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine> (() => new RaylibGraphicsEngine(initParams), true);
+builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine>(() => new RaylibGraphicsEngine(initParams), true);
 builder.AddComponent<IPhysicsEngine, PhysicsEngine>(true);
 builder.AddComponent<IEventBus, EventBus>();
 builder.AddComponent<IInputSystem, RaylibInputSystem>();
@@ -56,7 +49,7 @@ for (int x = 0; x < width; x++)
 		float xCoord = (float)x / width + xOffset;
 		float yCoord = (float)y / height + yOffset;
 
-		var val = (float) noise.Generate(xCoord, yCoord);
+		var val = (float)noise.Generate(xCoord, yCoord);
 
 		noiseMap[x, y] = val;
 	}

@@ -1,5 +1,4 @@
 ﻿using Basalt.Core.Common.Abstractions.Input;
-using Basalt.Core.Common.Types;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 namespace Basalt.Raylib.Input

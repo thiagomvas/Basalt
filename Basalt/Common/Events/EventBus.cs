@@ -86,7 +86,7 @@ namespace Basalt.Common.Events
 			lock (lockObject)
 			{
 				observers.Add(observer);
-				if(Engine.Instance.Running)
+				if (Engine.Instance.Running)
 				{
 					observer.OnStart();
 				}

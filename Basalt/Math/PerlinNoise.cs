@@ -67,7 +67,7 @@
 			}
 			this.octaves = octaves;
 
-			if(max < min)
+			if (max < min)
 				(min, max) = (max, min); // swap values if min is greater than max (for user convenience)
 
 			Min = min;
@@ -170,12 +170,12 @@ Grad(permutation[BB], x - 1, y - 1)));
 			}
 
 			var result = total / maxValue;
-			if(result < localMin)
+			if (result < localMin)
 			{
 				localMin = result;
 			}
 
-			if(result > localMax)
+			if (result > localMax)
 			{
 				localMax = result;
 			}

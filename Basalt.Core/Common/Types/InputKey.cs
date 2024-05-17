@@ -81,6 +81,6 @@
 		MouseMiddle = 1003,
 		MouseBack = 1004,
 		MouseForward = 1005,
-		
+
 	}
 }

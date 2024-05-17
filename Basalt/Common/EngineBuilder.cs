@@ -57,7 +57,7 @@ namespace Basalt.Common
 		/// <param name="init">The function to initialize the component.</param>
 		/// <param name="separateThread">Indicates whether the component should run on a separate thread.</param>
 		/// <returns>The modified engine builder instance.</returns>
-		public EngineBuilder AddComponent<TType, TImpl>(Func<TImpl> init, bool separateThread = false) 
+		public EngineBuilder AddComponent<TType, TImpl>(Func<TImpl> init, bool separateThread = false)
 			where TImpl : TType
 			where TType : IEngineComponent
 		{
@@ -73,8 +73,8 @@ namespace Basalt.Common
 		/// <typeparam name="TImpl">The type of the component implementation.</typeparam>
 		/// <param name="separateThread">Indicates whether the component should run on a separate thread.</param>
 		/// <returns>The modified engine builder instance.</returns>
-		public EngineBuilder AddComponent<TType, TImpl>(bool separateThread = false )
-			
+		public EngineBuilder AddComponent<TType, TImpl>(bool separateThread = false)
+
 			where TImpl : TType
 			where TType : IEngineComponent
 		{

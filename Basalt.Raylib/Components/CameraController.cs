@@ -1,10 +1,8 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Raylib_cs;
-using System;
-using static Raylib_cs.Raylib;
 using System.Numerics;
-using Basalt.Common;
+using static Raylib_cs.Raylib;
 
 namespace Basalt.Raylib.Components
 {

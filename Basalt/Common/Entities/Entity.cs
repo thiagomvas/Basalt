@@ -89,7 +89,7 @@ namespace Basalt.Common.Entities
 				childrenObjects.Add(childObject);
 			}
 
-			foreach(var child in childrenObjects)
+			foreach (var child in childrenObjects)
 			{
 				Console.WriteLine(child.ToString(Formatting.Indented));
 			}
@@ -120,7 +120,7 @@ namespace Basalt.Common.Entities
 			{
 				var type = ByName(component["Type"]?.Value<string>()?.Split(',').First() ?? string.Empty);
 
-				if(type == null)
+				if (type == null)
 				{
 					continue;
 				}
@@ -150,7 +150,7 @@ namespace Basalt.Common.Entities
 				}
 
 
-				target.ForceAddComponent((Component) instance);
+				target.ForceAddComponent((Component)instance);
 			}
 
 			foreach (var child in jObject["Children"]) // CS8602: Dereference of a possibly null reference.
@@ -176,12 +176,12 @@ namespace Basalt.Common.Entities
 				return;
 
 			components.Add(component);
-			if(Rigidbody == null && component is Rigidbody rb)
+			if (Rigidbody == null && component is Rigidbody rb)
 			{
 				Rigidbody = rb;
 			}
 
-			else if(component is Transform t)
+			else if (component is Transform t)
 			{
 				Transform = t;
 			}
@@ -209,7 +209,7 @@ namespace Basalt.Common.Entities
 				Transform = t;
 			}
 		}
-		
+
 		/// <summary>
 		/// Removes a component from the entity.
 		/// </summary>
@@ -218,9 +218,9 @@ namespace Basalt.Common.Entities
 		{
 			components.Remove(component);
 			component.onDestroy();
-			if(component.GetType() == typeof(Rigidbody))
+			if (component.GetType() == typeof(Rigidbody))
 				Rigidbody = null;
-			
+
 		}
 
 		/// <summary>
@@ -274,12 +274,12 @@ namespace Basalt.Common.Entities
 		public void Destroy()
 		{
 			Engine.RemoveEntity(this);
-			foreach(var child in Children)
+			foreach (var child in Children)
 			{
 				child.Destroy();
 			}
 
-			foreach(var component in components)
+			foreach (var component in components)
 			{
 				component.onDestroy(); // Call internal onDestroy method to do cleanup and call the overridable OnDestroy method
 			}
@@ -288,7 +288,7 @@ namespace Basalt.Common.Entities
 
 		internal void CallOnCollision(Collider other)
 		{
-			foreach(var component in components)
+			foreach (var component in components)
 				component.OnCollision(other);
 		}
 

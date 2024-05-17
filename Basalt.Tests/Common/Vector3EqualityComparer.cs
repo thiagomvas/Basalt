@@ -13,9 +13,9 @@ namespace Basalt.Tests.Common
 
 		public override bool Equals(Vector3 x, Vector3 y)
 		{
-			return Math.Abs(x.X - y.X) < delta &&
-				   Math.Abs(x.Y - y.Y) < delta &&
-				   Math.Abs(x.Z - y.Z) < delta;
+			return System.Math.Abs(x.X - y.X) < delta &&
+				   System.Math.Abs(x.Y - y.Y) < delta &&
+				   System.Math.Abs(x.Z - y.Z) < delta;
 		}
 
 		public override int GetHashCode(Vector3 obj)

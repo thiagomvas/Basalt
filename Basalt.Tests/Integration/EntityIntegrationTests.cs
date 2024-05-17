@@ -129,7 +129,7 @@ namespace Basalt.Tests.Integration
 			Assert.IsNotNull(newEntity);
 			Assert.IsNotNull(newEntity.GetComponent<TestComponent>());
 			Assert.IsNotNull(newEntity.GetComponent<Rigidbody>());
-			Assert.That(newEntity.Transform.Position, Is.EqualTo(entity.Transform.Position).Using(comparer)); 
+			Assert.That(newEntity.Transform.Position, Is.EqualTo(entity.Transform.Position).Using(comparer));
 		}
 
 		[Test]

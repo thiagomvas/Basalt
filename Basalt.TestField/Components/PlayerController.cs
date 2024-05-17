@@ -16,7 +16,7 @@ namespace Basalt.TestField.Components
 		{
 
 		}
-		public override  void OnStart()
+		public override void OnStart()
 		{
 			var input = Engine.Instance.GetEngineComponent<IInputSystem>();
 			if (input != null)
