@@ -81,13 +81,12 @@ namespace Basalt.Common.Components
 				Velocity += acceleration.Value * Time.PhysicsDeltaTime;
 			}
 
-			Vector3 prevPos = Entity.Transform.Position;
 			Entity.Transform.Position += Velocity * Time.PhysicsDeltaTime;
 
 			if (lengthSqr > threshold)
 			{
-				Velocity -= Velocity * Drag * Time.PhysicsDeltaTime;
 				chunking?.MarkForUpdate(Entity);
+				Velocity -= Velocity * Drag * Time.PhysicsDeltaTime;
 			}
 
 		}
@@ -97,6 +96,7 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnStart()
 		{
+			chunking.MarkForUpdate(Entity);
 
 		}
 

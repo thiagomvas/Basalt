@@ -6,12 +6,14 @@ namespace Basalt.Common.Physics
 	public class Grid : IChunkingMechanism
 	{
 		private List<Entity> entities = new List<Entity>();
-		private List<Entity> entityAddQueue = new List<Entity>();
-		private List<Entity> entityRemoveQueue = new List<Entity>();
-		private HashSet<Entity> entitiesToUpdate = new HashSet<Entity>();
+		private Queue<Entity> entityAddQueue = new Queue<Entity>();
+		private Queue<Entity> entityRemoveQueue = new Queue<Entity>();
 
 		private Dictionary<Point, List<Entity>> chunks = new Dictionary<Point, List<Entity>>();
 		private readonly int sideLength;
+
+		public Entity player;
+		private readonly object lockObject = new object();
 
 		public Grid(int sideLength)
 		{
@@ -20,45 +22,46 @@ namespace Basalt.Common.Physics
 
 		public void AddEntity(Entity entity)
 		{
-			entityAddQueue.Add(entity);
+			lock (lockObject)
+			{
+				entityAddQueue.Enqueue(entity);
+			}
 		}
 
 		public void RemoveEntity(Entity entity)
 		{
-			entityRemoveQueue.Add(entity);
+			lock (lockObject)
+			{
+
+				entityRemoveQueue.Enqueue(entity);
+			}
 		}
 
 		public void Update()
 		{
-			foreach (var entity in entityRemoveQueue)
+			lock (lockObject)
 			{
-				if (entities.Contains(entity))
+				while (entityRemoveQueue.Count > 0)
 				{
-					RemoveEntityFromChunks(entity);
-					entities.Remove(entity);
+					var entity = entityRemoveQueue.Dequeue();
+					if (entities.Contains(entity))
+					{
+						entities.Remove(entity);
+						RemoveEntityFromChunks(entity);
+					}
+				}
+
+				while (entityAddQueue.Count > 0)
+				{
+					var entity = entityAddQueue.Dequeue();
+					if (!entities.Contains(entity))
+					{
+						entities.Add(entity);
+						AddEntityToChunks(entity);
+					}
 				}
 			}
 
-			entityRemoveQueue.Clear();
-
-			foreach (var entity in entityAddQueue)
-			{
-				entities.Add(entity);
-				AddEntityToChunks(entity);
-			}
-
-			entityAddQueue.Clear();
-
-			foreach (var entity in entitiesToUpdate)
-			{
-				if (entities.Contains(entity))
-				{
-					RemoveEntityFromChunks(entity);
-					AddEntityToChunks(entity);
-				}
-			}
-
-			entitiesToUpdate.Clear();
 		}
 
 		private void AddEntityToChunks(Entity entity)
@@ -90,7 +93,21 @@ namespace Basalt.Common.Physics
 			foreach (var chunk in chunks.Values)
 			{
 				chunkedEntities.Add(new List<Entity>(chunk));
+				var baseChunk = GetChunk(chunk[0].Transform.Position);
+				// Add adjacent chunks
+				for (int x = -1; x <= 1; x++)
+				{
+					for (int z = -1; z <= 1; z++)
+					{
+						var adjacentChunk = new Point(baseChunk.X + x, baseChunk.Z + z);
+						if (chunks.ContainsKey(adjacentChunk))
+						{
+							chunkedEntities.Add(new List<Entity>(chunks[adjacentChunk]));
+						}
+					}
+				}
 			}
+
 			return chunkedEntities;
 		}
 
@@ -115,7 +132,8 @@ namespace Basalt.Common.Physics
 
 		public void MarkForUpdate(Entity entity)
 		{
-			entitiesToUpdate.Add(entity);
+			entityAddQueue.Enqueue(entity);
+			entityRemoveQueue.Enqueue(entity);
 		}
 
 		private Point GetChunk(Vector3 position)
