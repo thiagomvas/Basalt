@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.3.1"></a>
+## [1.3.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.3.1) (2024-05-18)
+
+### Bug Fixes
+
+* Improve grid performance due to Octree simply not working ([fc8e224](https://www.github.com/thiagomvas/Basalt/commit/fc8e22444cc4cd2d627af194989a81ec72d7efc4))
+
 <a name="1.3.0"></a>
 ## [1.3.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.3.0) (2024-05-17)
 
