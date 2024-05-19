@@ -96,7 +96,7 @@ namespace Basalt.Common.Components
 		/// </summary>
 		public override void OnStart()
 		{
-			chunking.MarkForUpdate(Entity);
+			chunking?.MarkForUpdate(Entity);
 
 		}
 
