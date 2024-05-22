@@ -100,5 +100,12 @@ namespace Basalt.Raylib.Components
 
 			DrawCylinderEx(Entity.Transform.Position + StartOffset, Target.Transform.Position + EndOffset, StartRadius, EndRadius, RenderSideCount, Color);
 		}
+
+		public void SetRadius(float start, float end)
+		{
+			StartRadius = start;
+			EndRadius = end;
+		}
+		public void SetRadius(float radius) => SetRadius(radius, radius);
 	}
 }

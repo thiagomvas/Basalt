@@ -82,10 +82,8 @@ namespace Basalt.Raylib.Components
 
 				init = true;
 			}
-			if (Entity.Enabled)
-			{
-				DrawModelEx(sphere, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
-			}
+			DrawModelEx(sphere, Entity.Transform.Position + Offset, new Vector3(0, 0, 1), 0, Size, Color);
+
 		}
 	}
 }

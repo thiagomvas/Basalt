@@ -8,21 +8,21 @@
 		/// <summary>
 		/// Called when the engine starts.
 		/// </summary>
-		void OnStart();
+		void OnStartEvent();
 
 		/// <summary>
 		/// Called on each frame update of the engine.
 		/// </summary>
-		void OnUpdate();
+		void OnUpdateEvent();
 
 		/// <summary>
 		/// Called on each physics update of the engine.
 		/// </summary>
-		void OnPhysicsUpdate();
+		void OnPhysicsUpdateEvent();
 
 		/// <summary>
 		/// Called on each frame render of the engine.
 		/// </summary>
-		void OnRender();
+		void OnRenderEvent();
 	}
 }

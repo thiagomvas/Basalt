@@ -84,11 +84,9 @@ namespace Basalt.Raylib.Components
 
 				init = true;
 			}
-			if(Entity.Enabled)
-			{
-				cube.Transform = Raymath.MatrixRotateXYZ(Raymath.QuaternionToEuler(Entity.Transform.Rotation));
-				DrawModelEx(cube, Entity.Transform.Position + Offset, Entity.Transform.Up, 0, Size, Color);
-			}
+			cube.Transform = Raymath.MatrixRotateXYZ(Raymath.QuaternionToEuler(Entity.Transform.Rotation));
+			DrawModelEx(cube, Entity.Transform.Position + Offset, Entity.Transform.Up, 0, Size, Color);
+
 		}
 	}
 }

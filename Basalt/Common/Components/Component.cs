@@ -67,5 +67,27 @@ namespace Basalt.Common.Components
 		public virtual void OnDestroy()
 		{
 		}
+
+		public void OnStartEvent() => OnStart();
+
+		public void OnUpdateEvent()
+		{
+			if(Entity.Enabled && Enabled)
+				OnUpdate();
+		}
+
+		public void OnPhysicsUpdateEvent()
+		{
+			if(Entity.Enabled && Enabled)
+				OnPhysicsUpdate();
+		}
+
+		public void OnRenderEvent()
+		{
+			if(Entity.Enabled && Enabled)
+				OnRender();
+		}
+
+
 	}
 }
