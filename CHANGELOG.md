@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.3.2"></a>
+## [1.3.2](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.3.2) (2024-05-22)
+
+### Bug Fixes
+
+* EventBus now calls a method that isn't the overridable method for events. ([1639db6](https://www.github.com/thiagomvas/Basalt/commit/1639db64d3bbfad02a95cd1b59ff0383a0272675))
+* Renderers rendered when parent was disabled ([783638a](https://www.github.com/thiagomvas/Basalt/commit/783638a8e80c41db7f147cacc5f7dd1d64fcb68e))
+
 <a name="1.3.1"></a>
 ## [1.3.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.3.1) (2024-05-18)
 
