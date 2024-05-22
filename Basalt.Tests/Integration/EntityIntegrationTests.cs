@@ -306,5 +306,29 @@ namespace Basalt.Tests.Integration
 			Assert.IsNotNull(newEntity);
 			Assert.IsNull(newEntity.GetComponent<TestComponent>());
 		}
+
+		[Test]
+		public void EntityEnabled_WhenDisabled_ShouldNotCallEvents()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+			entity.Enabled = false;
+
+			// Act
+			var bus = Engine.Instance.GetEngineComponent<IEventBus>()!;
+			Engine.Instance.Initialize();
+			Engine.CreateEntity(entity);
+
+			bus.NotifyStart();
+			bus.NotifyRender();
+			bus.NotifyPhysicsUpdate();
+			bus.NotifyUpdate();
+
+			// Assert
+			Assert.That(entity.GetComponent<TestComponent>()!.OnUpdateCount, Is.EqualTo(0), "Update was called");
+			Assert.That(entity.GetComponent<TestComponent>()!.OnRenderCount, Is.EqualTo(0), "Render was called");
+			Assert.That(entity.GetComponent<TestComponent>()!.OnPhysicsUpdateCount, Is.EqualTo(0), "Physics Update was called");
+		}
 	}
 }

@@ -27,7 +27,7 @@ namespace Basalt.Common.Events
 			{
 				foreach (var observer in observers)
 				{
-					observer.OnRender();
+					observer.OnRenderEvent();
 				}
 			}
 		}
@@ -39,7 +39,7 @@ namespace Basalt.Common.Events
 		{
 			foreach (var observer in observers)
 			{
-				observer.OnStart();
+				observer.OnStartEvent();
 			}
 		}
 
@@ -54,7 +54,7 @@ namespace Basalt.Common.Events
 				{
 					foreach (var observer in observers)
 					{
-						observer.OnUpdate();
+						observer.OnUpdateEvent();
 					}
 				}
 			}).Wait();
@@ -71,7 +71,7 @@ namespace Basalt.Common.Events
 				{
 					foreach (var observer in observers)
 					{
-						observer.OnPhysicsUpdate();
+						observer.OnPhysicsUpdateEvent();
 					}
 				}
 			}).Wait();
@@ -88,7 +88,7 @@ namespace Basalt.Common.Events
 				observers.Add(observer);
 				if (Engine.Instance.Running)
 				{
-					observer.OnStart();
+					observer.OnStartEvent();
 				}
 			}
 		}
