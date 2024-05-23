@@ -44,7 +44,7 @@ namespace Basalt.Common.Entities
 			{
 				entities.Remove(entity);
 				foreach (var component in entity.GetComponents())
-					eventBus.Unsubscribe(component);
+					component.OnDestroy();
 			}
 		}
 

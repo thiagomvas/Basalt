@@ -102,21 +102,17 @@ namespace Basalt.Common.Events
 		/// Unsubscribes an observer from the event bus.
 		/// </summary>
 		/// <param name="observer">The observer to unsubscribe.</param>
-		public void Unsubscribe(IObserver observer)
+		public void Unsubscribe(string eventName, EventHandler handler)
 		{
 			lock (lockObject)
 			{
-				observers.Remove(observer);
+				if (eventHandlers.ContainsKey(eventName))
+				{
+					eventHandlers[eventName] -= handler;
+				}
 			}
 		}
 
-		public bool IsSubscribed(IObserver observer)
-		{
-			lock (lockObject)
-			{
-				return observers.Contains(observer);
-			}
-		}
 
 		public void Initialize()
 		{

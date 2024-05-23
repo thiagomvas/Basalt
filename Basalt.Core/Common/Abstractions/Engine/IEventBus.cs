@@ -16,7 +16,7 @@ namespace Basalt.Core.Common.Abstractions.Engine
 		/// Unsubscribes an observer from the event bus.
 		/// </summary>
 		/// <param name="observer">The observer to unsubscribe.</param>
-		void Unsubscribe(IObserver observer);
+		void Unsubscribe(string eventName, EventHandler handler);
 
 		/// <summary>
 		/// Notifies the event bus that the engine has started.
@@ -38,11 +38,5 @@ namespace Basalt.Core.Common.Abstractions.Engine
 		/// </summary>
 		void NotifyRender();
 
-		/// <summary>
-		/// Checks if an observer is subscribed to the event bus.
-		/// </summary>
-		/// <param name="observer">The observer to check.</param>
-		/// <returns>True if the observer is subscribed, false otherwise.</returns>
-		bool IsSubscribed(IObserver observer);
 	}
 }

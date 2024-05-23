@@ -308,5 +308,17 @@ namespace Basalt.Common.Entities
 
 			return null;
 		}
+
+		internal void CallStart()
+		{
+			foreach (var component in components)
+			{
+				if (!component.started)
+				{
+					component.OnStart();
+					component.started = true;
+				}
+			}
+		}
 	}
 }

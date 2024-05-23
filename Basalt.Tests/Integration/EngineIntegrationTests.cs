@@ -125,9 +125,6 @@ namespace Basalt.Tests.Integration
 		public void EngineEventBus_WhenHasObservers_ShouldNotify()
 		{
 			// Arrange
-			var entity = new Entity();
-			entity.AddComponent(new TestComponent(entity));
-
 			var engine = new EngineBuilder()
 				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
 				.AddComponent<IEventBus, EventBus>()
@@ -135,6 +132,8 @@ namespace Basalt.Tests.Integration
 
 			engine.Initialize();
 
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
 			Engine.CreateEntity(entity);
 
 			int physicsCalls = 10;
@@ -209,7 +208,6 @@ namespace Basalt.Tests.Integration
 			// Assert
 			Assert.That(engine.EntityManager.GetEntities().Count, Is.EqualTo(0));
 			Assert.IsNull(engine.EntityManager.GetEntity("entity1"));
-			Assert.That(engine.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.Transform), Is.False);
 			Assert.That(entity.Transform.Position, Is.EqualTo(Vector3.Zero).Using(comparer));
 		}
 	}
