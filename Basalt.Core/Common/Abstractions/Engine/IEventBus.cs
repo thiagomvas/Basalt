@@ -10,7 +10,7 @@ namespace Basalt.Core.Common.Abstractions.Engine
 		/// Subscribes an observer to the event bus.
 		/// </summary>
 		/// <param name="observer">The observer to subscribe.</param>
-		void Subscribe(IObserver observer);
+		void Subscribe(string eventName, EventHandler handler);
 
 		/// <summary>
 		/// Unsubscribes an observer from the event bus.

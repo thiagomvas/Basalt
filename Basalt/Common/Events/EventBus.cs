@@ -1,4 +1,6 @@
-﻿using Basalt.Core.Common.Abstractions.Engine;
+﻿using Basalt.Common.Utils;
+using Basalt.Core.Common.Abstractions.Engine;
+using System;
 namespace Basalt.Common.Events
 {
 	/// <summary>
@@ -9,6 +11,8 @@ namespace Basalt.Common.Events
 		private readonly List<IObserver> observers;
 		private readonly object lockObject;
 
+		// Game Events
+		private Dictionary<string, EventHandler> eventHandlers = new Dictionary<string, EventHandler>();
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EventBus"/> class.
 		/// </summary>
@@ -25,10 +29,11 @@ namespace Basalt.Common.Events
 		{
 			lock (lockObject)
 			{
-				foreach (var observer in observers)
+				if (!eventHandlers.ContainsKey(BasaltConstants.RenderEventKey))
 				{
-					observer.OnRenderEvent();
+					eventHandlers[BasaltConstants.RenderEventKey] = null;
 				}
+				eventHandlers[BasaltConstants.RenderEventKey]?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -37,9 +42,13 @@ namespace Basalt.Common.Events
 		/// </summary>
 		public void NotifyStart()
 		{
-			foreach (var observer in observers)
+			lock (lockObject)
 			{
-				observer.OnStartEvent();
+				if(!eventHandlers.ContainsKey(BasaltConstants.StartEventKey))
+				{
+					eventHandlers[BasaltConstants.StartEventKey] = null;
+				}
+				eventHandlers[BasaltConstants.StartEventKey]?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -48,16 +57,14 @@ namespace Basalt.Common.Events
 		/// </summary>
 		public void NotifyUpdate()
 		{
-			Task.Run(() =>
+			lock (lockObject)
 			{
-				lock (lockObject)
+				if(!eventHandlers.ContainsKey(BasaltConstants.UpdateEventKey))
 				{
-					foreach (var observer in observers)
-					{
-						observer.OnUpdateEvent();
-					}
+					eventHandlers[BasaltConstants.UpdateEventKey] = null;
 				}
-			}).Wait();
+				eventHandlers[BasaltConstants.UpdateEventKey]?.Invoke(this, EventArgs.Empty);
+			}
 		}
 
 		/// <summary>
@@ -65,31 +72,29 @@ namespace Basalt.Common.Events
 		/// </summary>
 		public void NotifyPhysicsUpdate()
 		{
-			Task.Run(() =>
+			lock (lockObject)
 			{
-				lock (lockObject)
+				if(!eventHandlers.ContainsKey(BasaltConstants.PhysicsUpdateEventKey))
 				{
-					foreach (var observer in observers)
-					{
-						observer.OnPhysicsUpdateEvent();
-					}
+					eventHandlers[BasaltConstants.PhysicsUpdateEventKey] = null;
 				}
-			}).Wait();
+				eventHandlers[BasaltConstants.PhysicsUpdateEventKey]?.Invoke(this, EventArgs.Empty);
+			}
 		}
 
 		/// <summary>
 		/// Subscribes an observer to the event bus.
 		/// </summary>
 		/// <param name="observer">The observer to subscribe.</param>
-		public void Subscribe(IObserver observer)
+		public void Subscribe(string eventName, EventHandler handler)
 		{
 			lock (lockObject)
 			{
-				observers.Add(observer);
-				if (Engine.Instance.Running)
+				if (!eventHandlers.ContainsKey(eventName))
 				{
-					observer.OnStartEvent();
+					eventHandlers[eventName] = null;
 				}
+				eventHandlers[eventName] += handler;
 			}
 		}
 

@@ -29,7 +29,6 @@ namespace Basalt.Raylib.Graphics
 
 		private EntityManager entityManager;
 		private ISoundSystem? soundSystem;
-		private IInputSystem? inputSystem;
 		private IEventBus eventBus;
 
 		Shader PostProcessShader, LightShader;
@@ -50,7 +49,6 @@ namespace Basalt.Raylib.Graphics
 		public unsafe void Initialize()
 		{
 			soundSystem = Engine.Instance.GetEngineComponent<ISoundSystem>();
-			inputSystem = Engine.Instance.GetEngineComponent<IInputSystem>();
 			eventBus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			entityManager = Engine.Instance.EntityManager;
 			logger = Engine.Instance.Logger;
@@ -158,7 +156,6 @@ namespace Basalt.Raylib.Graphics
 				// Update
 				//----------------------------------------------------------------------------------
 				eventBus?.NotifyUpdate();
-				inputSystem?.Update();
 
 
 

@@ -110,8 +110,8 @@ namespace Basalt
 			// Initialize Entity Manager
 			EntityManager = new(GetEngineComponent<IEventBus>()!);
 
-			// Move graphics engine to the front of the list
-			Components = Components.OrderBy(c => c.Key == typeof(IGraphicsEngine) ? 0 : 1).ToDictionary(c => c.Key, c => c.Value);
+			// Move graphics engine and event bus to the front of the list
+			Components = Components.OrderBy(c => c.Key == typeof(IGraphicsEngine) ? 0 : c.Key == typeof(IEventBus) ? 1 : 2).ToDictionary(c => c.Key, c => c.Value);
 
 			// Initialize other components
 			foreach (var component in Components)

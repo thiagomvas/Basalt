@@ -16,6 +16,7 @@ namespace Basalt.TestField.Components
 		private IInputSystem inputSystem;
 		public PlayerController(Entity entity) : base(entity)
 		{
+			
 
 		}
 		public override void OnStart()
@@ -50,6 +51,7 @@ namespace Basalt.TestField.Components
 					InputKey.Space,
 					ActionType.Press),
 					() => Entity.Rigidbody.Velocity += Vector3.UnitY * 5);
+
 			}
 
 			//((Engine.Instance.GetEngineComponent<IPhysicsEngine>() as PhysicsEngine).chunking as Grid).player = this.Entity ;

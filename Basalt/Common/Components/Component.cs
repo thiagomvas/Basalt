@@ -1,5 +1,6 @@
 ﻿
 using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Newtonsoft.Json;
 
@@ -25,6 +26,9 @@ namespace Basalt.Common.Components
 		protected Component(Entity entity)
 		{
 			this.Entity = entity;
+			SubscribeToEvents();
+			if (Engine.Instance.Running)
+				OnStartEvent();
 		}
 
 		/// <summary>
@@ -86,6 +90,23 @@ namespace Basalt.Common.Components
 		{
 			if(Entity.Enabled && Enabled)
 				OnRender();
+		}
+
+		private void SubscribeToEvents()
+		{
+			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
+			Type type = this.GetType();
+
+			eventbus.Subscribe(BasaltConstants.StartEventKey, (_, _) => OnStartEvent());
+			eventbus.Subscribe(BasaltConstants.UpdateEventKey, (_, _) => OnUpdateEvent());
+
+			// Check if OnRender was overriden
+			if (type.GetMethod(nameof(OnRender)).DeclaringType != typeof(Component))
+				eventbus.Subscribe(BasaltConstants.RenderEventKey, (_, _) => OnRenderEvent());
+
+			// Check if OnPhysicsUpdate was overriden
+			if (type.GetMethod(nameof(OnPhysicsUpdate)).DeclaringType != typeof(Component))
+				eventbus.Subscribe(BasaltConstants.PhysicsUpdateEventKey, (_, _) => OnPhysicsUpdateEvent());
 		}
 
 
