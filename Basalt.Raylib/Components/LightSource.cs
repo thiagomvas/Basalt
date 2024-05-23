@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Utils;
 using Newtonsoft.Json;
@@ -53,7 +54,7 @@ namespace Basalt.Raylib.Components
 
 		internal void Setup()
 		{
-			shader = RaylibCache.Instance.GetShader(shaderCacheKey)!.Value;
+			shader = ResourceCache.Instance.GetShader(shaderCacheKey)!.Value;
 			Source = new Light();
 			Source = Rlights.CreateLight(
 				_index,

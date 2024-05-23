@@ -5,6 +5,7 @@ using Basalt.Common.Entities;
 using Basalt.Common.Events;
 using Basalt.Common.Logging;
 using Basalt.Common.Physics;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Math;
@@ -29,10 +30,11 @@ var initParams = new WindowInitParams
 	MSAA4X = true,
 	PostProcessing = false,
 };
-
+ResourceCache.Instance.LoadShader("lighting", @"resources/shaders/lighting.fs", @"resources/shaders/lighting.vs");
+ResourceCache.Instance.LoadModel("robot", @"resources/robot.glb", "lighting");
 var builder = new EngineBuilder();
 
-builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine>(() => new RaylibGraphicsEngine(initParams), true);
+builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine>(() => new RaylibGraphicsEngine(initParams) { LightingShaderCacheKey = "lighting" }, true);
 builder.AddComponent<IPhysicsEngine, PhysicsEngine>(true);
 builder.AddComponent<IEventBus, EventBus>();
 builder.AddComponent<IInputSystem, RaylibInputSystem>();
@@ -44,6 +46,7 @@ var engine = builder.Build();
 engine.Initialize();
 
 
+
 var player = new Entity();
 player.AddComponent(new CameraController(player));
 player.Id = "entity.player";
@@ -53,8 +56,8 @@ player.AddComponent(new SphereRenderer(player) { Size = new Vector3(1f), Color =
 player.AddComponent(new BoxCollider(player) { Size = new Vector3(1, 2, 1), Offset = offset });
 player.AddComponent(new Rigidbody(player) { IsKinematic = false, Mass = 25 });
 player.AddComponent(new Basalt.TestField.Components.PlayerController(player));
-//player.AddComponent(new TrailRenderer(player) { StartRadius = 0.5f, EndRadius = 0.1f, Color = Color.Red, TrailSegmentCount = 25, Offset = offset, TrailRefreshRate = 0.025f });
 player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Type = LightType.Point });
+//player.AddComponent(new TrailRenderer(player) { StartRadius = 0.5f, EndRadius = 0.1f, Color = Color.Red, TrailSegmentCount = 25, Offset = offset, TrailRefreshRate = 0.025f });
 
 Engine.CreateEntity(player);
 

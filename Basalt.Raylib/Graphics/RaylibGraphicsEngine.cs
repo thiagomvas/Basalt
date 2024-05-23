@@ -1,5 +1,6 @@
 ﻿using Basalt.Common;
 using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Abstractions.Sound;
@@ -69,14 +70,14 @@ namespace Basalt.Raylib.Graphics
 
 			InitWindow(config.Width, config.Height, config.Title);
 
-			RaylibCache.Instance.LoadQueued();
+			ResourceCache.Instance.LoadQueued();
 
-			if (RaylibCache.Instance.HasShaderKey(LightingShaderCacheKey))
+			if (ResourceCache.TryGetResource(LightingShaderCacheKey, out LightShader))
 			{
-				LightShader = RaylibCache.Instance.GetShader(LightingShaderCacheKey)!.Value;
 				useLighting = true;
+				ResourceCache.CacheResource("basalt.shaders.defaultlight", LightShader);
 			}
-			RaylibCache.Instance.CacheShader("lighting", LightShader);
+			ResourceCache.Instance.LoadRaylibPrimitives();
 
 
 			SetTargetFPS(config.TargetFps);
@@ -87,7 +88,7 @@ namespace Basalt.Raylib.Graphics
 				SetConfigFlags(ConfigFlags.VSyncHint);
 
 			if (enablePostProcessing)
-				PostProcessShader = RaylibCache.Instance.GetShader(PostProcessingShaderCacheKey)!.Value;
+				PostProcessShader = ResourceCache.Instance.GetShader(PostProcessingShaderCacheKey)!.Value;
 
 			DisableCursor();
 
@@ -267,7 +268,7 @@ namespace Basalt.Raylib.Graphics
 		public void Shutdown()
 		{
 			ShouldRun = false;
-			RaylibCache.Instance.UnloadAllModels();
+			ResourceCache.Instance.UnloadRaylib();
 			logger?.LogWarning("Shutting down graphics engine...");
 		}
 	}
