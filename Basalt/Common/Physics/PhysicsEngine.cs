@@ -1,7 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Core.Common.Abstractions.Engine;
-using System.Numerics;
 
 namespace Basalt.Common.Physics
 {

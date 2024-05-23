@@ -1,6 +1,5 @@
 ﻿using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
-using System;
 namespace Basalt.Common.Events
 {
 	/// <summary>
@@ -44,7 +43,7 @@ namespace Basalt.Common.Events
 		{
 			lock (lockObject)
 			{
-				if(!eventHandlers.ContainsKey(BasaltConstants.StartEventKey))
+				if (!eventHandlers.ContainsKey(BasaltConstants.StartEventKey))
 				{
 					eventHandlers[BasaltConstants.StartEventKey] = null;
 				}
@@ -59,7 +58,7 @@ namespace Basalt.Common.Events
 		{
 			lock (lockObject)
 			{
-				if(!eventHandlers.ContainsKey(BasaltConstants.UpdateEventKey))
+				if (!eventHandlers.ContainsKey(BasaltConstants.UpdateEventKey))
 				{
 					eventHandlers[BasaltConstants.UpdateEventKey] = null;
 				}
@@ -74,7 +73,7 @@ namespace Basalt.Common.Events
 		{
 			lock (lockObject)
 			{
-				if(!eventHandlers.ContainsKey(BasaltConstants.PhysicsUpdateEventKey))
+				if (!eventHandlers.ContainsKey(BasaltConstants.PhysicsUpdateEventKey))
 				{
 					eventHandlers[BasaltConstants.PhysicsUpdateEventKey] = null;
 				}

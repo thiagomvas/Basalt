@@ -1,6 +1,5 @@
 ﻿using Basalt.Common.Utils;
 using Raylib_cs;
-using System.Net.NetworkInformation;
 
 namespace Basalt.Raylib.Graphics
 {
@@ -254,7 +253,7 @@ namespace Basalt.Raylib.Graphics
 			Model knot = Raylib_cs.Raylib.LoadModelFromMesh(Raylib_cs.Raylib.GenMeshKnot(1, 1, 16, 128));
 
 			// Add shader if found
-			if(ResourceCache.TryGetResource("basalt.shaders.defaultlight", out Shader shader))
+			if (ResourceCache.TryGetResource("basalt.shaders.defaultlight", out Shader shader))
 			{
 				cube.Materials[0].Shader = shader;
 				sphere.Materials[0].Shader = shader;

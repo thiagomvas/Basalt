@@ -315,8 +315,7 @@ namespace Basalt.Common.Entities
 			{
 				if (!component.started)
 				{
-					component.OnStart();
-					component.started = true;
+					component.OnStartEvent(this, EventArgs.Empty);
 				}
 			}
 		}

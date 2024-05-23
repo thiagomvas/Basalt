@@ -1,5 +1,4 @@
-﻿using Basalt.Common.Events;
-using Basalt.Common.Utils;
+﻿using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
 using Raylib_cs;

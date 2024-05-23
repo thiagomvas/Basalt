@@ -8,7 +8,6 @@ using Basalt.Common.Physics;
 using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
-using Basalt.Math;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Input;
