@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.4.0"></a>
+## [1.4.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.4.0) (2024-05-23)
+
+### Features
+
+* RaylibCache reworked to be extensions method of ResourceCache instead ([b5f105d](https://www.github.com/thiagomvas/Basalt/commit/b5f105da13b7034eaee618b5d6246536a658a6e9))
+* Reworked ResourceCache to store objects instead of strings ([16aa5ba](https://www.github.com/thiagomvas/Basalt/commit/16aa5bacaaa534c9e20c6c7e8c4903bfbd517a10))
+
+### Bug Fixes
+
+* Primitive models are now affected by lighting ([48a314c](https://www.github.com/thiagomvas/Basalt/commit/48a314c519abcb44e56268f5278139d2112e59e1))
+
 <a name="1.3.2"></a>
 ## [1.3.2](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.3.2) (2024-05-22)
 
