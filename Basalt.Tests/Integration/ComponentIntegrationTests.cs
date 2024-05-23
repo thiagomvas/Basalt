@@ -2,6 +2,7 @@
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
@@ -33,7 +34,7 @@ namespace Basalt.Tests.Integration
 			Engine.Instance.Initialize();
 			Engine.CreateEntity(entity);
 			var component = entity.GetComponent<TestComponent>();
-			Engine.Instance.GetEngineComponent<IEventBus>()!.NotifyStart();
+			Engine.Instance.GetEngineComponent<IEventBus>()!.TriggerEvent(BasaltConstants.StartEventKey);
 
 
 			// Assert
@@ -84,7 +85,7 @@ namespace Basalt.Tests.Integration
 			Engine.CreateEntity(entity);
 			var component = entity.GetComponent<TestComponent>();
 			entity.Destroy();
-			Engine.Instance.GetEngineComponent<IEventBus>()!.NotifyPhysicsUpdate();
+			Engine.Instance.GetEngineComponent<IEventBus>()!.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
 			// Assert
 			Assert.That(entity.Transform.Position, Is.EqualTo(Vector3.Zero).Using(comparer));

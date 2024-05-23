@@ -22,66 +22,6 @@ namespace Basalt.Common.Events
 		}
 
 		/// <summary>
-		/// Notifies all observers to render.
-		/// </summary>
-		public void NotifyRender()
-		{
-			lock (lockObject)
-			{
-				if (!eventHandlers.ContainsKey(BasaltConstants.RenderEventKey))
-				{
-					eventHandlers[BasaltConstants.RenderEventKey] = null;
-				}
-				eventHandlers[BasaltConstants.RenderEventKey]?.Invoke(this, EventArgs.Empty);
-			}
-		}
-
-		/// <summary>
-		/// Notifies all observers to start.
-		/// </summary>
-		public void NotifyStart()
-		{
-			lock (lockObject)
-			{
-				if (!eventHandlers.ContainsKey(BasaltConstants.StartEventKey))
-				{
-					eventHandlers[BasaltConstants.StartEventKey] = null;
-				}
-				eventHandlers[BasaltConstants.StartEventKey]?.Invoke(this, EventArgs.Empty);
-			}
-		}
-
-		/// <summary>
-		/// Notifies all observers to update.
-		/// </summary>
-		public void NotifyUpdate()
-		{
-			lock (lockObject)
-			{
-				if (!eventHandlers.ContainsKey(BasaltConstants.UpdateEventKey))
-				{
-					eventHandlers[BasaltConstants.UpdateEventKey] = null;
-				}
-				eventHandlers[BasaltConstants.UpdateEventKey]?.Invoke(this, EventArgs.Empty);
-			}
-		}
-
-		/// <summary>
-		/// Notifies all observers of a physics update.
-		/// </summary>
-		public void NotifyPhysicsUpdate()
-		{
-			lock (lockObject)
-			{
-				if (!eventHandlers.ContainsKey(BasaltConstants.PhysicsUpdateEventKey))
-				{
-					eventHandlers[BasaltConstants.PhysicsUpdateEventKey] = null;
-				}
-				eventHandlers[BasaltConstants.PhysicsUpdateEventKey]?.Invoke(this, EventArgs.Empty);
-			}
-		}
-
-		/// <summary>
 		/// Subscribes an observer to the event bus.
 		/// </summary>
 		/// <param name="observer">The observer to subscribe.</param>
@@ -121,6 +61,17 @@ namespace Basalt.Common.Events
 		public void Shutdown()
 		{
 
+		}
+
+		public void TriggerEvent(string eventName)
+		{
+			lock (lockObject)
+			{
+				if (eventHandlers.ContainsKey(eventName))
+				{
+					eventHandlers[eventName]?.Invoke(this, EventArgs.Empty);
+				}
+			}
 		}
 	}
 }

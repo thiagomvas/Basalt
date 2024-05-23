@@ -19,26 +19,12 @@ namespace Basalt.Core.Common.Abstractions.Engine
 		/// <param name="eventName">The name of the event to unsubscribe from.</param>
 		/// <param name="handler">The handler to remove from the event.</param>
 		void Unsubscribe(string eventName, EventHandler handler);
-
+		
 		/// <summary>
-		/// Notifies the event bus that the engine has started.
+		/// Triggers an event on the event bus.
 		/// </summary>
-		void NotifyStart();
-
-		/// <summary>
-		/// Notifies the event bus of an engine update.
-		/// </summary>
-		void NotifyUpdate();
-
-		/// <summary>
-		/// Notifies the event bus of a physics update.
-		/// </summary>
-		void NotifyPhysicsUpdate();
-
-		/// <summary>
-		/// Notifies the event bus to render the scene.
-		/// </summary>
-		void NotifyRender();
+		/// <param name="eventName">The name of the event to trigger.</param>
+		void TriggerEvent(string eventName);
 
 	}
 }

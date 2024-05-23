@@ -154,7 +154,7 @@ namespace Basalt.Raylib.Graphics
 				}
 				// Update
 				//----------------------------------------------------------------------------------
-				eventBus?.NotifyUpdate();
+				eventBus?.TriggerEvent(BasaltConstants.UpdateEventKey);
 
 
 
@@ -188,7 +188,7 @@ namespace Basalt.Raylib.Graphics
 
 				BeginMode3D(control.camera);
 
-				eventBus?.NotifyRender();
+				eventBus?.TriggerEvent(BasaltConstants.RenderEventKey);
 
 
 				EndMode3D();

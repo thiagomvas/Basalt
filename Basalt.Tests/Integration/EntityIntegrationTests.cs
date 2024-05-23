@@ -2,6 +2,7 @@
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
@@ -305,10 +306,10 @@ namespace Basalt.Tests.Integration
 			Engine.Instance.Initialize();
 			Engine.CreateEntity(entity);
 
-			bus.NotifyStart();
-			bus.NotifyRender();
-			bus.NotifyPhysicsUpdate();
-			bus.NotifyUpdate();
+			bus.TriggerEvent(BasaltConstants.StartEventKey);
+			bus.TriggerEvent(BasaltConstants.RenderEventKey);
+			bus.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
+			bus.TriggerEvent(BasaltConstants.StartEventKey);
 
 			// Assert
 			Assert.That(entity.GetComponent<TestComponent>()!.OnUpdateCount, Is.EqualTo(0), "Update was called");

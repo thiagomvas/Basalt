@@ -1,4 +1,5 @@
 ﻿using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt
@@ -131,7 +132,7 @@ namespace Basalt
 
 			Logger?.LogInformation("Engine finished initializing components.");
 
-			Instance.GetEngineComponent<IEventBus>()?.NotifyStart();
+			Instance.GetEngineComponent<IEventBus>()?.TriggerEvent(BasaltConstants.StartEventKey);
 
 			Running = true;
 		}

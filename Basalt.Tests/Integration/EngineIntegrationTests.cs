@@ -2,6 +2,7 @@
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
@@ -145,17 +146,17 @@ namespace Basalt.Tests.Integration
 			// Act
 			for (int i = 0; i < physicsCalls; i++)
 			{
-				eventBus?.NotifyPhysicsUpdate();
+				eventBus?.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 			}
 
 			for (int i = 0; i < updareCalls; i++)
 			{
-				eventBus?.NotifyUpdate();
+				eventBus?.TriggerEvent(BasaltConstants.UpdateEventKey);
 			}
 
 			for (int i = 0; i < renderCalls; i++)
 			{
-				eventBus?.NotifyRender();
+				eventBus?.TriggerEvent(BasaltConstants.RenderEventKey);
 			}
 
 			// Assert
@@ -203,7 +204,7 @@ namespace Basalt.Tests.Integration
 
 			// Act
 			Engine.RemoveEntity(entity);
-			engine.GetEngineComponent<IEventBus>()!.NotifyPhysicsUpdate();
+			engine.GetEngineComponent<IEventBus>()!.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
 			// Assert
 			Assert.That(engine.EntityManager.GetEntities().Count, Is.EqualTo(0));

@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Common.Physics
@@ -83,7 +84,7 @@ namespace Basalt.Common.Physics
 			{
 				startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-				eventBus?.NotifyPhysicsUpdate();
+				eventBus?.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
 				chunking.Update();
 
