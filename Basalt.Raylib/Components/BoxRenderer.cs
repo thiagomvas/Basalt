@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Raylib.Graphics;
 using Raylib_cs;
 using System.Numerics;
@@ -73,14 +74,11 @@ namespace Basalt.Raylib.Components
 				return;
 			if (!init)
 			{
-				if (!RaylibCache.Instance.HasModelKey("box"))
+				if (!ResourceCache.TryGetResource("cube", out cube))
 				{
 					cube = LoadModelFromMesh(GenMeshCube(1, 1, 1));
-					RaylibCache.Instance.CacheModel("box", cube);
+					ResourceCache.CacheResource("cube", cube);
 				}
-				else
-					cube = RaylibCache.Instance.GetModel("box")!.Value;
-
 
 				init = true;
 			}

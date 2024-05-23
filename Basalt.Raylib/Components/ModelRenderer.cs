@@ -1,6 +1,7 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Exceptions;
+using Basalt.Common.Utils;
 using Basalt.Raylib.Graphics;
 using Raylib_cs;
 using System.Numerics;
@@ -72,8 +73,8 @@ namespace Basalt.Raylib.Components
 
 			if (!init)
 			{
-				if (RaylibCache.Instance.HasModelKey(ModelCacheKey))
-					cube = RaylibCache.Instance.GetModel(ModelCacheKey)!.Value;
+				if (ResourceCache.TryGetResource(ModelCacheKey, out cube))
+					cube = ResourceCache.Instance.GetModel(ModelCacheKey)!.Value;
 				else
 				{
 					throw new InvalidResourceKeyException(nameof(ModelCacheKey));

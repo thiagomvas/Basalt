@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Raylib.Graphics;
 using Raylib_cs;
 using System.Numerics;
@@ -72,13 +73,15 @@ namespace Basalt.Raylib.Components
 				return;
 			if (!init)
 			{
-				if (!RaylibCache.Instance.HasModelKey("sphere"))
+				if (!ResourceCache.TryGetResource("sphere", out sphere))
 				{
 					sphere = LoadModelFromMesh(GenMeshSphere(1, Rings, Slices));
-					RaylibCache.Instance.CacheModel("sphere", sphere);
+					//if(ResourceCache.Instance.HasShaderKey("lighting"))
+					//	sphere.Materials[0].Shader = ResourceCache.Instance.GetShader("lighting")!.Value;
+					ResourceCache.CacheResource("sphere", sphere);
 				}
 				else
-					sphere = RaylibCache.Instance.GetModel("sphere")!.Value;
+					sphere = ResourceCache.Instance.GetModel("sphere")!.Value;
 
 				init = true;
 			}
