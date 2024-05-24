@@ -59,9 +59,6 @@ namespace Basalt.Common.Components
 		public virtual void OnCollision(Collider other)
 		{
 		}
-		public virtual void OnUIRender()
-		{
-		}
 
 		internal void onDestroy()
 		{
@@ -102,14 +99,9 @@ namespace Basalt.Common.Components
 				OnRender();
 		}
 
-		public void OnUIRenderEvent(object? sender, EventArgs args)
-		{
-			if (Entity.Enabled && Enabled)
-				OnUIRender();
-		}
 
 
-		private void SubscribeToEvents()
+		private virtual protected void SubscribeToEvents()
 		{
 			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			Type type = this.GetType();
@@ -123,20 +115,15 @@ namespace Basalt.Common.Components
 			// Check if OnPhysicsUpdate was overriden
 			if (type.GetMethod(nameof(OnPhysicsUpdate)).DeclaringType != typeof(Component))
 				eventbus.Subscribe(BasaltConstants.PhysicsUpdateEventKey, OnPhysicsUpdateEvent);
-
-			// Check if OnUIRender was overriden
-			if (type.GetMethod(nameof(OnUIRender)).DeclaringType != typeof(Component))
-				eventbus.Subscribe(BasaltConstants.UiRenderEventKey, OnUIRenderEvent);
 		}
 
-		private void UnsubscribeFromEvents()
+		private virtual protected void UnsubscribeFromEvents()
 		{
 			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			eventbus.Unsubscribe(BasaltConstants.StartEventKey, OnStartEvent);
 			eventbus.Unsubscribe(BasaltConstants.UpdateEventKey, OnUpdateEvent);
 			eventbus.Unsubscribe(BasaltConstants.RenderEventKey, OnRenderEvent);
 			eventbus.Unsubscribe(BasaltConstants.PhysicsUpdateEventKey, OnPhysicsUpdateEvent);
-			eventbus.Unsubscribe(BasaltConstants.UiRenderEventKey, OnUIRenderEvent);
 		}
 
 
