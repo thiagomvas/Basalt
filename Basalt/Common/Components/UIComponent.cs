@@ -11,6 +11,7 @@ namespace Basalt.Common.Components
 		public UIPivot Pivot { get; set; } = UIPivot.TopLeft;
 		public Vector2 Offset { get; set; }
 		public float ZIndex { get; set; }
+		public float Rotation { get; set; }
 		protected UIComponent(Entity entity) : base(entity)
 		{
 		}

@@ -9,7 +9,6 @@ namespace Basalt.Raylib.Components
 		public string Text { get; set; } = string.Empty;
 		public float FontSize { get; set; } = 20;
 		public float Spacing { get; set; } = 1;
-		public float Rotation { get; set; } = 0;
 		public Label(Entity entity) : base(entity)
 		{
 		}
@@ -36,7 +35,6 @@ namespace Basalt.Raylib.Components
 								FontSize,
 								Spacing,
 								Raylib_cs.Color.White);
-			Engine.Instance.Logger?.LogDebug($"Drawing label at {position}");
 		}
 	}
 }
