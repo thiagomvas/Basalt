@@ -1,5 +1,6 @@
 ﻿
 using Basalt.Common.Entities;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Newtonsoft.Json;
 
@@ -8,13 +9,15 @@ namespace Basalt.Common.Components
 	/// <summary>
 	/// Represents a base class for components in the Basalt game engine.
 	/// </summary>
-	public abstract class Component : IObserver
+	public abstract class Component
 	{
 		/// <summary>
 		/// The entity that owns this component.
 		/// </summary>
 		[JsonIgnore]
 		public Entity Entity;
+
+		internal bool started = false;
 
 		public bool Enabled { get; set; } = true;
 
@@ -25,6 +28,8 @@ namespace Basalt.Common.Components
 		protected Component(Entity entity)
 		{
 			this.Entity = entity;
+			if (Engine.Instance.Running)
+				SubscribeToEvents();
 		}
 
 		/// <summary>
@@ -57,7 +62,7 @@ namespace Basalt.Common.Components
 
 		internal void onDestroy()
 		{
-			Engine.Instance.GetEngineComponent<IEventBus>()?.Unsubscribe(this);
+			UnsubscribeFromEvents();
 			OnDestroy();
 		}
 
@@ -68,24 +73,55 @@ namespace Basalt.Common.Components
 		{
 		}
 
-		public void OnStartEvent() => OnStart();
-
-		public void OnUpdateEvent()
+		public void OnStartEvent(object? sender, EventArgs args)
 		{
-			if(Entity.Enabled && Enabled)
+			if (started)
+				return;
+			started = true;
+			OnStart();
+		}
+
+		public void OnUpdateEvent(object? sender, EventArgs args)
+		{
+			if (Entity.Enabled && Enabled)
 				OnUpdate();
 		}
 
-		public void OnPhysicsUpdateEvent()
+		public void OnPhysicsUpdateEvent(object? sender, EventArgs args)
 		{
-			if(Entity.Enabled && Enabled)
+			if (Entity.Enabled && Enabled)
 				OnPhysicsUpdate();
 		}
 
-		public void OnRenderEvent()
+		public void OnRenderEvent(object? sender, EventArgs args)
 		{
-			if(Entity.Enabled && Enabled)
+			if (Entity.Enabled && Enabled)
 				OnRender();
+		}
+
+		private void SubscribeToEvents()
+		{
+			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
+			Type type = this.GetType();
+
+			eventbus.Subscribe(BasaltConstants.UpdateEventKey, OnUpdateEvent);
+
+			// Check if OnRender was overriden
+			if (type.GetMethod(nameof(OnRender)).DeclaringType != typeof(Component))
+				eventbus.Subscribe(BasaltConstants.RenderEventKey, OnRenderEvent);
+
+			// Check if OnPhysicsUpdate was overriden
+			if (type.GetMethod(nameof(OnPhysicsUpdate)).DeclaringType != typeof(Component))
+				eventbus.Subscribe(BasaltConstants.PhysicsUpdateEventKey, OnPhysicsUpdateEvent);
+		}
+
+		private void UnsubscribeFromEvents()
+		{
+			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
+			eventbus.Unsubscribe(BasaltConstants.StartEventKey, OnStartEvent);
+			eventbus.Unsubscribe(BasaltConstants.UpdateEventKey, OnUpdateEvent);
+			eventbus.Unsubscribe(BasaltConstants.RenderEventKey, OnRenderEvent);
+			eventbus.Unsubscribe(BasaltConstants.PhysicsUpdateEventKey, OnPhysicsUpdateEvent);
 		}
 
 

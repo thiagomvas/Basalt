@@ -2,6 +2,7 @@
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
@@ -125,9 +126,6 @@ namespace Basalt.Tests.Integration
 		public void EngineEventBus_WhenHasObservers_ShouldNotify()
 		{
 			// Arrange
-			var entity = new Entity();
-			entity.AddComponent(new TestComponent(entity));
-
 			var engine = new EngineBuilder()
 				.AddComponent<IGraphicsEngine>(() => Mock.Of<IGraphicsEngine>(), true)
 				.AddComponent<IEventBus, EventBus>()
@@ -135,6 +133,8 @@ namespace Basalt.Tests.Integration
 
 			engine.Initialize();
 
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
 			Engine.CreateEntity(entity);
 
 			int physicsCalls = 10;
@@ -146,17 +146,17 @@ namespace Basalt.Tests.Integration
 			// Act
 			for (int i = 0; i < physicsCalls; i++)
 			{
-				eventBus?.NotifyPhysicsUpdate();
+				eventBus?.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 			}
 
 			for (int i = 0; i < updareCalls; i++)
 			{
-				eventBus?.NotifyUpdate();
+				eventBus?.TriggerEvent(BasaltConstants.UpdateEventKey);
 			}
 
 			for (int i = 0; i < renderCalls; i++)
 			{
-				eventBus?.NotifyRender();
+				eventBus?.TriggerEvent(BasaltConstants.RenderEventKey);
 			}
 
 			// Assert
@@ -204,12 +204,11 @@ namespace Basalt.Tests.Integration
 
 			// Act
 			Engine.RemoveEntity(entity);
-			engine.GetEngineComponent<IEventBus>()!.NotifyPhysicsUpdate();
+			engine.GetEngineComponent<IEventBus>()!.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
 			// Assert
 			Assert.That(engine.EntityManager.GetEntities().Count, Is.EqualTo(0));
 			Assert.IsNull(engine.EntityManager.GetEntity("entity1"));
-			Assert.That(engine.GetEngineComponent<IEventBus>()!.IsSubscribed(entity.Transform), Is.False);
 			Assert.That(entity.Transform.Position, Is.EqualTo(Vector3.Zero).Using(comparer));
 		}
 	}

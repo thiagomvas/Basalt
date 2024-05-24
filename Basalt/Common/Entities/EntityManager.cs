@@ -29,10 +29,6 @@ namespace Basalt.Common.Entities
 			{
 				Engine.Instance.Logger?.LogDebug($"Adding entity {entity.Id} to the entity manager.");
 				entities.Add(entity);
-				foreach (var component in entity.GetComponents())
-					eventBus.Subscribe(component);
-				foreach (var child in entity.Children)
-					AddEntity(child);
 
 				Engine.Instance.Logger?.LogDebug($"Added entity {entity.Id} to the entity manager.");
 			}
@@ -48,7 +44,7 @@ namespace Basalt.Common.Entities
 			{
 				entities.Remove(entity);
 				foreach (var component in entity.GetComponents())
-					eventBus.Unsubscribe(component);
+					component.OnDestroy();
 			}
 		}
 

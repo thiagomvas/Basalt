@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.5.0"></a>
+## [1.5.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.5.0) (2024-05-23)
+
+### Features
+
+* Event Bus now supports custom events ([c7715a5](https://www.github.com/thiagomvas/Basalt/commit/c7715a5d5238e5b5c24be67f77d9dafc7e44cacd))
+* Rewrite event system altogether to optimize event notifications. ([9d38f94](https://www.github.com/thiagomvas/Basalt/commit/9d38f9403ce2db650608ea1cebb4d36fb69f402b))
+
 <a name="1.4.0"></a>
 ## [1.4.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.4.0) (2024-05-23)
 

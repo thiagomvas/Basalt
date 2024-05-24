@@ -1,4 +1,6 @@
-﻿using Basalt.Core.Common.Abstractions.Input;
+﻿using Basalt.Common.Utils;
+using Basalt.Core.Common.Abstractions.Engine;
+using Basalt.Core.Common.Abstractions.Input;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 namespace Basalt.Raylib.Input
@@ -15,7 +17,7 @@ namespace Basalt.Raylib.Input
 		/// <inheritdoc/>
 		public void Initialize()
 		{
-			// TODO: Implement initialization logic
+			Engine.Instance.GetEngineComponent<IEventBus>()!.Subscribe(BasaltConstants.UpdateEventKey, (_, _) => Update());
 		}
 
 		/// <inheritdoc/>

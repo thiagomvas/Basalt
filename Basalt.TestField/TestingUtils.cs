@@ -23,7 +23,7 @@ namespace Basalt.TestField
 			{
 				var box = new Entity();
 				box.Transform.Position = new Vector3(Random.Shared.Next(-30, 30), 25 + i, Random.Shared.Next(-30, 30));
-				box.AddComponent(new ModelRenderer(box) { ModelCacheKey = "robot", Size = new Vector3((float) (i+1) / 5f), Offset = -Vector3.UnitY * (float)(i + 1) / 2.5f });
+				box.AddComponent(new ModelRenderer(box) { ModelCacheKey = "robot", Size = new Vector3((float)(i + 1) / 5f), Offset = -Vector3.UnitY * (float)(i + 1) / 2.5f });
 				box.AddComponent(new BoxCollider(box) { Size = new Vector3(i) });
 				box.AddComponent(new Rigidbody(box) { IsKinematic = false, Mass = 1 });
 

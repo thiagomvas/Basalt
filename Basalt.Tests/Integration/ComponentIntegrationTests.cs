@@ -2,9 +2,11 @@
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Events;
+using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Tests.Common;
 using Moq;
+using System.Numerics;
 
 namespace Basalt.Tests.Integration
 {
@@ -22,7 +24,7 @@ namespace Basalt.Tests.Integration
 		}
 
 		[Test]
-		public void ComponentAddedToEngine_ShouldBeSubscribedToEventBus()
+		public void ComponentAddedToEntity_ShouldBeSubscribedToEventBus()
 		{
 			// Arrange
 			var entity = new Entity();
@@ -32,9 +34,11 @@ namespace Basalt.Tests.Integration
 			Engine.Instance.Initialize();
 			Engine.CreateEntity(entity);
 			var component = entity.GetComponent<TestComponent>();
+			Engine.Instance.GetEngineComponent<IEventBus>()!.TriggerEvent(BasaltConstants.StartEventKey);
+
 
 			// Assert
-			Assert.IsTrue(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(component));
+			Assert.IsTrue(component.HasStarted);
 		}
 
 		[Test]
@@ -73,15 +77,18 @@ namespace Basalt.Tests.Integration
 			// Arrange
 			var entity = new Entity();
 			entity.AddComponent(new TestComponent(entity));
+			entity.AddComponent(new Rigidbody(entity));
+			IEqualityComparer<Vector3> comparer = new Vector3EqualityComparer();
 
 			// Act
 			Engine.Instance.Initialize();
 			Engine.CreateEntity(entity);
 			var component = entity.GetComponent<TestComponent>();
 			entity.Destroy();
+			Engine.Instance.GetEngineComponent<IEventBus>()!.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
 			// Assert
-			Assert.IsFalse(Engine.Instance.GetEngineComponent<IEventBus>()!.IsSubscribed(component));
+			Assert.That(entity.Transform.Position, Is.EqualTo(Vector3.Zero).Using(comparer));
 		}
 
 		[Test]

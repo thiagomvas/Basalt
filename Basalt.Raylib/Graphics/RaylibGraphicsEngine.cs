@@ -2,7 +2,6 @@
 using Basalt.Common.Entities;
 using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
-using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Utils;
@@ -29,7 +28,6 @@ namespace Basalt.Raylib.Graphics
 
 		private EntityManager entityManager;
 		private ISoundSystem? soundSystem;
-		private IInputSystem? inputSystem;
 		private IEventBus eventBus;
 
 		Shader PostProcessShader, LightShader;
@@ -50,7 +48,6 @@ namespace Basalt.Raylib.Graphics
 		public unsafe void Initialize()
 		{
 			soundSystem = Engine.Instance.GetEngineComponent<ISoundSystem>();
-			inputSystem = Engine.Instance.GetEngineComponent<IInputSystem>();
 			eventBus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			entityManager = Engine.Instance.EntityManager;
 			logger = Engine.Instance.Logger;
@@ -157,8 +154,7 @@ namespace Basalt.Raylib.Graphics
 				}
 				// Update
 				//----------------------------------------------------------------------------------
-				eventBus?.NotifyUpdate();
-				inputSystem?.Update();
+				eventBus?.TriggerEvent(BasaltConstants.UpdateEventKey);
 
 
 
@@ -192,7 +188,7 @@ namespace Basalt.Raylib.Graphics
 
 				BeginMode3D(control.camera);
 
-				eventBus?.NotifyRender();
+				eventBus?.TriggerEvent(BasaltConstants.RenderEventKey);
 
 
 				EndMode3D();

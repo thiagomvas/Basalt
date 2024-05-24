@@ -1,4 +1,5 @@
-﻿using Basalt.Core.Common.Abstractions.Engine;
+﻿using Basalt.Common.Utils;
+using Basalt.Core.Common.Abstractions.Engine;
 namespace Basalt.Common.Events
 {
 	/// <summary>
@@ -9,6 +10,8 @@ namespace Basalt.Common.Events
 		private readonly List<IObserver> observers;
 		private readonly object lockObject;
 
+		// Game Events
+		private Dictionary<string, EventHandler> eventHandlers = new Dictionary<string, EventHandler>();
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EventBus"/> class.
 		/// </summary>
@@ -19,77 +22,18 @@ namespace Basalt.Common.Events
 		}
 
 		/// <summary>
-		/// Notifies all observers to render.
-		/// </summary>
-		public void NotifyRender()
-		{
-			lock (lockObject)
-			{
-				foreach (var observer in observers)
-				{
-					observer.OnRenderEvent();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Notifies all observers to start.
-		/// </summary>
-		public void NotifyStart()
-		{
-			foreach (var observer in observers)
-			{
-				observer.OnStartEvent();
-			}
-		}
-
-		/// <summary>
-		/// Notifies all observers to update.
-		/// </summary>
-		public void NotifyUpdate()
-		{
-			Task.Run(() =>
-			{
-				lock (lockObject)
-				{
-					foreach (var observer in observers)
-					{
-						observer.OnUpdateEvent();
-					}
-				}
-			}).Wait();
-		}
-
-		/// <summary>
-		/// Notifies all observers of a physics update.
-		/// </summary>
-		public void NotifyPhysicsUpdate()
-		{
-			Task.Run(() =>
-			{
-				lock (lockObject)
-				{
-					foreach (var observer in observers)
-					{
-						observer.OnPhysicsUpdateEvent();
-					}
-				}
-			}).Wait();
-		}
-
-		/// <summary>
 		/// Subscribes an observer to the event bus.
 		/// </summary>
 		/// <param name="observer">The observer to subscribe.</param>
-		public void Subscribe(IObserver observer)
+		public void Subscribe(string eventName, EventHandler handler)
 		{
 			lock (lockObject)
 			{
-				observers.Add(observer);
-				if (Engine.Instance.Running)
+				if (!eventHandlers.ContainsKey(eventName))
 				{
-					observer.OnStartEvent();
+					eventHandlers[eventName] = null;
 				}
+				eventHandlers[eventName] += handler;
 			}
 		}
 
@@ -97,21 +41,17 @@ namespace Basalt.Common.Events
 		/// Unsubscribes an observer from the event bus.
 		/// </summary>
 		/// <param name="observer">The observer to unsubscribe.</param>
-		public void Unsubscribe(IObserver observer)
+		public void Unsubscribe(string eventName, EventHandler handler)
 		{
 			lock (lockObject)
 			{
-				observers.Remove(observer);
+				if (eventHandlers.ContainsKey(eventName))
+				{
+					eventHandlers[eventName] -= handler;
+				}
 			}
 		}
 
-		public bool IsSubscribed(IObserver observer)
-		{
-			lock (lockObject)
-			{
-				return observers.Contains(observer);
-			}
-		}
 
 		public void Initialize()
 		{
@@ -121,6 +61,17 @@ namespace Basalt.Common.Events
 		public void Shutdown()
 		{
 
+		}
+
+		public void TriggerEvent(string eventName)
+		{
+			lock (lockObject)
+			{
+				if (eventHandlers.ContainsKey(eventName))
+				{
+					eventHandlers[eventName]?.Invoke(this, EventArgs.Empty);
+				}
+			}
 		}
 	}
 }

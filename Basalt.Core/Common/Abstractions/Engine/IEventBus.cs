@@ -9,40 +9,22 @@ namespace Basalt.Core.Common.Abstractions.Engine
 		/// <summary>
 		/// Subscribes an observer to the event bus.
 		/// </summary>
-		/// <param name="observer">The observer to subscribe.</param>
-		void Subscribe(IObserver observer);
+		/// <param name="eventName">The name of the event to subscribe to.</param>
+		/// <param name="handler">The handler to call when the event is raised.</param>
+		void Subscribe(string eventName, EventHandler handler);
 
 		/// <summary>
 		/// Unsubscribes an observer from the event bus.
 		/// </summary>
-		/// <param name="observer">The observer to unsubscribe.</param>
-		void Unsubscribe(IObserver observer);
-
+		/// <param name="eventName">The name of the event to unsubscribe from.</param>
+		/// <param name="handler">The handler to remove from the event.</param>
+		void Unsubscribe(string eventName, EventHandler handler);
+		
 		/// <summary>
-		/// Notifies the event bus that the engine has started.
+		/// Triggers an event on the event bus.
 		/// </summary>
-		void NotifyStart();
+		/// <param name="eventName">The name of the event to trigger.</param>
+		void TriggerEvent(string eventName);
 
-		/// <summary>
-		/// Notifies the event bus of an engine update.
-		/// </summary>
-		void NotifyUpdate();
-
-		/// <summary>
-		/// Notifies the event bus of a physics update.
-		/// </summary>
-		void NotifyPhysicsUpdate();
-
-		/// <summary>
-		/// Notifies the event bus to render the scene.
-		/// </summary>
-		void NotifyRender();
-
-		/// <summary>
-		/// Checks if an observer is subscribed to the event bus.
-		/// </summary>
-		/// <param name="observer">The observer to check.</param>
-		/// <returns>True if the observer is subscribed, false otherwise.</returns>
-		bool IsSubscribed(IObserver observer);
 	}
 }

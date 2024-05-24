@@ -1,9 +1,7 @@
 ﻿using Basalt.Common;
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
-using Basalt.Common.Physics;
 using Basalt.Common.Utils.Extensions;
-using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
 using Basalt.Core.Common.Types;
 using System.Numerics;
@@ -16,6 +14,7 @@ namespace Basalt.TestField.Components
 		private IInputSystem inputSystem;
 		public PlayerController(Entity entity) : base(entity)
 		{
+
 
 		}
 		public override void OnStart()
@@ -50,6 +49,7 @@ namespace Basalt.TestField.Components
 					InputKey.Space,
 					ActionType.Press),
 					() => Entity.Rigidbody.Velocity += Vector3.UnitY * 5);
+
 			}
 
 			//((Engine.Instance.GetEngineComponent<IPhysicsEngine>() as PhysicsEngine).chunking as Grid).player = this.Entity ;
@@ -59,7 +59,7 @@ namespace Basalt.TestField.Components
 
 		public override void OnUpdate()
 		{
-			if(Entity.Transform.Position.Y < -10)
+			if (Entity.Transform.Position.Y < -10)
 			{
 				Entity.Transform.Position = new Vector3(Entity.Transform.Position.X, -10, Entity.Transform.Position.Z);
 				Entity.Rigidbody.Velocity = Vector3.Zero;
