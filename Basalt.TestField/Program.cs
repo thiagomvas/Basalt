@@ -13,6 +13,7 @@ using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Input;
 using Basalt.Raylib.Utils;
 using Basalt.TestField;
+using Basalt.TestField.Components;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -57,6 +58,7 @@ player.AddComponent(new Rigidbody(player) { IsKinematic = false, Mass = 25 });
 player.AddComponent(new Basalt.TestField.Components.PlayerController(player));
 player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Type = LightType.Point });
 //player.AddComponent(new TrailRenderer(player) { StartRadius = 0.5f, EndRadius = 0.1f, Color = Color.Red, TrailSegmentCount = 25, Offset = offset, TrailRefreshRate = 0.025f });
+player.AddComponent(new Label(player) { Text = "This is a test label ", Pivot = UIPivot.MiddleLeft, Offset = new(100, 25)});
 
 Engine.CreateEntity(player);
 
