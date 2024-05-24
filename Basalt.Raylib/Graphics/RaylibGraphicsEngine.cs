@@ -203,6 +203,8 @@ namespace Basalt.Raylib.Graphics
 
 				}
 
+				eventBus?.TriggerEvent(BasaltConstants.UiRenderEventKey);
+
 				EndDrawing();
 				//----------------------------------------------------------------------------------
 			}
