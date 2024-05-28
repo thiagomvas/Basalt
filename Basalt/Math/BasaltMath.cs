@@ -105,5 +105,10 @@ namespace Basalt.Math
 			float angle = (float)System.Math.Acos(dotProduct / (magnitude1 * magnitude2));
 			return angle;
 		}
+
+		public static bool IsBetween(float value, float min, float max)
+		{
+			return value >= min && value <= max;
+		}
 	}
 }
