@@ -112,12 +112,11 @@ namespace Basalt.Common.Physics
 				});
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
-				Time.PhysicsDeltaTime = targetFrameTimeMs / 1000f;
 
 				if (elapsedTime > targetFrameTimeMs)
 				{
 					logger?.LogWarning($"Physics engine is running behind. Elapsed time: {elapsedTime}ms");
-					Time.PhysicsDeltaTime = elapsedTime / 1000f;
+					Time.PhysicsDeltaTime = elapsedTime * 0.001f;
 					continue;
 				}
 

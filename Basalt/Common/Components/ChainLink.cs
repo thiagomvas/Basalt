@@ -12,14 +12,6 @@ namespace Basalt.Common.Components
 		{
 		}
 
-		public override void OnStart()
-		{
-
-		}
-		public override void OnUpdate()
-		{
-
-		}
 		public override void OnPhysicsUpdate()
 		{
 			// Calculate the vector between the two entities

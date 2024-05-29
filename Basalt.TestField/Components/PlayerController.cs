@@ -10,7 +10,7 @@ namespace Basalt.TestField.Components
 {
 	public class PlayerController : Component
 	{
-		public float MoveSpeed = 25;
+		public float MoveSpeed = 10;
 		private IInputSystem inputSystem;
 		public PlayerController(Entity entity) : base(entity)
 		{

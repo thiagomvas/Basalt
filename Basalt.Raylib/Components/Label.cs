@@ -39,18 +39,6 @@ namespace Basalt.Raylib.Components
 		}
 
 		/// <inheritdoc/>
-		public override void OnStart()
-		{
-
-		}
-
-		/// <inheritdoc/>
-		public override void OnUpdate()
-		{
-
-		}
-
-		/// <inheritdoc/>
 		public override void OnUIRender()
 		{
 			var position = GetPivotedPosition(new(Raylib_cs.Raylib.GetScreenWidth(), Raylib_cs.Raylib.GetScreenHeight())) + Offset;
@@ -58,7 +46,7 @@ namespace Basalt.Raylib.Components
 			Raylib_cs.Raylib.DrawTextPro(Raylib_cs.Raylib.GetFontDefault(),
 								Text,
 								position,
-								Raylib_cs.Raylib.MeasureTextEx(Raylib_cs.Raylib.GetFontDefault(), Text, FontSize, Spacing) / 2,
+								Raylib_cs.Raylib.MeasureTextEx(Raylib_cs.Raylib.GetFontDefault(), Text, FontSize, Spacing) * 0.5f,
 								Rotation,
 								FontSize,
 								Spacing,

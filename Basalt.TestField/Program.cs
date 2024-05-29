@@ -62,5 +62,5 @@ Engine.CreateEntity(player);
 
 
 
-TestingUtils.SetupTestingScene();
+TestingUtils.SetupTestingScene(250);
 TestingUtils.SetupDebugInfo();

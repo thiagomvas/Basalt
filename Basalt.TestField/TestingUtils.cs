@@ -9,7 +9,7 @@ namespace Basalt.TestField
 {
 	public static class TestingUtils
 	{
-		public static void SetupTestingScene(int boxCount = 10, int ropeLength = 20)
+		public static void SetupTestingScene(int boxCount = 50, int ropeLength = 20)
 		{
 			var ground = new Entity();
 			ground.Transform.Position = new Vector3(0, -1, 0);
@@ -24,8 +24,8 @@ namespace Basalt.TestField
 			{
 				var box = new Entity();
 				box.Transform.Position = new Vector3(Random.Shared.Next(-30, 30), 25 + i, Random.Shared.Next(-30, 30));
-				box.AddComponent(new ModelRenderer(box) { ModelCacheKey = "robot", Size = new Vector3((i + 1) / 5f), Offset = -Vector3.UnitY * (i + 1) / 2.5f });
-				box.AddComponent(new BoxCollider(box) { Size = new Vector3(i) });
+				box.AddComponent(new ModelRenderer(box) { ModelCacheKey = "knot", Size = Vector3.One });
+				box.AddComponent(new BoxCollider(box) { Size = Vector3.One });
 				box.AddComponent(new Rigidbody(box) { IsKinematic = false, Mass = 1 });
 
 				Engine.CreateEntity(box);

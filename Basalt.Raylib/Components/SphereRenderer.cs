@@ -56,15 +56,6 @@ namespace Basalt.Raylib.Components
 
 		}
 
-		/// <inheritdoc/>
-		public override void OnStart()
-		{
-		}
-
-		/// <inheritdoc/>
-		public override void OnUpdate()
-		{
-		}
 
 		/// <inheritdoc/>
 		public override unsafe void OnRender()

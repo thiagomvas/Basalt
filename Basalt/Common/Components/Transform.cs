@@ -89,20 +89,5 @@ namespace Basalt.Common.Components
 			Position = new Vector3();
 		}
 
-		/// <summary>
-		/// Called when the component starts.
-		/// </summary>
-		public override void OnStart()
-		{
-
-		}
-
-		/// <summary>
-		/// Called every frame to update the component.
-		/// </summary>
-		public override void OnUpdate()
-		{
-
-		}
 	}
 }

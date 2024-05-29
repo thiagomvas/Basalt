@@ -82,13 +82,6 @@ namespace Basalt.Raylib.Components
 		}
 
 		/// <summary>
-		/// Called every frame to update the component.
-		/// </summary>
-		public override void OnUpdate()
-		{
-		}
-
-		/// <summary>
 		/// Called every frame to render the component.
 		/// </summary>
 		public override void OnRender()

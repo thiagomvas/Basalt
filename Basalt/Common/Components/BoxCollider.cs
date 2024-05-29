@@ -28,26 +28,6 @@ namespace Basalt.Common.Components
 		{
 
 		}
-
-		/// <summary>
-		/// Called when the component starts.
-		/// </summary>
-		public override void OnStart()
-		{
-		}
-
-		/// <summary>
-		/// Called every frame to update the component.
-		/// </summary>
-		public override void OnUpdate() { }
-
-		/// <summary>
-		/// Called when the component needs to be rendered.
-		/// </summary>
-		public override void OnRender()
-		{
-
-		}
 	}
 
 }

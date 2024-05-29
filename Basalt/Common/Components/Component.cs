@@ -42,12 +42,12 @@ namespace Basalt.Common.Components
 		/// <summary>
 		/// Called when the component is started.
 		/// </summary>
-		public abstract void OnStart();
+		public virtual void OnStart() { }
 
 		/// <summary>
 		/// Called every frame to update the component.
 		/// </summary>
-		public abstract void OnUpdate();
+		public virtual void OnUpdate() { }
 
 		/// <summary>
 		/// Called every physics update to update the component's physics.
@@ -110,14 +110,16 @@ namespace Basalt.Common.Components
 			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			Type type = this.GetType();
 
-			eventbus.Subscribe(BasaltConstants.UpdateEventKey, OnUpdateEvent);
+			// Check if OnUpdate was overriden
+			if (type.GetMethod(nameof(OnUpdate))!.DeclaringType != typeof(Component))
+				eventbus.Subscribe(BasaltConstants.UpdateEventKey, OnUpdateEvent);
 
 			// Check if OnRender was overriden
-			if (type.GetMethod(nameof(OnRender)).DeclaringType != typeof(Component))
+			if (type.GetMethod(nameof(OnRender))!.DeclaringType != typeof(Component))
 				eventbus.Subscribe(BasaltConstants.RenderEventKey, OnRenderEvent);
 
 			// Check if OnPhysicsUpdate was overriden
-			if (type.GetMethod(nameof(OnPhysicsUpdate)).DeclaringType != typeof(Component))
+			if (type.GetMethod(nameof(OnPhysicsUpdate))!.DeclaringType != typeof(Component))
 				eventbus.Subscribe(BasaltConstants.PhysicsUpdateEventKey, OnPhysicsUpdateEvent);
 		}
 

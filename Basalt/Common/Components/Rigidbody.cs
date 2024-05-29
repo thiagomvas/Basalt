@@ -100,13 +100,6 @@ namespace Basalt.Common.Components
 
 		}
 
-		/// <summary>
-		/// Called on each frame update.
-		/// </summary>
-		public override void OnUpdate()
-		{
-		}
-
 		public void AddForce(Vector3 force, ForceType type = ForceType.Force)
 		{
 			if (IsKinematic)

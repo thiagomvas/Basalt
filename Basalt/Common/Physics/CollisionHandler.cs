@@ -68,8 +68,8 @@ namespace Basalt.Common.Physics
 				return; // Cannot collide with itself
 			}
 
-			Vector3 extents1 = box1.Size / 2f;
-			Vector3 extents2 = box2.Size / 2f;
+			Vector3 extents1 = box1.Size * 0.5f;
+			Vector3 extents2 = box2.Size * 0.5f;
 
 			// Calculate the min and max points of the two colliders along each axis
 			Vector3 min1 = box1.Position - extents1;
@@ -140,8 +140,8 @@ namespace Basalt.Common.Physics
 					rb2.Velocity -= impulse / rb2.Mass;
 				}
 
-				box1.Entity.Transform.Position += separationDirection * separationDistance / 2f;
-				box2.Entity.Transform.Position -= separationDirection * separationDistance / 2f;
+				box1.Entity.Transform.Position += separationDirection * separationDistance * 0.5f;
+				box2.Entity.Transform.Position -= separationDirection * separationDistance * 0.5f;
 			}
 		}
 	}

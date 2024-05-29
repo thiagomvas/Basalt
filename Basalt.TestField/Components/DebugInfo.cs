@@ -38,11 +38,11 @@ namespace Basalt.TestField.Components
 		public override void OnUIRender()
 		{
 			DrawFPS(10, 10);
-			DrawText($"Entities: {Engine.Instance.EntityManager.EntityCount}", 10, 30, 18, Color.DarkGreen);
-			DrawText($"Threads Used: {Process.GetCurrentProcess().Threads.Count}", 10, 50, 18, Color.DarkGreen);
-			DrawText($"RAM Used: {Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024} MB", 10, 70,18, Color.DarkGreen);
-			DrawText($"Average Physics DeltaTime: {pastPhysicsDeltaTime.Average()} ms", 10, 90, 18, Color.DarkGreen);
-			DrawText($"Average FPS: {pastFps.Average()}", 10, 110, 18, Color.DarkGreen);
+			//DrawText($"Entities: {Engine.Instance.EntityManager.EntityCount}", 10, 30, 18, Color.DarkGreen);
+			//DrawText($"Threads Used: {Process.GetCurrentProcess().Threads.Count}", 10, 50, 18, Color.DarkGreen);
+			//DrawText($"RAM Used: {Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024} MB", 10, 70,18, Color.DarkGreen);
+			//DrawText($"Average Physics DeltaTime: {pastPhysicsDeltaTime.Average()} ms", 10, 90, 18, Color.DarkGreen);
+			//DrawText($"Average FPS: {pastFps.Average()}", 10, 110, 18, Color.DarkGreen);
 		}
 	}
 }

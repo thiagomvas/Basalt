@@ -12,15 +12,6 @@ namespace Basalt.Common.Components
 		{
 		}
 
-		public override void OnStart()
-		{
-
-		}
-
-		public override void OnUpdate()
-		{
-			// Optional: Add any behavior you want to occur during regular updates
-		}
 
 		public override void OnPhysicsUpdate()
 		{
