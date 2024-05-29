@@ -29,9 +29,8 @@ namespace Basalt.Raylib.Components
 		public override void OnUIRender()
 		{
 			var position = GetPivotedPosition(new(GetScreenWidth(), GetScreenHeight())) + Offset;
-			DrawRectanglePro(new Rectangle(position.X - Size.X / 2, position.Y - Size.Y / 2, Size.X, Size.Y), Size / 2, Rotation, BackgroundColor);
-			DrawRectanglePro(new Rectangle(position.X - Size.X / 2, position.Y - Size.Y / 2, Size.X * Progress, Size.Y), Size / 2, Rotation, ForegroundColor);
-
+			DrawRectanglePro(new Rectangle(position.X, position.Y, Size.X, Size.Y), Size / 2, Rotation, BackgroundColor);
+			DrawRectanglePro(new Rectangle(position.X, position.Y, Size.X * Progress, Size.Y), Size / 2, Rotation, ForegroundColor);
 		}
 	}
 }
