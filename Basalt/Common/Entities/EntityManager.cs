@@ -7,6 +7,7 @@ namespace Basalt.Common.Entities
 	/// </summary>
 	public class EntityManager
 	{
+		public int EntityCount => entities.Count;
 		private List<Entity> entities = new List<Entity>();
 		private readonly object lockObject = new object();
 		private readonly IEventBus eventBus;

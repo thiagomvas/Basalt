@@ -89,8 +89,10 @@ namespace Basalt.Common.Physics
 				chunking.Update();
 
 				// Check for collisions
-				foreach (var chunk in chunking.GetEntitiesChunked())
+
+				Parallel.ForEach(chunking.GetEntitiesChunked(), (chunk) =>
 				{
+
 					for (int i = 0; i < chunk.Count; i++)
 					{
 						for (int j = i + 1; j < chunk.Count; j++)
@@ -107,7 +109,7 @@ namespace Basalt.Common.Physics
 							}
 						}
 					}
-				}
+				});
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 				Time.PhysicsDeltaTime = targetFrameTimeMs / 1000f;

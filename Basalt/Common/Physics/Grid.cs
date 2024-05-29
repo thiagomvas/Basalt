@@ -90,7 +90,7 @@ namespace Basalt.Common.Physics
 		public List<List<Entity>> GetEntitiesChunked()
 		{
 			List<List<Entity>> chunkedEntities = new List<List<Entity>>();
-			foreach (var chunk in chunks.Values)
+			Parallel.ForEach(chunks.Values, (chunk) =>
 			{
 				chunkedEntities.Add(new List<Entity>(chunk));
 				var baseChunk = GetChunk(chunk[0].Transform.Position);
@@ -106,8 +106,7 @@ namespace Basalt.Common.Physics
 						}
 					}
 				}
-			}
-
+			});
 			return chunkedEntities;
 		}
 

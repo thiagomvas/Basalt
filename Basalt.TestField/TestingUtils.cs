@@ -1,6 +1,7 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Raylib.Components;
+using Basalt.TestField.Components;
 using Raylib_cs;
 using System.Numerics;
 
@@ -55,6 +56,14 @@ namespace Basalt.TestField
 				Engine.CreateEntity(link);
 			}
 
+		}
+
+		public static void SetupDebugInfo()
+		{
+			var debugInfo = new Entity();
+			debugInfo.AddComponent(new DebugInfo(debugInfo));
+			debugInfo.Id = "debugInfo";
+			Engine.CreateEntity(debugInfo);
 		}
 	}
 }
