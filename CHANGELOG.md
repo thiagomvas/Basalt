@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.5.1"></a>
+## [1.5.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.5.1) (2024-05-28)
+
+### Bug Fixes
+
+* uI components were not centered ([c68b03a](https://www.github.com/thiagomvas/Basalt/commit/c68b03a307bb11d09cc33962bbec7e40fb8aaaff))
+
 <a name="1.5.0"></a>
 ## [1.5.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.5.0) (2024-05-23)
 
