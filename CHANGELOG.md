@@ -7,14 +7,15 @@ All notable changes to this project will be documented in this file. See [versio
 
 ### Features
 
-* Add UI System ([a151b0c](https://www.github.com/thiagomvas/Basalt/commit/a151b0c32d214a8a56c5046975ca93886999125b))
+* Add UI System ([ac91489](https://www.github.com/thiagomvas/Basalt/commit/ac914891b82a865cb1c4b79329f9e64dbaa6fdb6))
+* Add Panel UI Component ([28fd0b6](https://github.com/thiagomvas/Basalt/commit/28fd0b6d38277fcbcbae6d5dd62f9dfa56d811ee))
+* Add Label UI Component ([59095ba](https://github.com/thiagomvas/Basalt/commit/59095baaf841e88becc4abdab344fac7e0fb0f69))
+* Add Image UI Component ([b482269](https://github.com/thiagomvas/Basalt/commit/b48226907b962d49140709eb9519974a159b7ffd))
+* Add Progress Bar UI Component ([d1e34dc](https://github.com/thiagomvas/Basalt/commit/d1e34dc49cec92d2524ac909cdf2719cb580dd23))
+* Add Button UI Component ([74742dc](https://github.com/thiagomvas/Basalt/commit/74742dcd8fd74a0c1de900bc04be742a77cc6af8))
+* Add abstract UIComponent class to support custom UI elements([de7f029](https://github.com/thiagomvas/Basalt/commit/de7f02949251efcc93c208cfb2e4c797db7de6d5))
+* Add Texture support to ResourceCache([0cc8f73](https://github.com/thiagomvas/Basalt/commit/0cc8f7341ec05798e50c4d6be2ac83baa46c786c))
 
-<a name="1.5.1"></a>
-## [1.5.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.5.1) (2024-05-28)
-
-### Bug Fixes
-
-* uI components were not centered ([c68b03a](https://www.github.com/thiagomvas/Basalt/commit/c68b03a307bb11d09cc33962bbec7e40fb8aaaff))
 
 <a name="1.5.0"></a>
 ## [1.5.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.5.0) (2024-05-23)
