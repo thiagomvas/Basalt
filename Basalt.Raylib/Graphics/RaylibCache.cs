@@ -15,6 +15,8 @@ namespace Basalt.Raylib.Graphics
 		/// The lock object used for thread synchronization when accessing the shader dictionary.
 		/// </summary>
 		private static object shaderLock = new object();
+
+		private static object textureLock = new object();
 		/// <summary>
 		/// The queue that stores the model load requests.
 		/// </summary>
@@ -25,8 +27,11 @@ namespace Basalt.Raylib.Graphics
 		/// </summary>
 		private static List<KeyValuePair<string, ShaderLoadRequest>> shaderLoadQueue = new();
 
+		private static List<KeyValuePair<string, TextureLoadRequest>> textureLoadQueue = new();
+
 		private static List<string> modelKeys = new();
 		private static List<string> shaderKeys = new();
+		private static List<string> textureKeys = new();
 
 		/// <summary>
 		/// Loads the models and shaders from the load queues.
@@ -49,6 +54,15 @@ namespace Basalt.Raylib.Graphics
 					loadModel(req.Value);
 				}
 				modelLoadQueue.Clear();
+			}
+
+			lock (textureLock)
+			{
+				foreach (var req in textureLoadQueue)
+				{
+					loadTexture(req.Value);
+				}
+				textureLoadQueue.Clear();
 			}
 		}
 
@@ -115,6 +129,26 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		public static void LoadTexture(this ResourceCache cache, string textureName, string texturePath)
+		{
+			if (!Raylib_cs.Raylib.IsWindowReady())
+			{
+				var request = new TextureLoadRequest()
+				{
+					textureName = textureName,
+					texturePath = texturePath
+				};
+				lock (textureLock)
+				{
+					textureLoadQueue.Add(new(textureName, request));
+					return;
+				}
+			}
+
+			Texture2D texture = Raylib_cs.Raylib.LoadTexture(texturePath);
+			ResourceCache.CacheResource(textureName, texture);
+		}
+
 		/// <summary>
 		/// Retrieves a cached model by name.
 		/// </summary>
@@ -157,6 +191,20 @@ namespace Basalt.Raylib.Graphics
 			}
 		}
 
+		public static Texture2D? GetTexture(this ResourceCache cache, string textureName)
+		{
+			lock (textureLock)
+			{
+				if (ResourceCache.GetResource<Texture2D>(textureName) is Texture2D texture)
+				{
+					return texture;
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
 		/// <summary>
 		/// Caches a model with the specified name.
 		/// </summary>
@@ -182,6 +230,14 @@ namespace Basalt.Raylib.Graphics
 			lock (shaderLock)
 			{
 				ResourceCache.CacheResource(shaderName, shader);
+			}
+		}
+
+		public static void CacheTexture(this ResourceCache cache, string textureName, Texture2D texture)
+		{
+			lock (textureLock)
+			{
+				ResourceCache.CacheResource(textureName, texture);
 			}
 		}
 
@@ -217,6 +273,13 @@ namespace Basalt.Raylib.Graphics
 			shaderKeys.Add(req.shaderName);
 		}
 
+		private static void loadTexture(TextureLoadRequest req)
+		{
+			Texture2D texture = Raylib_cs.Raylib.LoadTexture(req.texturePath);
+			ResourceCache.CacheResource(req.textureName, texture);
+			textureKeys.Add(req.textureName);
+		}
+
 		/// <summary>
 		/// Unloads all cached Raylib models and shaders.
 		/// </summary>
@@ -239,6 +302,15 @@ namespace Basalt.Raylib.Graphics
 					Raylib_cs.Raylib.UnloadShader(ResourceCache.GetResource<Shader>(key));
 				}
 				shaderKeys.Clear();
+			}
+
+			lock (textureLock)
+			{
+				foreach (var key in textureKeys)
+				{
+					Raylib_cs.Raylib.UnloadTexture(ResourceCache.GetResource<Texture2D>(key));
+				}
+				textureKeys.Clear();
 			}
 		}
 
@@ -303,6 +375,18 @@ namespace Basalt.Raylib.Graphics
 				this.shaderName = shaderName;
 				this.fragmentShaderPath = fragmentShaderPath;
 				this.vertexShaderPath = vertexShaderPath;
+			}
+		}
+
+		private struct TextureLoadRequest
+		{
+			public string textureName;
+			public string texturePath;
+
+			public TextureLoadRequest(string textureName, string texturePath)
+			{
+				this.textureName = textureName;
+				this.texturePath = texturePath;
 			}
 		}
 	}

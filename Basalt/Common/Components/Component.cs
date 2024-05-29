@@ -56,6 +56,10 @@ namespace Basalt.Common.Components
 		{
 		}
 
+		/// <summary>
+		/// Called whenever the object is colliding with another object.
+		/// </summary>
+		/// <param name="other"></param>
 		public virtual void OnCollision(Collider other)
 		{
 		}
@@ -99,7 +103,9 @@ namespace Basalt.Common.Components
 				OnRender();
 		}
 
-		private void SubscribeToEvents()
+
+
+		private virtual protected void SubscribeToEvents()
 		{
 			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			Type type = this.GetType();
@@ -115,7 +121,7 @@ namespace Basalt.Common.Components
 				eventbus.Subscribe(BasaltConstants.PhysicsUpdateEventKey, OnPhysicsUpdateEvent);
 		}
 
-		private void UnsubscribeFromEvents()
+		private virtual protected void UnsubscribeFromEvents()
 		{
 			var eventbus = Engine.Instance.GetEngineComponent<IEventBus>()!;
 			eventbus.Unsubscribe(BasaltConstants.StartEventKey, OnStartEvent);

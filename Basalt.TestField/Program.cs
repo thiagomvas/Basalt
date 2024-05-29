@@ -31,6 +31,7 @@ var initParams = new WindowInitParams
 };
 ResourceCache.Instance.LoadShader("lighting", @"resources/shaders/lighting.fs", @"resources/shaders/lighting.vs");
 ResourceCache.Instance.LoadModel("robot", @"resources/robot.glb", "lighting");
+ResourceCache.Instance.LoadTexture("logo", @"resources/logo.png");
 var builder = new EngineBuilder();
 
 builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine>(() => new RaylibGraphicsEngine(initParams) { LightingShaderCacheKey = "lighting" }, true);
@@ -57,6 +58,18 @@ player.AddComponent(new Rigidbody(player) { IsKinematic = false, Mass = 25 });
 player.AddComponent(new Basalt.TestField.Components.PlayerController(player));
 player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Type = LightType.Point });
 //player.AddComponent(new TrailRenderer(player) { StartRadius = 0.5f, EndRadius = 0.1f, Color = Color.Red, TrailSegmentCount = 25, Offset = offset, TrailRefreshRate = 0.025f });
+player.AddComponent(new Label(player) { Text = "Basalt Test Build - UI System", Pivot = UIPivot.TopCenter, Offset = new(0, 50) });
+
+// Add each UI component in a list on the left of the screen
+new List<UIComponent>
+{
+	new Button(new Entity()) { Text = "Button", Size = new(200, 50), Offset = new(250, 50), OnClick = () => Console.WriteLine("Button Clicked"), BackgroundColor = Color.DarkBlue },
+	new ProgressBar(new Entity()) { Size = new(200, 50), Offset = new(250, 100), Progress = 0.5f, BackgroundColor = Color.Red, ForegroundColor = Color.White },
+	new Basalt.Raylib.Components.Image(new Entity()) { TextureKey = "logo", Scale = 0.03f, Offset = new(250, 150) },
+	new Label(new Entity()) { Text = "Label", Offset = new(250, 200) },
+	new Panel(new Entity()) { Size = new(20, 20), Offset = new(50, 250), Color = Color.DarkBlue },
+}.ForEach(player.AddComponent);
+
 
 Engine.CreateEntity(player);
 

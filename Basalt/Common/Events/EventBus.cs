@@ -1,5 +1,4 @@
-﻿using Basalt.Common.Utils;
-using Basalt.Core.Common.Abstractions.Engine;
+﻿using Basalt.Core.Common.Abstractions.Engine;
 namespace Basalt.Common.Events
 {
 	/// <summary>

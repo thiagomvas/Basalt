@@ -19,7 +19,7 @@ namespace Basalt.Core.Common.Abstractions.Engine
 		/// <param name="eventName">The name of the event to unsubscribe from.</param>
 		/// <param name="handler">The handler to remove from the event.</param>
 		void Unsubscribe(string eventName, EventHandler handler);
-		
+
 		/// <summary>
 		/// Triggers an event on the event bus.
 		/// </summary>
