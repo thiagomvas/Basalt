@@ -35,6 +35,9 @@ namespace Basalt.Common.Entities
 		public Rigidbody? Rigidbody;
 
 		[JsonIgnore]
+		public Collider? Collider;
+
+		[JsonIgnore]
 		public Entity? Parent { get; private set; }
 
 		/// <summary>
@@ -176,15 +179,25 @@ namespace Basalt.Common.Entities
 				return;
 
 			components.Add(component);
-			if (Rigidbody == null && component is Rigidbody rb)
+			switch (component)
 			{
-				Rigidbody = rb;
+				case Rigidbody rb when Rigidbody == null:
+					Rigidbody = rb;
+					break;
+
+				case Transform t:
+					Transform = t;
+					break;
+
+				case Collider c when Collider == null:
+					Collider = c;
+					break;
+
+				default:
+					// Handle other cases if necessary
+					break;
 			}
 
-			else if (component is Transform t)
-			{
-				Transform = t;
-			}
 		}
 
 		private void ForceAddComponent(Component component)
@@ -230,15 +243,24 @@ namespace Basalt.Common.Entities
 		/// <returns>The first instance of a component of type <typeparamref name="T"/></returns>
 		public T? GetComponent<T>() where T : Component
 		{
+			if (typeof(T) == typeof(Transform))
+				return Transform as T;
+			if (typeof(T) == typeof(Rigidbody))
+				return Rigidbody as T;
+			if (typeof(T) == typeof(Collider))
+				return Collider as T;
+
 			foreach (var component in components)
 			{
-				if (component is T)
+				if (component is T match)
 				{
-					return (T)component;
+					return match;
 				}
 			}
+
 			return null;
 		}
+
 
 		/// <summary>
 		/// Gets all components of the entity.

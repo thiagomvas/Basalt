@@ -92,23 +92,23 @@ namespace Basalt.Common.Physics
 
 				Parallel.ForEach(chunking.GetEntitiesChunked(), (chunk) =>
 				{
-
-					for (int i = 0; i < chunk.Count; i++)
+					if(chunk == null || chunk.Count == 0) return;
+					Parallel.For(0, chunk.Count, (i) =>
 					{
 						for (int j = i + 1; j < chunk.Count; j++)
 						{
 							var entityA = chunk[i];
 							var entityB = chunk[j];
 
-							var colliderA = entityA.GetComponent<Collider>();
-							var colliderB = entityB.GetComponent<Collider>();
+							var colliderA = entityA.Collider;
+							var colliderB = entityB.Collider;
 
 							if (colliderA != null && colliderB != null)
 							{
 								CollisionHandler.Handle(colliderA, colliderB);
 							}
 						}
-					}
+					});
 				});
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
