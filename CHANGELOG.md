@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.6.1"></a>
+## [1.6.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.6.1) (2024-05-29)
+
+### Bug Fixes
+
+* Removed pointless fields and constructors ([c9cb7cf](https://www.github.com/thiagomvas/Basalt/commit/c9cb7cf0ca6dd2a4a1c17b622eb6c5b9fdc63dc3))
+
 <a name="1.6.0"></a>
 ## [1.6.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.6.0) (2024-05-28)
 
