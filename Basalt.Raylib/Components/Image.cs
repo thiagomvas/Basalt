@@ -43,7 +43,6 @@ namespace Basalt.Raylib.Components
 				_texture = ResourceCache.Instance.GetTexture(TextureKey);
 			var position = GetPivotedPosition(new(Raylib_cs.Raylib.GetScreenWidth(), Raylib_cs.Raylib.GetScreenHeight())) + Offset;
 			Raylib_cs.Raylib.DrawTextureEx(_texture!.Value, position - new Vector2(_texture.Value.Width, _texture.Value.Height) * Scale * 0.5f, Rotation, Scale, Tint);
-			Raylib_cs.Raylib.DrawCircleV(position, 5, Color.Purple);
 		}
 	}
 }

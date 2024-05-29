@@ -37,15 +37,15 @@ namespace Basalt.Raylib.Components
 		{
 
 			var position = GetPivotedPosition(new(GetScreenWidth(), GetScreenHeight())) + Offset;
-			var mousePos  = GetMousePosition();
+			var mousePos = GetMousePosition();
 			var rect = new Rectangle(position.X, position.Y, Size.X, Size.Y);
-			if (BasaltMath.IsBetween(mousePos.X, position.X - Size.X * 0.5f, position.X + Size.X * 0.5f) && BasaltMath.IsBetween(mousePos.Y, position.Y - Size.Y * 0.5f, position.Y + Size.Y * 0.5f) )
+			if (BasaltMath.IsBetween(mousePos.X, position.X - Size.X * 0.5f, position.X + Size.X * 0.5f) && BasaltMath.IsBetween(mousePos.Y, position.Y - Size.Y * 0.5f, position.Y + Size.Y * 0.5f))
 			{
 				if (IsMouseButtonPressed(MouseButton.Left))
 				{
 					OnClick?.Invoke();
 				}
-				if(IsMouseButtonDown(MouseButton.Left))
+				if (IsMouseButtonDown(MouseButton.Left))
 					DrawRectanglePro(rect, Size / 2, Rotation, OnClickColor);
 				else
 					DrawRectanglePro(rect, Size / 2, Rotation, OnHoverColor);

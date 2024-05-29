@@ -138,10 +138,10 @@ public static class Rlights
 
 		float[] color = new[]
 		{
-				(float)light.Color.R / 255f,
-				(float)light.Color.G / 255f,
-				(float)light.Color.B / 255f,
-				(float)light.Color.A / 255f
+				light.Color.R / 255f,
+				light.Color.G / 255f,
+				light.Color.B / 255f,
+				light.Color.A / 255f
 			};
 		SetShaderValue(shader, light.ColorLoc, color, ShaderUniformDataType.Vec4);
 	}
