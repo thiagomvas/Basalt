@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.6.0"></a>
+## [1.6.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.6.0) (2024-05-28)
+
+### Features
+
+* Add UI System ([a151b0c](https://www.github.com/thiagomvas/Basalt/commit/a151b0c32d214a8a56c5046975ca93886999125b))
+
 <a name="1.5.1"></a>
 ## [1.5.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.5.1) (2024-05-28)
 
