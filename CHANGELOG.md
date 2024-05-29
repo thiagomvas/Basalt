@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.6.2"></a>
+## [1.6.2](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.6.2) (2024-05-29)
+
 <a name="1.6.1"></a>
 ## [1.6.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.6.1) (2024-05-29)
 
