@@ -56,6 +56,10 @@ namespace Basalt.Common.Components
 		{
 		}
 
+		/// <summary>
+		/// Called whenever the object is colliding with another object.
+		/// </summary>
+		/// <param name="other"></param>
 		public virtual void OnCollision(Collider other)
 		{
 		}
