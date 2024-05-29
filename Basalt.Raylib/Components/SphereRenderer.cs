@@ -76,8 +76,6 @@ namespace Basalt.Raylib.Components
 				if (!ResourceCache.TryGetResource("sphere", out sphere))
 				{
 					sphere = LoadModelFromMesh(GenMeshSphere(1, Rings, Slices));
-					//if(ResourceCache.Instance.HasShaderKey("lighting"))
-					//	sphere.Materials[0].Shader = ResourceCache.Instance.GetShader("lighting")!.Value;
 					ResourceCache.CacheResource("sphere", sphere);
 				}
 				else

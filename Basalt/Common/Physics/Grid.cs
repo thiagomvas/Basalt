@@ -12,7 +12,6 @@ namespace Basalt.Common.Physics
 		private Dictionary<Point, List<Entity>> chunks = new Dictionary<Point, List<Entity>>();
 		private readonly int sideLength;
 
-		public Entity player;
 		private readonly object lockObject = new object();
 
 		public Grid(int sideLength)

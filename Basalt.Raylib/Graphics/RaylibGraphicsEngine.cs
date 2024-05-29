@@ -16,7 +16,6 @@ namespace Basalt.Raylib.Graphics
 	public class RaylibGraphicsEngine : IGraphicsEngine
 	{
 
-		public const int MaxColumns = 20;
 		private bool enablePostProcessing = false;
 
 		public string LightingShaderCacheKey { get; set; } = string.Empty;
@@ -38,11 +37,10 @@ namespace Basalt.Raylib.Graphics
 		bool useLighting = false;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public RaylibGraphicsEngine(WindowInitParams initConfig, ILogger? logger = null)
+		public RaylibGraphicsEngine(WindowInitParams initConfig)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			config = initConfig;
-			this.logger = logger;
 		}
 
 		public unsafe void Initialize()
