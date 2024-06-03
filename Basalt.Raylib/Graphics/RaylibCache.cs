@@ -17,6 +17,7 @@ namespace Basalt.Raylib.Graphics
 		private static object shaderLock = new object();
 
 		private static object textureLock = new object();
+		private static object audioLock = new object();
 		/// <summary>
 		/// The queue that stores the model load requests.
 		/// </summary>
@@ -28,10 +29,12 @@ namespace Basalt.Raylib.Graphics
 		private static List<KeyValuePair<string, ShaderLoadRequest>> shaderLoadQueue = new();
 
 		private static List<KeyValuePair<string, TextureLoadRequest>> textureLoadQueue = new();
+		private static List<KeyValuePair<string, AudioLoadRequest>> audioLoadQueue = new();
 
 		private static List<string> modelKeys = new();
 		private static List<string> shaderKeys = new();
 		private static List<string> textureKeys = new();
+		private static List<string> audioKeys = new();
 
 		/// <summary>
 		/// Loads the models and shaders from the load queues.
@@ -64,6 +67,15 @@ namespace Basalt.Raylib.Graphics
 				}
 				textureLoadQueue.Clear();
 			}
+
+			lock (audioLock)
+			{
+				foreach (var req in audioLoadQueue)
+				{
+					loadAudio(req.Value);
+				}
+				audioLoadQueue.Clear();
+			}
 		}
 
 		/// <summary>
@@ -90,8 +102,6 @@ namespace Basalt.Raylib.Graphics
 				}
 			}
 
-			Model model = Raylib_cs.Raylib.LoadModel(modelPath);
-
 			lock (modelLock)
 			{
 				loadModel(new(modelName, modelPath, shaderCacheKey));
@@ -106,26 +116,44 @@ namespace Basalt.Raylib.Graphics
 		/// <param name="vertexShaderPath">The path to the vertex shader file.</param>
 		public static void LoadShader(this ResourceCache cache, string shaderName, string fragmentShaderPath, string vertexShaderPath)
 		{
+			var request = new ShaderLoadRequest()
+			{
+				shaderName = shaderName,
+				fragmentShaderPath = fragmentShaderPath,
+				vertexShaderPath = vertexShaderPath
+			};
 			if (!Raylib_cs.Raylib.IsWindowReady())
 			{
-				var request = new ShaderLoadRequest()
-				{
-					shaderName = shaderName,
-					fragmentShaderPath = fragmentShaderPath,
-					vertexShaderPath = vertexShaderPath
-				};
 				lock (shaderLock)
 				{
 					shaderLoadQueue.Add(new(shaderName, request));
 					return;
 				}
 			}
-
-			Shader shader = Raylib_cs.Raylib.LoadShader(vertexShaderPath, fragmentShaderPath);
-
 			lock (shaderLock)
 			{
-				ResourceCache.CacheResource(shaderName, shader);
+				loadShader(request);
+			}
+		}
+		public static void LoadAudio(this ResourceCache cache, string audioName, string audioPath, AudioLoadRequest.Type loadType)
+		{
+			if (!Raylib_cs.Raylib.IsWindowReady())
+			{
+				var request = new AudioLoadRequest()
+				{
+					audioName = audioName,
+					audioPath = audioPath,
+					loadType = loadType
+				};
+				lock (shaderLock)
+				{
+					audioLoadQueue.Add(new(audioName, request));
+					return;
+				}
+			}
+			lock (audioLock)
+			{
+				loadAudio(new(audioName, audioPath, loadType));
 			}
 		}
 
@@ -145,8 +173,10 @@ namespace Basalt.Raylib.Graphics
 				}
 			}
 
-			Texture2D texture = Raylib_cs.Raylib.LoadTexture(texturePath);
-			ResourceCache.CacheResource(textureName, texture);
+			lock (textureLock)
+			{
+				loadTexture(new(textureName, texturePath));
+			}
 		}
 
 		/// <summary>
@@ -205,6 +235,31 @@ namespace Basalt.Raylib.Graphics
 				}
 			}
 		}
+
+		public static Music? GetMusic(this ResourceCache cache, string musicName)
+		{
+			if (ResourceCache.GetResource<Music>(musicName) is Music music)
+			{
+				return music;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public static Raylib_cs.Sound? GetSound(this ResourceCache cache, string soundName)
+		{
+			if (ResourceCache.GetResource<Raylib_cs.Sound>(soundName) is Raylib_cs.Sound sound)
+			{
+				return sound;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
 		/// <summary>
 		/// Caches a model with the specified name.
 		/// </summary>
@@ -240,6 +295,17 @@ namespace Basalt.Raylib.Graphics
 				ResourceCache.CacheResource(textureName, texture);
 			}
 		}
+
+		public static void CacheMusic(this ResourceCache cache, string musicName, Music music)
+		{
+			ResourceCache.CacheResource(musicName, music);
+		}
+
+		public static void CacheSound(this ResourceCache cache, string soundName, Raylib_cs.Sound sound)
+		{
+			ResourceCache.CacheResource(soundName, sound);
+		}
+
 
 		/// <summary>
 		/// Loads a model based on the specified request.
@@ -280,6 +346,23 @@ namespace Basalt.Raylib.Graphics
 			textureKeys.Add(req.textureName);
 		}
 
+		private static void loadAudio(AudioLoadRequest req)
+		{
+			switch (req.loadType)
+			{
+				case AudioLoadRequest.Type.Music:
+					Music music = Raylib_cs.Raylib.LoadMusicStream(req.audioPath);
+					ResourceCache.CacheResource(req.audioName, music);
+					break;
+				case AudioLoadRequest.Type.Sound:
+					Raylib_cs.Sound sound = Raylib_cs.Raylib.LoadSound(req.audioPath);
+					ResourceCache.CacheResource(req.audioName, sound);
+					break;
+			}
+			Engine.Instance.Logger.LogInformation($"Loaded audio: {req.audioName}");
+			audioKeys.Add(req.audioName);
+		}
+
 		/// <summary>
 		/// Unloads all cached Raylib models and shaders.
 		/// </summary>
@@ -312,6 +395,22 @@ namespace Basalt.Raylib.Graphics
 				}
 				textureKeys.Clear();
 			}
+
+			lock (audioLock)
+			{
+				foreach (var key in audioKeys)
+				{
+					if (ResourceCache.TryGetResource(key, out Music m))
+					{
+						Raylib_cs.Raylib.UnloadMusicStream(m);
+					}
+					else if (ResourceCache.TryGetResource(key, out Raylib_cs.Sound s))
+					{
+						Raylib_cs.Raylib.UnloadSound(s);
+					}
+				}
+				audioKeys.Clear();
+			}
 		}
 
 		internal static void LoadRaylibPrimitives(this ResourceCache cache)
@@ -334,7 +433,6 @@ namespace Basalt.Raylib.Graphics
 				torus.Materials[0].Shader = shader;
 				knot.Materials[0].Shader = shader;
 			}
-
 			ResourceCache.CacheResource("cube", cube);
 			ResourceCache.CacheResource("sphere", sphere);
 			ResourceCache.CacheResource("plane", plane);
@@ -387,6 +485,25 @@ namespace Basalt.Raylib.Graphics
 			{
 				this.textureName = textureName;
 				this.texturePath = texturePath;
+			}
+		}
+
+		public struct AudioLoadRequest
+		{
+			public string audioName;
+			public string audioPath;
+			public Type loadType;
+			public enum Type
+			{
+				Music,
+				Sound,
+			}
+
+			public AudioLoadRequest(string audioName, string audioPath, Type loadType)
+			{
+				this.audioName = audioName;
+				this.audioPath = audioPath;
+				this.loadType = loadType;
 			}
 		}
 	}
