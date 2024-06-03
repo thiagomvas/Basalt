@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Components;
 using Basalt.Common.Entities;
+using Basalt.Raylib.Components;
 
 namespace Basalt.TestField.Components
 {
@@ -14,13 +15,8 @@ namespace Basalt.TestField.Components
 			if(other.Entity.Id == "entity.player")
 			{
 				Console.WriteLine($"Trigger collided with {other.Entity.Id}");
-				Entity.Destroy();
+				Entity.GetComponent<ModelRenderer>().ModelCacheKey = "sphere";
 			}
-		}
-
-		public override void OnDestroy()
-		{
-			Console.WriteLine("Destroy");
 		}
 	}
 }

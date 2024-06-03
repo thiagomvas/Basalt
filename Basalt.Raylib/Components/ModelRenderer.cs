@@ -14,6 +14,7 @@ namespace Basalt.Raylib.Components
 	/// </summary>
 	public class ModelRenderer : Component
 	{
+		private string _modelCacheKey;
 		/// <summary>
 		/// Gets or sets the size of the model.
 		/// </summary>
@@ -32,12 +33,15 @@ namespace Basalt.Raylib.Components
 		/// <summary>
 		/// Gets or sets the cache key for the model.
 		/// </summary>
-		public string ModelCacheKey { get; set; }
-
-		/// <summary>
-		/// Gets or sets the cache key for the lighting shader.
-		/// </summary>
-		public string LightingShaderCacheKey { get; set; }
+		public string ModelCacheKey
+		{
+			get => _modelCacheKey;
+			set
+			{
+				_modelCacheKey = value;
+				init = false;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the scale of the model.

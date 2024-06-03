@@ -70,7 +70,7 @@ var trigger = new Entity();
 trigger.Id = "entity.trigger";
 trigger.Transform.Position = new Vector3(10, 2.5f, 0);
 trigger.AddComponent(new BoxCollider(trigger) { Size = new Vector3(5), IsTrigger = true });
-trigger.AddComponent(new BoxRenderer(trigger) { Size = new Vector3(5), Color = Color.Blue });
+trigger.AddComponent(new ModelRenderer(trigger) { ModelCacheKey = "cube", Size = new Vector3(5), ColorTint = Color.Blue });
 trigger.AddComponent(new Rigidbody(trigger) { IsKinematic = true });
 trigger.AddComponent(new TestTrigger(trigger));
 Engine.CreateEntity(trigger);
