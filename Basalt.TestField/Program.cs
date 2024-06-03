@@ -13,6 +13,7 @@ using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Input;
 using Basalt.Raylib.Utils;
 using Basalt.TestField;
+using Basalt.TestField.Components;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -60,6 +61,14 @@ player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Typ
 
 Engine.CreateEntity(player);
 
+var trigger = new Entity();
+trigger.Id = "entity.trigger";
+trigger.Transform.Position = new Vector3(0, 2.5f, 0);
+trigger.AddComponent(new BoxCollider(trigger) { Size = new Vector3(5), IsTrigger = true });
+trigger.AddComponent(new BoxRenderer(trigger) { Size = new Vector3(5), Color = Color.Blue });
+trigger.AddComponent(new Rigidbody(trigger) { IsKinematic = true });
+trigger.AddComponent(new TestTrigger(trigger));
+Engine.CreateEntity(trigger);
 
 
 TestingUtils.SetupTestingScene(250);
