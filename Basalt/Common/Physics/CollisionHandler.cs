@@ -87,10 +87,15 @@ namespace Basalt.Common.Physics
 				return; // No overlap, no need to perform separation or movement calculations
 			}
 
-			// From this point onward, the colliders are colliding
-			col1.InternalOnCollision(col2);
-			col2.InternalOnCollision(col1);
+			if (!col2.IsTrigger)
+				col1.InternalOnCollision(col2);
+			if (!col1.IsTrigger)
+				col2.InternalOnCollision(col1);
+			if (col1.IsTrigger || col2.IsTrigger)
+				return;
 
+			// Handle collisions and separate them from here 
+			
 			// Calculate the direction of least penetration
 			Vector3 separationDirection = Vector3.Zero;
 			float minOverlap = Min(overlapX, Min(overlapY, overlapZ));

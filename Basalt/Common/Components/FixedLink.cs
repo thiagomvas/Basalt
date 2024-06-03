@@ -5,7 +5,7 @@ namespace Basalt.Common.Components
 {
 	public class FixedLink : Component
 	{
-		public Entity AnchoredEntity { get; set; }
+		public Entity? AnchoredEntity { get; set; }
 		public float Distance { get; set; }
 		public float JointForceMultiplier { get; set; } = 1.0f;
 		public FixedLink(Entity entity) : base(entity)
@@ -15,6 +15,9 @@ namespace Basalt.Common.Components
 
 		public override void OnPhysicsUpdate()
 		{
+			if (AnchoredEntity is null)
+				return;
+
 			// Calculate the vector between the two entities
 			Vector3 anchorToEntity = AnchoredEntity.Transform.Position - Entity.Transform.Position;
 

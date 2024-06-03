@@ -19,6 +19,15 @@ namespace Basalt.Common.Components
 		public Vector3 Position => Entity.Transform.Position + Offset;
 
 		/// <summary>
+		/// Defines whether the collider is a trigger.
+		/// </summary>
+		/// <remarks>
+		/// Triggers do not call <see cref="Component.OnCollision(Collider)"/> if it collides with another trigger 
+		/// and will also not call <see cref="Component.OnCollision(Collider)"/> for the other collider.
+		/// </remarks>
+		public bool IsTrigger { get; set; } = false;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="Collider"/> class.
 		/// </summary>
 		/// <param name="entity">The entity that the collider belongs to.</param>

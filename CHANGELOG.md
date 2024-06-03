@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.7.0"></a>
+## [1.7.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.7.0) (2024-06-03)
+
+### Features
+
+* Add Audio support to resource cache ([fc3e3ac](https://www.github.com/thiagomvas/Basalt/commit/fc3e3ac6b8f217125063f7b8d6174e297aca6b50))
+* Added Trigger functionality to Colliders ([3bc6781](https://www.github.com/thiagomvas/Basalt/commit/3bc678166a2ef9ba7da7594a34f1e16ee2ef9b76))
+* Updated RaylibSoundSystem to use ResourceCache and automatically subscribe to update event ([d1288dd](https://www.github.com/thiagomvas/Basalt/commit/d1288dd619b60c1dca78ca042bb155528c253834))
+
+### Bug Fixes
+
+* ChainLink and FixedLink throws when null anchor (closes [#21](https://www.github.com/thiagomvas/Basalt/issues/21)) ([9dba6b6](https://www.github.com/thiagomvas/Basalt/commit/9dba6b692973e1dae99a2a265f2dc6b68ae77cac))
+* ModelRenderer now updates rendered model when model key updates ([f849bf8](https://www.github.com/thiagomvas/Basalt/commit/f849bf8d30f422a21b5c6da50b6112762a8f4223))
+* OnDestroy no longer is called twice (closes [#19](https://www.github.com/thiagomvas/Basalt/issues/19)) ([b44a0dc](https://www.github.com/thiagomvas/Basalt/commit/b44a0dce571c4ed99c4cbe9a414e968ce34f951d))
+* PhysicsEngine and Grid would crash due to parallelism with distanced enough entities. ([36b9fe5](https://www.github.com/thiagomvas/Basalt/commit/36b9fe5e1a81e3586b869474968d186f4b37809b))
+* ResourceCache keys are now trimmed and changed to lowercase. ([d98ba73](https://www.github.com/thiagomvas/Basalt/commit/d98ba730dc22a2fd7021dc34c16b54af22f3d4f3))
+* ResourceCache no longer crashes when trying to get a resource of different type. Returns null instead ([a8bca62](https://www.github.com/thiagomvas/Basalt/commit/a8bca62118da7e31fcffd6404cbfc7b2bc12f58e))
+
 <a name="1.6.2"></a>
 ## [1.6.2](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.6.2) (2024-05-29)
 

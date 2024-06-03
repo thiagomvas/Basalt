@@ -18,6 +18,7 @@ namespace Basalt.Common.Components
 		public Entity Entity;
 
 		internal bool started = false;
+		private bool destroyed = false;
 
 		public bool Enabled { get; set; } = true;
 
@@ -66,6 +67,9 @@ namespace Basalt.Common.Components
 
 		internal void onDestroy()
 		{
+			if (destroyed)
+				return;
+			destroyed = true;
 			UnsubscribeFromEvents();
 			OnDestroy();
 		}

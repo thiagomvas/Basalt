@@ -1,5 +1,7 @@
-﻿using Basalt.Core.Common.Abstractions.Engine;
+﻿using Basalt.Common.Utils;
+using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Sound;
+using Basalt.Raylib.Graphics;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 
@@ -11,11 +13,8 @@ namespace Basalt.Raylib.Sound
 	public class RaylibSoundSystem : ISoundSystem
 	{
 		private ILogger? logger;
-		private Dictionary<string, Raylib_cs.Sound> loadedSounds;
-		private Dictionary<string, Music> loadedMusic;
 		private Music? MusicPlaying;
-		private List<string> queuedSounds = new();
-		private List<string> queuedMusic = new();
+		private float volume = 1;
 
 		/// <summary>
 		/// Initializes the sound system.
@@ -24,13 +23,14 @@ namespace Basalt.Raylib.Sound
 		{
 			logger = Engine.Instance.Logger;
 			InitAudioDevice();
-			foreach (var sound in queuedSounds)
+			Engine.Instance.GetEngineComponent<IEventBus>()!.Subscribe(BasaltConstants.UpdateEventKey, UpdateStream);
+		}
+
+		private void UpdateStream(object? sender, EventArgs args)
+		{
+			if(MusicPlaying is not null)
 			{
-				LoadAudio(sound, AudioType.SoundEffect);
-			}
-			foreach (var music in queuedMusic)
-			{
-				LoadAudio(music, AudioType.Music);
+				UpdateMusicStream(MusicPlaying.Value);
 			}
 		}
 
@@ -41,14 +41,6 @@ namespace Basalt.Raylib.Sound
 		{
 			logger?.LogInformation("Shutting down sound system.");
 			CloseAudioDevice();
-			foreach (var sound in loadedSounds.Values)
-			{
-				UnloadSound(sound);
-			}
-			foreach (var sound in loadedMusic.Values)
-			{
-				UnloadMusicStream(sound);
-			}
 			logger?.LogInformation("Unloaded all sounds and music.");
 		}
 
@@ -57,36 +49,7 @@ namespace Basalt.Raylib.Sound
 		/// </summary>
 		/// <param name="logger">The logger to use for logging.</param>
 		public RaylibSoundSystem()
-		{
-			loadedSounds = new Dictionary<string, Raylib_cs.Sound>();
-			loadedMusic = new Dictionary<string, Music>();
-		}
-
-		/// <summary>
-		/// Loads an audio file.
-		/// </summary>
-		/// <param name="filename">The filename of the audio file.</param>
-		/// <param name="type">The type of the audio file.</param>
-		public void LoadAudio(string filename, AudioType type)
-		{
-			if (!Engine.Instance.Running)
-			{
-				if (type == AudioType.SoundEffect) queuedSounds.Add(filename);
-				else queuedMusic.Add(filename);
-				return;
-			}
-
-			switch (type)
-			{
-				case AudioType.Music:
-					loadedMusic.Add(filename, LoadMusicStream(filename));
-					break;
-				case AudioType.SoundEffect:
-					loadedSounds.Add(filename, LoadSound(filename));
-					break;
-				default:
-					throw new ArgumentException($"Unsupported audio type: {type}");
-			}
+		{ 
 		}
 
 		/// <summary>
@@ -94,16 +57,16 @@ namespace Basalt.Raylib.Sound
 		/// </summary>
 		/// <param name="filename">The filename of the audio file.</param>
 		/// <param name="type">The type of the audio file.</param>
-		public void PlayAudio(string filename, AudioType type)
+		public void PlayAudio(string audioCacheKey, AudioType type)
 		{
 			switch (type)
 			{
 				case AudioType.Music:
-					MusicPlaying = loadedMusic[filename];
+					MusicPlaying = ResourceCache.Instance.GetMusic(audioCacheKey);
 					PlayMusicStream(MusicPlaying.Value);
 					break;
 				case AudioType.SoundEffect:
-					PlaySound(loadedSounds[filename]);
+					PlaySound(ResourceCache.Instance.GetSound(audioCacheKey)!.Value);
 					break;
 				default:
 					throw new ArgumentException($"Unsupported audio type: {type}");
@@ -166,48 +129,15 @@ namespace Basalt.Raylib.Sound
 			}
 		}
 
-		/// <summary>
-		/// Unloads an audio file.
-		/// </summary>
-		/// <param name="filename">The filename of the audio file.</param>
-		/// <param name="type">The type of the audio file.</param>
-		public void UnloadAudio(string filename, AudioType type)
-		{
-			switch (type)
-			{
-				case AudioType.Music:
-					UnloadMusicStream(loadedMusic[filename]);
-					break;
-				case AudioType.SoundEffect:
-					UnloadSound(loadedSounds[filename]);
-					loadedSounds.Remove(filename);
-					break;
-				default:
-					throw new ArgumentException($"Unsupported audio type: {type}");
-			}
-		}
 
 		/// <summary>
 		/// Sets the volume of the audio.
 		/// </summary>
 		/// <param name="volume">The volume value.</param>
 		/// <param name="type">The type of the audio file.</param>
-		public void SetVolume(float volume, AudioType type)
+		public void SetVolume(float volume)
 		{
-			switch (type)
-			{
-				case AudioType.Music:
-					if (MusicPlaying is not null) SetMusicVolume(MusicPlaying.Value, volume);
-					break;
-				case AudioType.SoundEffect:
-					foreach (var sound in loadedSounds.Values)
-					{
-						SetSoundVolume(sound, volume);
-					}
-					break;
-				default:
-					throw new ArgumentException($"Unsupported audio type: {type}");
-			}
+			SetMasterVolume(volume);
 		}
 
 		/// <summary>

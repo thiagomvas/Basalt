@@ -5,7 +5,7 @@ namespace Basalt.Common.Physics
 {
 	public class Grid : IChunkingMechanism
 	{
-		private List<Entity> entities = new List<Entity>();
+		private List<Entity> entities = new();
 		private Queue<Entity> entityAddQueue = new Queue<Entity>();
 		private Queue<Entity> entityRemoveQueue = new Queue<Entity>();
 
@@ -18,7 +18,10 @@ namespace Basalt.Common.Physics
 		{
 			this.sideLength = sideLength;
 		}
-
+		public List<Entity> GetEntities()
+		{
+			return entities;
+		}
 		public void AddEntity(Entity entity)
 		{
 			lock (lockObject)
@@ -89,10 +92,10 @@ namespace Basalt.Common.Physics
 		public List<List<Entity>> GetEntitiesChunked()
 		{
 			List<List<Entity>> chunkedEntities = new List<List<Entity>>();
-			Parallel.ForEach(chunks.Values, (chunk) =>
+			foreach (var chunk in chunks.Values)
 			{
 				chunkedEntities.Add(new List<Entity>(chunk));
-				var baseChunk = GetChunk(chunk[0].Transform.Position);
+				var baseChunk = GetChunk(chunk.FirstOrDefault()?.Transform.Position ?? Vector3.Zero);
 				// Add adjacent chunks
 				for (int x = -1; x <= 1; x++)
 				{
@@ -104,8 +107,9 @@ namespace Basalt.Common.Physics
 							chunkedEntities.Add(new List<Entity>(chunks[adjacentChunk]));
 						}
 					}
+
 				}
-			});
+			};
 			return chunkedEntities;
 		}
 
@@ -130,8 +134,11 @@ namespace Basalt.Common.Physics
 
 		public void MarkForUpdate(Entity entity)
 		{
-			entityAddQueue.Enqueue(entity);
-			entityRemoveQueue.Enqueue(entity);
+			lock (lockObject)
+			{
+				entityAddQueue.Enqueue(entity);
+				entityRemoveQueue.Enqueue(entity);
+			}
 		}
 
 		private Point GetChunk(Vector3 position)

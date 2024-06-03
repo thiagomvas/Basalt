@@ -14,6 +14,6 @@
 		/// <summary>
 		/// Represents a music audio type.
 		/// </summary>
-		Music
+		Music,
 	}
 }

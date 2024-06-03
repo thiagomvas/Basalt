@@ -44,8 +44,6 @@ namespace Basalt.Common.Entities
 			lock (lockObject)
 			{
 				entities.Remove(entity);
-				foreach (var component in entity.GetComponents())
-					component.OnDestroy();
 			}
 		}
 
