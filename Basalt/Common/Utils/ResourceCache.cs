@@ -37,6 +37,7 @@ namespace Basalt.Common.Utils
 		/// <param name="resource">The resource to cache.</param>
 		public static void CacheResource(string resourceName, object resource)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				if (!Instance.resourceCache.ContainsKey(resourceName))
@@ -54,6 +55,7 @@ namespace Basalt.Common.Utils
 		/// <returns>The resource with the specified name, or the default value if not found.</returns>
 		public static T? GetResource<T>(string resourceName)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				if (Instance.resourceCache.ContainsKey(resourceName) && TryGetResource(resourceName, out T result))
@@ -76,6 +78,7 @@ namespace Basalt.Common.Utils
 		/// <returns>true if the resource with the specified name is found; otherwise, false.</returns>
 		public static bool TryGetResource<T>(string resourceName, out T resource)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				if (Instance.resourceCache.ContainsKey(resourceName))
@@ -104,6 +107,7 @@ namespace Basalt.Common.Utils
 		/// <param name="filePath">The path to the file.</param>
 		public static void LoadResourceFromFile(string resourceName, string filePath)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				if (File.Exists(filePath))
@@ -123,6 +127,7 @@ namespace Basalt.Common.Utils
 		/// <param name="loadFunc">The custom load function.</param>
 		public static void LoadResourceFromFile(string resourceName, string filePath, Func<string, object> loadFunc)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				if (File.Exists(filePath))
@@ -140,6 +145,7 @@ namespace Basalt.Common.Utils
 		/// <param name="filePath">The path to the file.</param>
 		public static void SaveResourceToFile(string resourceName, string filePath)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				if (Instance.resourceCache.ContainsKey(resourceName))
@@ -157,6 +163,7 @@ namespace Basalt.Common.Utils
 		/// <param name="resourceName">The name of the resource.</param>
 		public static void UnloadResource(string resourceName)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				if (Instance.resourceCache.ContainsKey(resourceName))
@@ -173,6 +180,7 @@ namespace Basalt.Common.Utils
 		/// <returns>True if there is a loaded resource with that key, false otherwise</returns>
 		public static bool HasResourceKey(string resourceName)
 		{
+			resourceName = resourceName.ToLower().Trim();
 			lock (padlock)
 			{
 				return Instance.resourceCache.ContainsKey(resourceName);
