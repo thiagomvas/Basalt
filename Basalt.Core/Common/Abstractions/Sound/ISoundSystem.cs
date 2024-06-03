@@ -7,19 +7,13 @@ namespace Basalt.Core.Common.Abstractions.Sound
 	/// </summary>
 	public interface ISoundSystem : IEngineComponent
 	{
-		/// <summary>
-		/// Loads an audio resource from the specified file.
-		/// </summary>
-		/// <param name="filename">The path to the audio file.</param>
-		/// <param name="type">The type of audio.</param>
-		void LoadAudio(string filename, AudioType type);
 
 		/// <summary>
 		/// Plays a loaded audio resource.
 		/// </summary>
-		/// <param name="filename">The filename of the audio resource to play.</param>
+		/// <param name="audioCacheKey">The filename of the audio resource to play.</param>
 		/// <param name="type">The type of audio.</param>
-		void PlayAudio(string filename, AudioType type);
+		void PlayAudio(string audioCacheKey, AudioType type);
 
 		/// <summary>
 		/// Pauses the currently playing audio.
@@ -40,18 +34,10 @@ namespace Basalt.Core.Common.Abstractions.Sound
 		void StopAudio(AudioType type);
 
 		/// <summary>
-		/// Unloads an audio resource.
-		/// </summary>
-		/// <param name="filename">The filename of the audio resource to unload.</param>
-		/// <param name="type">The type of audio.</param>
-		void UnloadAudio(string filename, AudioType type);
-
-		/// <summary>
 		/// Sets the volume for the specified audio type.
 		/// </summary>
 		/// <param name="volume">The volume level.</param>
-		/// <param name="type">The type of audio.</param>
-		void SetVolume(float volume, AudioType type);
+		void SetVolume(float volume);
 
 		/// <summary>
 		/// Checks if music is currently playing.

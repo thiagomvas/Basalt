@@ -52,13 +52,13 @@ namespace Basalt.Common.Utils
 		/// <typeparam name="T">The type of the resource.</typeparam>
 		/// <param name="resourceName">The name of the resource.</param>
 		/// <returns>The resource with the specified name, or the default value if not found.</returns>
-		public static T GetResource<T>(string resourceName)
+		public static T? GetResource<T>(string resourceName)
 		{
 			lock (padlock)
 			{
-				if (Instance.resourceCache.ContainsKey(resourceName))
+				if (Instance.resourceCache.ContainsKey(resourceName) && TryGetResource(resourceName, out T result))
 				{
-					return (T)Instance.resourceCache[resourceName];
+					return result;
 				}
 				else
 				{
@@ -80,8 +80,14 @@ namespace Basalt.Common.Utils
 			{
 				if (Instance.resourceCache.ContainsKey(resourceName))
 				{
-					resource = (T)Instance.resourceCache[resourceName];
-					return true;
+					var r = Instance.resourceCache[resourceName];
+					if(r is T t)
+					{
+						resource = t;
+						return true;
+					}
+					resource = default;
+					return false;
 				}
 				else
 				{

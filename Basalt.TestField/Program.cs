@@ -8,9 +8,11 @@ using Basalt.Common.Physics;
 using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 using Basalt.Core.Common.Abstractions.Input;
+using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Raylib.Components;
 using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Input;
+using Basalt.Raylib.Sound;
 using Basalt.Raylib.Utils;
 using Basalt.TestField;
 using Basalt.TestField.Components;
@@ -33,14 +35,17 @@ var initParams = new WindowInitParams
 ResourceCache.Instance.LoadShader("lighting", @"resources/shaders/lighting.fs", @"resources/shaders/lighting.vs");
 ResourceCache.Instance.LoadModel("robot", @"resources/robot.glb", "lighting");
 ResourceCache.Instance.LoadTexture("logo", @"resources/logo.png");
+ResourceCache.Instance.LoadAudio("music", @"resources/country.mp3", ResourceCacheExtensions.AudioLoadRequest.Type.Music);
+ResourceCache.Instance.LoadAudio("sfx", @"resources/boom.wav", ResourceCacheExtensions.AudioLoadRequest.Type.Sound);
 var builder = new EngineBuilder();
 
 builder.AddComponent<IGraphicsEngine, RaylibGraphicsEngine>(() => new RaylibGraphicsEngine(initParams) { LightingShaderCacheKey = "lighting" }, true);
 builder.AddComponent<IPhysicsEngine, PhysicsEngine>(true);
 builder.AddComponent<IEventBus, EventBus>();
 builder.AddComponent<IInputSystem, RaylibInputSystem>();
+builder.AddComponent<ISoundSystem, RaylibSoundSystem>();
 
-builder.AddLogger(new ConsoleLogger(Basalt.Core.Common.Types.LogLevel.Warning));
+builder.AddLogger(new ConsoleLogger(Basalt.Core.Common.Types.LogLevel.Info));
 
 var engine = builder.Build();
 

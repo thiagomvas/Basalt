@@ -3,6 +3,7 @@ using Basalt.Common.Components;
 using Basalt.Common.Entities;
 using Basalt.Common.Utils.Extensions;
 using Basalt.Core.Common.Abstractions.Input;
+using Basalt.Core.Common.Abstractions.Sound;
 using Basalt.Core.Common.Types;
 using System.Numerics;
 
@@ -12,6 +13,7 @@ namespace Basalt.TestField.Components
 	{
 		public float MoveSpeed = 10;
 		private IInputSystem inputSystem;
+		private ISoundSystem soundSystem;
 		public PlayerController(Entity entity) : base(entity)
 		{
 
@@ -20,6 +22,7 @@ namespace Basalt.TestField.Components
 		public override void OnStart()
 		{
 			var input = Engine.Instance.GetEngineComponent<IInputSystem>();
+			soundSystem = Engine.Instance.GetEngineComponent<ISoundSystem>();
 			if (input != null)
 			{
 				inputSystem = input;
@@ -49,6 +52,15 @@ namespace Basalt.TestField.Components
 					InputKey.Space,
 					ActionType.Press),
 					() => Entity.Rigidbody.Velocity += Vector3.UnitY * 5);
+
+				inputSystem?.RegisterKeybind(new(
+					InputKey.P,
+					ActionType.Press),
+					() => soundSystem.PlayAudio("sfx", AudioType.SoundEffect));
+				inputSystem?.RegisterKeybind(new(
+					InputKey.O,
+					ActionType.Press),
+					() => soundSystem.PlayAudio("music", AudioType.Music));
 
 			}
 
