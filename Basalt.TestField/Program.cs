@@ -40,7 +40,7 @@ builder.AddComponent<IPhysicsEngine, PhysicsEngine>(true);
 builder.AddComponent<IEventBus, EventBus>();
 builder.AddComponent<IInputSystem, RaylibInputSystem>();
 
-builder.AddLogger(new ConsoleLogger());
+builder.AddLogger(new ConsoleLogger(Basalt.Core.Common.Types.LogLevel.Warning));
 
 var engine = builder.Build();
 
@@ -63,7 +63,7 @@ Engine.CreateEntity(player);
 
 var trigger = new Entity();
 trigger.Id = "entity.trigger";
-trigger.Transform.Position = new Vector3(0, 2.5f, 0);
+trigger.Transform.Position = new Vector3(10, 2.5f, 0);
 trigger.AddComponent(new BoxCollider(trigger) { Size = new Vector3(5), IsTrigger = true });
 trigger.AddComponent(new BoxRenderer(trigger) { Size = new Vector3(5), Color = Color.Blue });
 trigger.AddComponent(new Rigidbody(trigger) { IsKinematic = true });

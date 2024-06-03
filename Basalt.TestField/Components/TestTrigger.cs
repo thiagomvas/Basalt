@@ -12,7 +12,15 @@ namespace Basalt.TestField.Components
 		public override void OnCollision(Collider other)
 		{
 			if(other.Entity.Id == "entity.player")
+			{
 				Console.WriteLine($"Trigger collided with {other.Entity.Id}");
+				Entity.Destroy();
+			}
+		}
+
+		public override void OnDestroy()
+		{
+			Console.WriteLine("Destroy");
 		}
 	}
 }

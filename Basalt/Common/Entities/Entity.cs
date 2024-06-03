@@ -303,7 +303,7 @@ namespace Basalt.Common.Entities
 
 			foreach (var component in components)
 			{
-				component.onDestroy(); // Call internal onDestroy method to do cleanup and call the overridable OnDestroy method
+				component.onDestroy();
 			}
 		}
 
