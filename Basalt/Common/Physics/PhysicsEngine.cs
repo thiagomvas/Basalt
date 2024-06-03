@@ -13,21 +13,21 @@ namespace Basalt.Common.Physics
 
 		public long startTime, elapsedTime;
 
-		const float targetDeltaTime = 0.016f;
-		const int targetFrameTimeMs = 16;
+		const float targetDeltaTime = 0.02f;
+		const int targetFrameTimeMs = 20;
 
 		internal IChunkingMechanism chunking;
 		private IEventBus eventBus;
 		private ILogger? logger;
 		private bool ShouldRun = true;
-
+		private List<Entity> entities;
 		/// <summary>
 		/// Gets or sets the gravity value for the physics engine.
 		/// </summary>
 		public float Gravity { get; set; } = 9.81f;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class using <see cref="Grid"/> as a <see cref="IChunkingMechanism"/>.
+		/// Initializes a new instance of the <see cref="CustomPhysics"/> class using <see cref="Grid"/> as a <see cref="IChunkingMechanism"/>.
 		/// </summary>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public PhysicsEngine()
@@ -36,7 +36,7 @@ namespace Basalt.Common.Physics
 			chunking = new Grid(32);
 		}
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PhysicsEngine"/> class using the specified <see cref="IChunkingMechanism"/>.
+		/// Initializes a new instance of the <see cref="CustomPhysics"/> class using the specified <see cref="IChunkingMechanism"/>.
 		/// </summary>
 		/// <param name="chunkingMechanism">The chunking mechanism used to optimize collision handling</param>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -90,26 +90,7 @@ namespace Basalt.Common.Physics
 
 				// Check for collisions
 
-				Parallel.ForEach(chunking.GetEntitiesChunked(), (chunk) =>
-				{
-					if(chunk == null || chunk.Count == 0) return;
-					Parallel.For(0, chunk.Count, (i) =>
-					{
-						for (int j = i + 1; j < chunk.Count; j++)
-						{
-							var entityA = chunk[i];
-							var entityB = chunk[j];
-
-							var colliderA = entityA.Collider;
-							var colliderB = entityB.Collider;
-
-							if (colliderA != null && colliderB != null)
-							{
-								CollisionHandler.Handle(colliderA, colliderB);
-							}
-						}
-					});
-				});
+				DetectCollisions(chunking.GetEntitiesChunked());
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 
@@ -127,6 +108,55 @@ namespace Basalt.Common.Physics
 				}
 			}
 		}
+		public void DetectCollisions(List<List<Entity>> chunks)
+		{
+
+			// Use Parallel.For for optimized collision detection
+			Parallel.ForEach(chunks, (chunk) =>
+			{
+				for (int i = 0; i < chunk.Count; i++)
+				{
+					Entity entityA = chunk[i];
+
+					for (int j = i + 1; j < chunk.Count; j++)
+					{
+						Entity entityB = chunk[j];
+
+						var colliderA = entityA.Collider;
+						var colliderB = entityB.Collider;
+
+						if (colliderA != null && colliderB != null)
+						{
+							CollisionHandler.Handle(colliderA, colliderB);
+						}
+					}
+				}
+			});
+		}
+
+		private void detectCollisionFlattened(List<Entity> entities)
+		{
+			int totalEntities = entities.Count;
+
+			// Use Parallel.For for optimized collision detection
+			Parallel.For(0, totalEntities, i =>
+			{
+				Entity entityA = entities[i];
+
+				for (int j = i + 1; j < totalEntities; j++)
+				{
+					Entity entityB = entities[j];
+
+					var colliderA = entityA.Collider;
+					var colliderB = entityB.Collider;
+
+					if (colliderA != null && colliderB != null)
+					{
+						CollisionHandler.Handle(colliderA, colliderB);
+					}
+				}
+			});
+		}
 
 		public void AddEntityToSimulation(object entity)
 		{
@@ -143,6 +173,5 @@ namespace Basalt.Common.Physics
 				chunking.RemoveEntity(e);
 			}
 		}
-
 	}
 }
