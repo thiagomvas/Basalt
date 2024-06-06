@@ -45,7 +45,7 @@ namespace Basalt.Common.Components
 			{
 				physicsEngine = physics;
 				if (physics is PhysicsEngine engine)
-					chunking = engine.chunking;
+					Entity.Transform.chunking = engine.chunking;
 			}
 			else
 			{
@@ -55,7 +55,6 @@ namespace Basalt.Common.Components
 		}
 
 		private IPhysicsEngine physicsEngine;
-		private IChunkingMechanism? chunking;
 
 		/// <summary>
 		/// Called on each physics update frame.
@@ -85,20 +84,11 @@ namespace Basalt.Common.Components
 
 			if (lengthSqr > threshold)
 			{
-				chunking?.MarkForUpdate(Entity);
 				Velocity -= Velocity * Drag * Time.PhysicsDeltaTime;
 			}
 
 		}
 
-		/// <summary>
-		/// Called when the component starts.
-		/// </summary>
-		public override void OnStart()
-		{
-			chunking?.MarkForUpdate(Entity);
-
-		}
 
 		public void AddForce(Vector3 force, ForceType type = ForceType.Force)
 		{

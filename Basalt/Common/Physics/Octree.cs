@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Basalt.Common.Physics
 {
-	public class Octree : IChunkingMechanism
+	internal class Octree : IChunkingMechanism
 	{
 		private class Node
 		{
