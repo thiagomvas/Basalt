@@ -1,4 +1,5 @@
-﻿using Basalt.Common.Components;
+﻿using Basalt.Common.Attributes;
+using Basalt.Common.Components;
 using Basalt.Core.Common.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -361,6 +362,15 @@ namespace Basalt.Common.Entities
 			{
 				if (!component.started)
 				{
+					var dependencyAttribute = component.GetType().GetCustomAttribute<ComponentDependentOnAttribute>();
+					if (dependencyAttribute != null)
+					{
+						var missing = dependencyAttribute.Dependencies.Where(d => !HasComponent(d));
+						if(missing.Any())
+						{
+							Engine.Instance.Logger?.LogError($"Component \"{component.GetType().Name}\" is missing component dependencies: {string.Join(", ", missing.Select(m => $"\"{m.Name}\""))}");
+						}
+					}
 					component.OnStartEvent(this, EventArgs.Empty);
 				}
 			}
