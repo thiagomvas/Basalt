@@ -261,6 +261,30 @@ namespace Basalt.Common.Entities
 			return null;
 		}
 
+		public bool HasComponent<T>() where T : Component
+		{
+			if (typeof(T) == typeof(Transform))
+				return Transform != null;
+			if (typeof(T) == typeof(Rigidbody))
+				return Rigidbody != null;
+			if (typeof(T) == typeof(Collider))
+				return Collider != null;
+
+			return components.Any(c => c is T);
+		}
+
+		public bool HasComponent(Type type)
+		{
+			if (type == typeof(Transform))
+				return Transform != null;
+			if (type == typeof(Rigidbody))
+				return Rigidbody != null;
+			if (type == typeof(Collider))
+				return Collider != null;
+
+			return components.Any(c => c.GetType() == type);
+		}
+
 
 		/// <summary>
 		/// Gets all components of the entity.
