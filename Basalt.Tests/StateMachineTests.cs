@@ -71,6 +71,34 @@ namespace Basalt.Tests
 			stateMock.Verify(s => s.Exit(), Times.Once);
 		}
 
+		[Test]
+		public void IsInState_ShouldReturnTrue_IfCurrentStateIsOfTypeS()
+		{
+			// Arrange
+			stateMachine.AddState(stateMock.Object);
+
+			// Act
+			var result = stateMachine.IsInState<State<int>>();
+
+			// Assert
+			Assert.That(result, Is.True);
+		}
+
+		[Test]
+		public void IsInState_ShouldReturnFalse_IfCurrentStateIsNotOfTypeS()
+		{
+			// Arrange
+			stateMachine.AddState(stateMock.Object);
+
+			// Act
+			var result = stateMachine.IsInState<TestState>();
+
+			// Assert
+			Assert.That(result, Is.False);
+		}
+
+
+
 		private class TestState : State<int>
 		{
 			public TestState(int Owner) : base(Owner) { }

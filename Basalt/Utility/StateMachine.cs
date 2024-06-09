@@ -72,5 +72,15 @@
 		{
 			return states.Values.ToArray();
 		}
+
+		/// <summary>
+		/// Checks if the current state is of the specified type.
+		/// </summary>
+		/// <typeparam name="S">The state type to check for</typeparam>
+		/// <returns><see langword="true"/> if the current state is of type <typeparamref name="S"/>, <see langword="false"/> otherwise</returns>
+		public bool IsInState<S>() where S : State<T>
+		{
+			return CurrentState is S;
+		}
 	}
 }
