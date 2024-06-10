@@ -11,9 +11,11 @@ namespace Basalt.Common.Entities
 		public int EntityCount => entities.Count;
 		private List<Entity> entities = new List<Entity>();
 		private readonly object lockObject = new object();
+		/// <summary>
+		/// Gets the currently used Chunking Mechanism that groups entities together.
+		/// </summary>
 		public IChunkingMechanism ChunkingMechanism { get; private set; }
 
-		private List<Entity> queuedEntities = new List<Entity>();
 
 		public EntityManager()
 		{
