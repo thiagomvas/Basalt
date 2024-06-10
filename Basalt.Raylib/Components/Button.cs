@@ -13,19 +13,9 @@ namespace Basalt.Raylib.Components
 	public class Button : UIComponent
 	{
 		/// <summary>
-		/// Gets or sets the text displayed on the button.
+		/// Gets the Label displayed on the button.
 		/// </summary>
-		public string Text { get; set; }
-
-		/// <summary>
-		/// Gets or sets the font size of the button text.
-		/// </summary>
-		public float FontSize { get; set; } = 12f;
-
-		/// <summary>
-		/// Gets or sets the spacing between characters in the button text.
-		/// </summary>
-		public float Spacing { get; set; } = 1f;
+		public Label Label { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the size of the button.
@@ -48,11 +38,6 @@ namespace Basalt.Raylib.Components
 		public Color OnClickColor { get; set; } = Color.DarkGray;
 
 		/// <summary>
-		/// Gets or sets the color of the button text.
-		/// </summary>
-		public Color TextColor { get; set; } = Color.Black;
-
-		/// <summary>
 		/// Gets or sets the action to be performed when the button is clicked.
 		/// </summary>
 		public Action OnClick { get; set; }
@@ -61,11 +46,19 @@ namespace Basalt.Raylib.Components
 		/// Initializes a new instance of the <see cref="Button"/> class.
 		/// </summary>
 		/// <param name="entity">The entity that the button belongs to.</param>
-		public Button(Entity entity) : base(entity)
+		/// <param name="label">The label containing text data for the button. It cannot be part of another entity or be instantiated.</param>
+		public Button(Entity entity, Label label) : base(entity)
 		{
+			Label = label;
+			label.Pivot = this.Pivot;
+			label.Entity = this.Entity;
 		}
 
-
+		public override void OnStart()
+		{
+			Label.Pivot = this.Pivot;
+			Label.Entity = this.Entity;
+		}
 		/// <inheritdoc/>
 		public override void OnUIRender()
 		{
@@ -88,14 +81,7 @@ namespace Basalt.Raylib.Components
 				DrawRectanglePro(rect, Size / 2, Rotation, BackgroundColor);
 			}
 
-			DrawTextPro(GetFontDefault(),
-				Text,
-				position,
-				MeasureTextEx(GetFontDefault(), Text, FontSize, Spacing) / 2,
-				Rotation,
-				FontSize,
-				Spacing,
-				Color.White);
+			Label.OnUIRender();
 		}
 	}
 }

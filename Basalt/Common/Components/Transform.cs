@@ -1,4 +1,5 @@
 ﻿using Basalt.Common.Entities;
+using Basalt.Common.Physics;
 using Basalt.Core.Common.Attributes;
 using Basalt.Math;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ namespace Basalt.Common.Components
 	[SingletonComponent]
 	public sealed class Transform : Component
 	{
+		internal IChunkingMechanism? chunking;
 		public bool IsFixedPoint { get; set; } = false;
 		private Vector3 position;
 		/// <summary>
@@ -25,6 +27,11 @@ namespace Basalt.Common.Components
 				if (IsFixedPoint)
 				{
 					return;
+				}
+
+				if (chunking != null)
+				{
+					chunking.MarkForUpdate(Entity);
 				}
 
 				var offset = value - position;

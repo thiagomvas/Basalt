@@ -1,4 +1,5 @@
-﻿using Basalt.Common.Components;
+﻿using Basalt.Common.Attributes;
+using Basalt.Common.Components;
 using Basalt.Core.Common.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -261,6 +262,30 @@ namespace Basalt.Common.Entities
 			return null;
 		}
 
+		public bool HasComponent<T>() where T : Component
+		{
+			if (typeof(T) == typeof(Transform))
+				return Transform != null;
+			if (typeof(T) == typeof(Rigidbody))
+				return Rigidbody != null;
+			if (typeof(T) == typeof(Collider))
+				return Collider != null;
+
+			return components.Any(c => c is T);
+		}
+
+		public bool HasComponent(Type type)
+		{
+			if (type == typeof(Transform))
+				return Transform != null;
+			if (type == typeof(Rigidbody))
+				return Rigidbody != null;
+			if (type == typeof(Collider))
+				return Collider != null;
+
+			return components.Any(c => c.GetType() == type);
+		}
+
 
 		/// <summary>
 		/// Gets all components of the entity.
@@ -337,6 +362,15 @@ namespace Basalt.Common.Entities
 			{
 				if (!component.started)
 				{
+					var dependencyAttribute = component.GetType().GetCustomAttribute<ComponentDependentOnAttribute>();
+					if (dependencyAttribute != null)
+					{
+						var missing = dependencyAttribute.Dependencies.Where(d => !HasComponent(d));
+						if(missing.Any())
+						{
+							Engine.Instance.Logger?.LogError($"Component \"{component.GetType().Name}\" is missing component dependencies: {string.Join(", ", missing.Select(m => $"\"{m.Name}\""))}");
+						}
+					}
 					component.OnStartEvent(this, EventArgs.Empty);
 				}
 			}

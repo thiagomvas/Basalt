@@ -29,8 +29,6 @@ namespace Basalt.Common.Components
 		protected Component(Entity entity)
 		{
 			this.Entity = entity;
-			if (Engine.Instance.Running)
-				SubscribeToEvents();
 		}
 
 		/// <summary>
@@ -85,6 +83,8 @@ namespace Basalt.Common.Components
 		{
 			if (started)
 				return;
+			if (Engine.Instance.Running)
+				SubscribeToEvents();
 			started = true;
 			OnStart();
 		}

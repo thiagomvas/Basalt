@@ -1,4 +1,5 @@
-﻿using Basalt.Common.Entities;
+﻿using Basalt.Common.Attributes;
+using Basalt.Common.Entities;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -6,6 +7,7 @@ namespace Basalt.Common.Components
 	/// <summary>
 	/// Represents an abstract base class for colliders.
 	/// </summary>
+	[ComponentDependentOn(typeof(Rigidbody))]
 	public abstract class Collider : Component
 	{
 		/// <summary>
