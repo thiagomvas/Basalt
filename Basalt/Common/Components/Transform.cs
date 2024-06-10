@@ -28,7 +28,8 @@ namespace Basalt.Common.Components
 					return;
 				}
 
-				Engine.Instance.EntityManager.ChunkingMechanism.MarkForUpdate(Entity);
+				if(Engine.Instance.EntityManager != null)
+					Engine.Instance.EntityManager.ChunkingMechanism.MarkForUpdate(Entity);
 				
 
 				var offset = value - position;
