@@ -49,10 +49,23 @@ namespace Basalt
 
 		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
 
+		private EntityManager _entityManager;
+
 		/// <summary>
 		/// The entity manager that holds all the entities.
 		/// </summary>
-		public EntityManager EntityManager { get; private set; }
+		public EntityManager EntityManager
+		{
+			get 
+			{ 
+				if(_entityManager == null)
+				{
+					_entityManager = new();
+				}
+				return _entityManager; 
+			}
+			private set { _entityManager = value; }
+		}
 		private ILogger? _logger;
 
 		/// <summary>
