@@ -44,8 +44,6 @@ namespace Basalt.Common.Components
 			if (physics != null)
 			{
 				physicsEngine = physics;
-				if (physics is PhysicsEngine engine)
-					Entity.Transform.chunking = engine.chunking;
 			}
 			else
 			{

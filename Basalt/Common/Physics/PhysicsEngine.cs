@@ -16,7 +16,7 @@ namespace Basalt.Common.Physics
 		const float targetDeltaTime = 0.02f;
 		const int targetFrameTimeMs = 20;
 
-		internal IChunkingMechanism chunking;
+		//internal IChunkingMechanism chunking;
 		private IEventBus eventBus;
 		private ILogger? logger;
 		private bool ShouldRun = true;
@@ -33,17 +33,7 @@ namespace Basalt.Common.Physics
 		public PhysicsEngine()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-			chunking = Engine.Instance.EntityManager.ChunkingMechanism;
-		}
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CustomPhysics"/> class using the specified <see cref="IChunkingMechanism"/>.
-		/// </summary>
-		/// <param name="chunkingMechanism">The chunking mechanism used to optimize collision handling</param>
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public PhysicsEngine(IChunkingMechanism chunkingMechanism)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		{
-			chunking = chunkingMechanism;
+			
 		}
 
 		/// <summary>
@@ -86,11 +76,11 @@ namespace Basalt.Common.Physics
 
 				eventBus?.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
-				chunking.Update();
+				Engine.Instance.EntityManager.ChunkingMechanism.Update();
 
 				// Check for collisions
 
-				DetectCollisions(chunking.GetEntitiesChunked());
+				DetectCollisions(Engine.Instance.EntityManager.ChunkingMechanism.GetEntitiesChunked());
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 
@@ -162,7 +152,7 @@ namespace Basalt.Common.Physics
 		{
 			if (entity is Entity e)
 			{
-				chunking.AddEntity(e);
+				Engine.Instance.EntityManager.ChunkingMechanism.AddEntity(e);
 			}
 		}
 
@@ -170,7 +160,7 @@ namespace Basalt.Common.Physics
 		{
 			if (entity is Entity e)
 			{
-				chunking.RemoveEntity(e);
+				Engine.Instance.EntityManager.ChunkingMechanism.RemoveEntity(e);
 			}
 		}
 	}

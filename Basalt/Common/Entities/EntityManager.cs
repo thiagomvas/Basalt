@@ -14,7 +14,7 @@ namespace Basalt.Common.Entities
 		/// <summary>
 		/// Gets the currently used Chunking Mechanism that groups entities together.
 		/// </summary>
-		public IChunkingMechanism ChunkingMechanism { get; private set; }
+		public IChunkingMechanism ChunkingMechanism { get; private set; } = new Grid(32);
 
 
 		public EntityManager()
