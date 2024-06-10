@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.8.0"></a>
+## [1.8.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.8.0) (2024-06-10)
+
+### Features
+
+* Add CircularBuffer collection type ([1b72cfc](https://www.github.com/thiagomvas/Basalt/commit/1b72cfce1e2e429c483d819e56161206653a5148))
+* Add ComponentDependentOnAttribute ([55e08ba](https://www.github.com/thiagomvas/Basalt/commit/55e08ba0cabe2b606f16d3b102148af8ac04bf16))
+* Add extension methods to extract only two coordinates of a vector3. ([74938d4](https://www.github.com/thiagomvas/Basalt/commit/74938d4ee6d8c749199e622481f9491c13ec829a))
+* Add generic state machine and state ([cc3ce61](https://www.github.com/thiagomvas/Basalt/commit/cc3ce612678e663ec46aced15a71decbb4dac3fb))
+* Add HasComponent method ([76dac10](https://www.github.com/thiagomvas/Basalt/commit/76dac1058b31b6ec7de1197957aff4a57c29608e))
+
+### Bug Fixes
+
+* Components were registering before instantiating ([5ec0b48](https://www.github.com/thiagomvas/Basalt/commit/5ec0b489530280af7926b20798148e66cbf13161))
+* Entities are now marked for update on chunking mechanism whenever position is set. ([3fa4d1b](https://www.github.com/thiagomvas/Basalt/commit/3fa4d1be6e3ac9cb22c2be823d0272553bd4c6d6))
+* Improve button label to be passed in the constructor ([3f2504a](https://www.github.com/thiagomvas/Basalt/commit/3f2504a5e7ccd498b95b59847eb57f24410242e8))
+
 <a name="1.7.0"></a>
 ## [1.7.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.7.0) (2024-06-03)
 
