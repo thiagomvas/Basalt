@@ -1,4 +1,5 @@
-﻿using Basalt.Core.Common.Abstractions.Engine;
+﻿using Basalt.Common.Physics;
+using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Common.Entities
 {
@@ -10,13 +11,13 @@ namespace Basalt.Common.Entities
 		public int EntityCount => entities.Count;
 		private List<Entity> entities = new List<Entity>();
 		private readonly object lockObject = new object();
-		private readonly IEventBus eventBus;
+		public IChunkingMechanism ChunkingMechanism { get; private set; }
 
 		private List<Entity> queuedEntities = new List<Entity>();
 
-		public EntityManager(IEventBus eventBus)
+		public EntityManager()
 		{
-			this.eventBus = eventBus;
+			ChunkingMechanism = new Grid(32);
 		}
 
 		/// <summary>
@@ -70,6 +71,11 @@ namespace Basalt.Common.Entities
 			{
 				return entities.FirstOrDefault(e => e.Id == id);
 			}
+		}
+
+		public void UseChunkingMechanism(IChunkingMechanism chunkingMechanism)
+		{
+			ChunkingMechanism = chunkingMechanism;
 		}
 	}
 }

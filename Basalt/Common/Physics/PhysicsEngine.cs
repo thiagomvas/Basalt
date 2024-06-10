@@ -33,7 +33,7 @@ namespace Basalt.Common.Physics
 		public PhysicsEngine()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-			chunking = new Grid(32);
+			chunking = Engine.Instance.EntityManager.ChunkingMechanism;
 		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CustomPhysics"/> class using the specified <see cref="IChunkingMechanism"/>.
