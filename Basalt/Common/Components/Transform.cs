@@ -13,7 +13,6 @@ namespace Basalt.Common.Components
 	[SingletonComponent]
 	public sealed class Transform : Component
 	{
-		internal IChunkingMechanism? chunking;
 		public bool IsFixedPoint { get; set; } = false;
 		private Vector3 position;
 		/// <summary>
@@ -29,10 +28,9 @@ namespace Basalt.Common.Components
 					return;
 				}
 
-				if (chunking != null)
-				{
-					chunking.MarkForUpdate(Entity);
-				}
+				if(Engine.Instance.EntityManager != null)
+					Engine.Instance.EntityManager.ChunkingMechanism.MarkForUpdate(Entity);
+				
 
 				var offset = value - position;
 				position = value;

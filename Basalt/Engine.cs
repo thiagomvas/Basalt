@@ -49,10 +49,23 @@ namespace Basalt
 
 		private Dictionary<Type, ComponentHolder> Components { get; set; } = new();
 
+		private EntityManager _entityManager;
+
 		/// <summary>
 		/// The entity manager that holds all the entities.
 		/// </summary>
-		public EntityManager EntityManager { get; private set; }
+		public EntityManager EntityManager
+		{
+			get 
+			{ 
+				if(_entityManager == null)
+				{
+					_entityManager = new();
+				}
+				return _entityManager; 
+			}
+			private set { _entityManager = value; }
+		}
 		private ILogger? _logger;
 
 		/// <summary>
@@ -109,7 +122,7 @@ namespace Basalt
 			}
 
 			// Initialize Entity Manager
-			EntityManager = new(GetEngineComponent<IEventBus>()!);
+			EntityManager = new();
 
 			// Move graphics engine and event bus to the front of the list
 			Components = Components.OrderBy(c => c.Key == typeof(IGraphicsEngine) ? 0 : c.Key == typeof(IEventBus) ? 1 : 2).ToDictionary(c => c.Key, c => c.Value);
