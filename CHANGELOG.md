@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.8.1"></a>
+## [1.8.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.8.1) (2024-06-10)
+
+### Bug Fixes
+
+* Add reference to used ChunkingMechanism ([22a47e7](https://www.github.com/thiagomvas/Basalt/commit/22a47e7b5da6c250219e4942580a25d04ba5b669))
+
 <a name="1.8.0"></a>
 ## [1.8.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.8.0) (2024-06-10)
 
