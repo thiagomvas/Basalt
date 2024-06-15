@@ -3,7 +3,6 @@ using Basalt.Common.Entities;
 using Basalt.Common.Exceptions;
 using Basalt.Common.Utils;
 using Basalt.Raylib.Graphics;
-using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
 
@@ -35,11 +34,11 @@ namespace Basalt.Raylib.Components
 
 		protected override void RenderParticles()
 		{
-			if(!init)
+			if (!init)
 			{
 				init = true;
 				var m = ResourceCache.Instance.GetModel(ModelCacheKey);
-				if(m == null)
+				if (m == null)
 				{
 					throw new InvalidResourceKeyException($"{nameof(ModelCacheKey)}:{ModelCacheKey}");
 				}

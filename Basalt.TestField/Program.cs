@@ -15,7 +15,6 @@ using Basalt.Raylib.Input;
 using Basalt.Raylib.Sound;
 using Basalt.Raylib.Utils;
 using Basalt.TestField;
-using Basalt.TestField.Components;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -54,7 +53,7 @@ engine.Initialize();
 
 
 var player = new Entity();
-player.AddComponent(new CameraController(player));
+player.AddComponent(new FirstPersonCameraController(player));
 player.Id = "entity.player";
 Vector3 offset = Vector3.UnitY * -1;
 player.Transform.Position = new Vector3(0, 5, 0);
@@ -68,7 +67,7 @@ Engine.CreateEntity(player);
 
 var emitter = new Entity();
 emitter.Transform.Position = new Vector3(0, 10, 0);
-emitter.AddComponent(new RaylibParticleSystem(emitter) { ModelCacheKey = "cube"});
+emitter.AddComponent(new RaylibParticleSystem(emitter) { ModelCacheKey = "cube" });
 Engine.CreateEntity(emitter);
 
 var ps = emitter.GetComponent<RaylibParticleSystem>()!;
@@ -78,7 +77,7 @@ ps.SubscribeOnParticleReset((ref Particle p) =>
 	p.Velocity = new(Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5);
 	// Apply random rotation
 	p.Rotation = Quaternion.CreateFromYawPitchRoll(Random.Shared.NextSingle() * MathF.PI * 2, Random.Shared.NextSingle() * MathF.PI * 2, Random.Shared.NextSingle() * MathF.PI * 2);
-	
+
 });
 
 TestingUtils.SetupTestingScene(250);

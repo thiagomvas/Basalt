@@ -95,7 +95,7 @@ namespace Basalt.Common.Physics
 				return;
 
 			// Handle collisions and separate them from here 
-			
+
 			// Calculate the direction of least penetration
 			Vector3 separationDirection = Vector3.Zero;
 			float minOverlap = Min(overlapX, Min(overlapY, overlapZ));

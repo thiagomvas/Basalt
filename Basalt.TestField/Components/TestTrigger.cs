@@ -12,7 +12,7 @@ namespace Basalt.TestField.Components
 
 		public override void OnCollision(Collider other)
 		{
-			if(other.Entity.Id == "entity.player")
+			if (other.Entity.Id == "entity.player")
 			{
 				Console.WriteLine($"Trigger collided with {other.Entity.Id}");
 				Entity.GetComponent<ModelRenderer>().ModelCacheKey = "sphere";

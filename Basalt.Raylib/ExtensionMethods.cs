@@ -8,7 +8,6 @@ using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Input;
 using Basalt.Raylib.Sound;
 using Basalt.Types;
-using Raylib_cs;
 
 namespace Basalt.Raylib
 {

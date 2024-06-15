@@ -2,16 +2,23 @@
 
 namespace Basalt.Common.Components
 {
-	public abstract class CameraControllerBase<T> : Component 
+	/// <summary>
+	/// Base class for camera controllers.
+	/// </summary>
+	/// <typeparam name="T">The type that represents a camera.</typeparam>
+	public abstract class CameraControllerBase<T> : Component
 	{
-		public abstract T Camera { get; set;  }
+		/// <summary>
+		/// Gets or sets the camera.
+		/// </summary>
+		public abstract T Camera { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CameraControllerBase{T}"/> class.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
 		public CameraControllerBase(Entity entity) : base(entity)
 		{
-		}
-
-		public virtual void SetCamera(T camera)
-		{
-			Camera = camera;
 		}
 	}
 }

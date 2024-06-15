@@ -33,7 +33,7 @@ namespace Basalt.Common.Components
 		{
 			get => _emissionRate;
 			set
-			{ 
+			{
 				_emissionRate = value;
 				ResizePool();
 			}
@@ -100,7 +100,7 @@ namespace Basalt.Common.Components
 			int oldLength = _length;
 			_length = (int)(EmissionRate * ParticleLifetime);
 			var newPool = new Particle[_length];
-			if(_length < oldLength)
+			if (_length < oldLength)
 			{
 				for (int i = 0; i < _length; i++)
 				{

@@ -366,7 +366,7 @@ namespace Basalt.Common.Entities
 					if (dependencyAttribute != null)
 					{
 						var missing = dependencyAttribute.Dependencies.Where(d => !HasComponent(d));
-						if(missing.Any())
+						if (missing.Any())
 						{
 							Engine.Instance.Logger?.LogError($"Component \"{component.GetType().Name}\" is missing component dependencies: {string.Join(", ", missing.Select(m => $"\"{m.Name}\""))}");
 						}

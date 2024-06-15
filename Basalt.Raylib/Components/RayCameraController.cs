@@ -5,8 +5,15 @@ using System.Numerics;
 
 namespace Basalt.Raylib.Components
 {
+	/// <summary>
+	/// Represents a camera controller for Raylib using Camera3D.
+	/// </summary>
 	public class RayCameraController : CameraControllerBase<Camera3D>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RayCameraController"/> class.
+		/// </summary>
+		/// <param name="entity">The entity associated with the camera controller.</param>
 		public RayCameraController(Entity entity) : base(entity)
 		{
 			Camera = new Camera3D
@@ -21,7 +28,12 @@ namespace Basalt.Raylib.Components
 			// Set the camera as the active camera in raylib
 			Raylib_cs.Raylib.UpdateCamera(ref camera, CameraMode.FirstPerson);
 		}
+
 		protected Camera3D camera;
+
+		/// <summary>
+		/// Gets or sets the camera.
+		/// </summary>
 		public override Camera3D Camera { get => camera; set => camera = value; }
 	}
 }

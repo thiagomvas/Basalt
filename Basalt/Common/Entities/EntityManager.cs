@@ -1,5 +1,4 @@
 ﻿using Basalt.Common.Physics;
-using Basalt.Core.Common.Abstractions.Engine;
 
 namespace Basalt.Common.Entities
 {
