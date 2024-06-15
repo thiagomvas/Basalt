@@ -107,14 +107,20 @@ namespace Basalt.Raylib.Graphics
 		public unsafe void Render()
 		{
 			Camera3D camera = new();
-			var control = entityManager.GetEntities().FirstOrDefault(e => e.GetComponent<CameraController>() != null)?.GetComponent<CameraController>() ?? null;
+			var control = Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e.GetComponents().FirstOrDefault(c => c.GetType().IsSubclassOf(typeof(RayCameraController))) is not null);
+			RayCameraController controller;
 			if (control == null)
 			{
-				throw new NullReferenceException("No camera controller found in the scene.");
+				Engine.Instance.Logger?.LogError("No camera controller found. Using default controller instead.");
+				var entity = new Entity();
+				entity.AddComponent(new FirstPersonCameraController(entity));
+				Engine.CreateEntity(entity);
+				controller = entity.GetComponent<FirstPersonCameraController>()!;
+				control = entity;
 			}
-
-			camera = control!.camera;
-			control.OnStart();
+			else
+				controller = control!.GetComponents().FirstOrDefault(c => c.GetType().IsSubclassOf(typeof(RayCameraController))) as RayCameraController;
+			camera = controller!.Camera;
 
 			RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
@@ -140,7 +146,6 @@ namespace Basalt.Raylib.Graphics
 			// Main game loop
 			while (ShouldRun)
 			{
-				control.OnUpdate();
 				Time.DeltaTime = GetFrameTime();
 
 
@@ -173,7 +178,7 @@ namespace Basalt.Raylib.Graphics
 					foreach (var source in sources)
 						Rlights.UpdateLightValues(LightShader, source.Source);
 
-					SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], control.Entity.Transform.Position, ShaderUniformDataType.Vec3);
+					SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], controller.Entity.Transform.Position, ShaderUniformDataType.Vec3);
 				}
 
 				//----------------------------------------------------------------------------------
@@ -184,7 +189,7 @@ namespace Basalt.Raylib.Graphics
 					BeginTextureMode(target);
 				ClearBackground(Color.Black);
 
-				BeginMode3D(control.camera);
+				BeginMode3D(controller.Camera);
 
 				eventBus?.TriggerEvent(BasaltConstants.RenderEventKey);
 
