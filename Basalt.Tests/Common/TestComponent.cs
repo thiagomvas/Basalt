@@ -29,8 +29,12 @@ namespace Basalt.Tests.Common
 				}
 			}
 		}
-		public bool HasStarted;
-		public int OnStartCount = 0, OnUpdateCount = 0, OnRenderCount = 0, OnPhysicsUpdateCount = 0;
+		public bool HasStarted {get; set;}
+		public int OnStartCount { get; set; } = 0;
+		public int OnUpdateCount { get; set; } = 0; 
+		public int OnRenderCount {get; set;} = 0; 
+		public int OnPhysicsUpdateCount { get; set;} = 0;
+		public int Foo { get; private set; } = 0;
 		public override void OnStart()
 		{
 			HasStarted = true;
@@ -56,6 +60,9 @@ namespace Basalt.Tests.Common
 		{
 			OnPhysicsUpdateCount++;
 		}
+
+		public int Get() => Foo;
+		public void Set(int value) => Foo = value;
 
 	}
 }

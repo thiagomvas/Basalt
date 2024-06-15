@@ -316,5 +316,81 @@ namespace Basalt.Tests.Integration
 			Assert.That(entity.GetComponent<TestComponent>()!.OnRenderCount, Is.EqualTo(0), "Render was called");
 			Assert.That(entity.GetComponent<TestComponent>()!.OnPhysicsUpdateCount, Is.EqualTo(0), "Physics Update was called");
 		}
+
+		[Test]
+		public void CloneEntity_ShouldReturnNewInstances()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+			entity.AddComponent(new Rigidbody(entity));
+			var tc = entity.GetComponent<TestComponent>()!;
+			var rb = entity.GetComponent<Rigidbody>()!;
+
+			// Act
+			Engine.Instance.Initialize();
+			Engine.CreateEntity(entity);
+			var clone = entity.Clone();
+			var ctc = clone.GetComponent<TestComponent>()!;
+			var crb = clone.GetComponent<Rigidbody>()!;
+
+			// Assert
+			Assert.That(clone, Is.Not.Null);
+			Assert.That(clone, Is.Not.EqualTo(entity));
+			Assert.That(ctc, Is.Not.EqualTo(tc));
+			Assert.That(crb, Is.Not.EqualTo(rb));
+			Assert.That(ctc.Entity, Is.EqualTo(clone));
+			Assert.That(crb.Entity, Is.EqualTo(clone));
+		}
+
+		[Test]
+		public void CloneEntity_WhenCloning_ShouldCloneAllComponents()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.AddComponent(new TestComponent(entity));
+			entity.AddComponent(new Rigidbody(entity));
+
+			// Act
+			Engine.Instance.Initialize();
+			Engine.CreateEntity(entity);
+			var clone = entity.Clone();
+
+			// Assert
+			Assert.IsNotNull(clone);
+			Assert.IsNotNull(clone.GetComponent<TestComponent>());
+			Assert.IsNotNull(clone.GetComponent<Rigidbody>());
+		}
+
+
+		[Test]
+		public void CloneEntity_WhenCloning_ShouldCopyProperties()
+		{
+			// Arrange
+			var entity = new Entity();
+			entity.Transform.Position = Vector3.One;
+			entity.AddComponent(new TestComponent(entity) { OnRenderCount = 42 });
+			entity.AddComponent(new Rigidbody(entity) { Mass = 10, IsKinematic = true, Drag = 1.1f});
+
+			var rb = entity.GetComponent<Rigidbody>()!;
+			var tc = entity.GetComponent<TestComponent>()!;
+
+			tc.Set(69);
+
+			// Act
+			Engine.Instance.Initialize();
+			Engine.CreateEntity(entity);
+			var clone = entity.Clone();
+			var crb = clone.GetComponent<Rigidbody>()!;
+			var ctc = clone.GetComponent<TestComponent>()!;
+
+			// Assert
+			Assert.That(clone.Transform.Position, Is.EqualTo(entity.Transform.Position).Using((IEqualityComparer<Vector3>) new Vector3EqualityComparer()));
+			Assert.That(clone.GetComponent<TestComponent>()!.OnRenderCount, Is.EqualTo(entity.GetComponent<TestComponent>()!.OnRenderCount));
+			Assert.That(crb.IsKinematic, Is.EqualTo(rb.IsKinematic));
+			Assert.That(crb.Mass, Is.EqualTo(rb.Mass));
+			Assert.That(crb.Drag, Is.EqualTo(rb.Drag));
+			Assert.That(ctc.Foo, Is.Not.EqualTo(tc.Foo));
+		}
 	}
 }
