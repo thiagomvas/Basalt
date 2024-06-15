@@ -8,6 +8,7 @@ using Basalt.Raylib.Graphics;
 using Basalt.Raylib.Input;
 using Basalt.Raylib.Sound;
 using Basalt.Types;
+using Raylib_cs;
 
 namespace Basalt.Raylib
 {
@@ -65,5 +66,7 @@ namespace Basalt.Raylib
 			builder.AddComponent<ISoundSystem, RaylibSoundSystem>();
 			return builder;
 		}
+
+		public static Raylib_cs.Color ToRaylibColor(this System.Drawing.Color color) => new(color.R, color.G, color.B, color.A);
 	}
 }
