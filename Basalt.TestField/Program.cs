@@ -68,7 +68,7 @@ Engine.CreateEntity(player);
 
 var emitter = new Entity();
 emitter.Transform.Position = new Vector3(0, 10, 0);
-emitter.AddComponent(new RaylibParticleSystem(emitter));
+emitter.AddComponent(new RaylibParticleSystem(emitter) { ModelCacheKey = "cube"});
 Engine.CreateEntity(emitter);
 
 var ps = emitter.GetComponent<RaylibParticleSystem>()!;
@@ -76,6 +76,8 @@ var ps = emitter.GetComponent<RaylibParticleSystem>()!;
 ps.SubscribeOnParticleReset((ref Particle p) =>
 {
 	p.Velocity = new(Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5);
+	// Apply random rotation
+	p.Rotation = Quaternion.CreateFromYawPitchRoll(Random.Shared.NextSingle() * MathF.PI * 2, Random.Shared.NextSingle() * MathF.PI * 2, Random.Shared.NextSingle() * MathF.PI * 2);
 	
 });
 

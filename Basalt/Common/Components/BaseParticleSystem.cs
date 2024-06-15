@@ -4,14 +4,31 @@ using System.Numerics;
 
 namespace Basalt.Common.Components
 {
+	/// <summary>
+	/// A base class for particle system components.
+	/// </summary>
 	public abstract class BaseParticleSystem : Component
 	{
-
+		/// <summary>
+		/// The particle pool used by the particle system.
+		/// </summary>
 		protected Particle[] _particles;
 
-		private Particle defaults;
+		/// <summary>
+		/// The default particle values to be set on reset.
+		/// </summary>
+		protected Particle defaults;
+
 		private int _length;
 		private float _emissionRate = 5, _particleLifetime = 5;
+
+
+		/// <summary>
+		/// Gets or sets the emission rate of the particle system.
+		/// </summary>
+		/// <remarks>
+		/// Modifying this value will resize the particle pool.
+		/// </remarks>
 		public float EmissionRate
 		{
 			get => _emissionRate;
@@ -22,6 +39,12 @@ namespace Basalt.Common.Components
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the lifetime of the particles in the system.
+		/// </summary>
+		/// <remarks>
+		/// Modifying this value will resize the particle pool.
+		/// </remarks>
 		public float ParticleLifetime
 		{
 			get => _particleLifetime;
@@ -31,7 +54,10 @@ namespace Basalt.Common.Components
 				ResizePool();
 			}
 		}
-
+		/// <summary>
+		/// A delegate for updating particles.
+		/// </summary>
+		/// <param name="particle">The reference to the particle being updated</param>
 		public delegate void ParticleUpdateDelegate(ref Particle particle);
 		private ParticleUpdateDelegate? _particleUpdate;
 		private ParticleUpdateDelegate? _onParticleReset;
@@ -45,7 +71,10 @@ namespace Basalt.Common.Components
 			defaults = new(Entity.Transform.Position, Quaternion.Identity, Vector3.Zero, 0);
 		}
 
-		public abstract void RenderParticles();
+		/// <summary>
+		/// Renders the particles in the system.
+		/// </summary>
+		protected abstract void RenderParticles();
 		public sealed override void OnRender()
 		{
 			RenderParticles();
@@ -86,32 +115,52 @@ namespace Basalt.Common.Components
 				}
 				for (int i = oldLength; i < _length; i++)
 				{
-					newPool[i] = new Particle(Entity.Transform.Position, Quaternion.Identity, Vector3.One, 0);
+					newPool[i] = defaults;
 				}
 			}
 			_particles = newPool;
 		}
 
+		/// <summary>
+		/// Subscribes a delegate to be called when a particle is updated every frame.
+		/// </summary>
+		/// <param name="update">The target delegate</param>
 		public void SubscribeUpdate(ParticleUpdateDelegate update)
 		{
 			_particleUpdate += update;
 		}
 
+		/// <summary>
+		/// Unsubscribes a delegate from being called when a particle is updated every frame.
+		/// </summary>
+		/// <param name="update">The target delegate</param>
 		public void UnsubscribeUpdate(ParticleUpdateDelegate update)
 		{
 			_particleUpdate -= update;
 		}
+		/// <summary>
+		/// Subscribes a delegate to be called when a particle is reset.
+		/// </summary>
+		/// <param name="update">The target delegate</param>
 
 		public void SubscribeOnParticleReset(ParticleUpdateDelegate update)
 		{
 			_onParticleReset += update;
 		}
 
+		/// <summary>
+		/// Unsubscribes a delegate from being called when a particle is reset.
+		/// </summary>
+		/// <param name="update">The target delegate</param>
 		public void UnsubscribeOnParticleReset(ParticleUpdateDelegate update)
 		{
 			_onParticleReset -= update;
 		}
 
+		/// <summary>
+		/// Changes the default values of the particles in the system.
+		/// </summary>
+		/// <param name="particle">The new default particle value</param>
 		public void UpdateDefaults(Particle particle)
 		{
 			defaults = particle;

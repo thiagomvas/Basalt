@@ -9,9 +9,15 @@ using System.Numerics;
 
 namespace Basalt.Raylib.Components
 {
+	/// <summary>
+	/// A particle system that renders particles using Raylib.
+	/// </summary>
 	public class RaylibParticleSystem : BaseParticleSystem
 	{
-		private string _modelCacheKey;
+		private string _modelCacheKey = "sphere";
+		/// <summary>
+		/// The <see cref="ResourceCache"/> cache key for the model to use for rendering particles.
+		/// </summary>
 		public string ModelCacheKey
 		{
 			get => _modelCacheKey;
@@ -27,7 +33,7 @@ namespace Basalt.Raylib.Components
 		{
 		}
 
-		public override void RenderParticles()
+		protected override void RenderParticles()
 		{
 			if(!init)
 			{
