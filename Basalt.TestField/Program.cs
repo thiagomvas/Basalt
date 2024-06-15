@@ -66,15 +66,18 @@ player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Typ
 
 Engine.CreateEntity(player);
 
-var trigger = new Entity();
-trigger.Id = "entity.trigger";
-trigger.Transform.Position = new Vector3(10, 2.5f, 0);
-trigger.AddComponent(new BoxCollider(trigger) { Size = new Vector3(5), IsTrigger = true });
-trigger.AddComponent(new ModelRenderer(trigger) { ModelCacheKey = "cube", Size = new Vector3(5), ColorTint = Color.Blue });
-trigger.AddComponent(new Rigidbody(trigger) { IsKinematic = true });
-trigger.AddComponent(new TestTrigger(trigger));
-Engine.CreateEntity(trigger);
+var emitter = new Entity();
+emitter.Transform.Position = new Vector3(0, 10, 0);
+emitter.AddComponent(new RaylibParticleSystem(emitter));
+Engine.CreateEntity(emitter);
 
+var ps = emitter.GetComponent<RaylibParticleSystem>()!;
+
+ps.SubscribeOnParticleReset((ref Particle p) =>
+{
+	p.Velocity = new(Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5);
+	
+});
 
 TestingUtils.SetupTestingScene(250);
 TestingUtils.SetupDebugInfo();
