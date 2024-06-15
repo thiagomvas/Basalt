@@ -28,6 +28,7 @@ namespace Basalt.Raylib.Graphics
 		private EntityManager entityManager;
 		private ISoundSystem? soundSystem;
 		private IEventBus eventBus;
+		private RayCameraController? cameraController;
 
 		Shader PostProcessShader, LightShader;
 		bool ShouldRun = true;
@@ -108,19 +109,18 @@ namespace Basalt.Raylib.Graphics
 		{
 			Camera3D camera = new();
 			var control = Engine.Instance.EntityManager.GetEntities().FirstOrDefault(e => e.GetComponents().FirstOrDefault(c => c.GetType().IsSubclassOf(typeof(RayCameraController))) is not null);
-			RayCameraController controller;
 			if (control == null)
 			{
 				Engine.Instance.Logger?.LogError("No camera controller found. Using default controller instead.");
 				var entity = new Entity();
 				entity.AddComponent(new FirstPersonCameraController(entity));
 				Engine.CreateEntity(entity);
-				controller = entity.GetComponent<FirstPersonCameraController>()!;
+				cameraController = entity.GetComponent<FirstPersonCameraController>()!;
 				control = entity;
 			}
 			else
-				controller = control!.GetComponents().FirstOrDefault(c => c.GetType().IsSubclassOf(typeof(RayCameraController))) as RayCameraController;
-			camera = controller!.Camera;
+				cameraController = control!.GetComponents().FirstOrDefault(c => c.GetType().IsSubclassOf(typeof(RayCameraController))) as RayCameraController;
+			camera = cameraController!.Camera;
 
 			RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
@@ -178,7 +178,7 @@ namespace Basalt.Raylib.Graphics
 					foreach (var source in sources)
 						Rlights.UpdateLightValues(LightShader, source.Source);
 
-					SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], controller.Entity.Transform.Position, ShaderUniformDataType.Vec3);
+					SetShaderValue(LightShader, LightShader.Locs[(int)ShaderLocationIndex.VectorView], cameraController.Entity.Transform.Position, ShaderUniformDataType.Vec3);
 				}
 
 				//----------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ namespace Basalt.Raylib.Graphics
 					BeginTextureMode(target);
 				ClearBackground(Color.Black);
 
-				BeginMode3D(controller.Camera);
+				BeginMode3D(cameraController.Camera);
 
 				eventBus?.TriggerEvent(BasaltConstants.RenderEventKey);
 
@@ -264,13 +264,16 @@ namespace Basalt.Raylib.Graphics
 
 		private T invoke<T>(Func<T> delegateFunc) => delegateFunc();
 
-
-
 		public void Shutdown()
 		{
 			ShouldRun = false;
 			ResourceCache.Instance.UnloadRaylib();
 			logger?.LogWarning("Shutting down graphics engine...");
+		}
+
+		public void SetCameraController(RayCameraController newController)
+		{
+			cameraController = newController;
 		}
 	}
 }
