@@ -6,9 +6,10 @@ namespace Basalt.Common.Components
 {
 	public abstract class BaseParticleSystem : Component
 	{
-		public Vector3 StartVelocity { get; set; }
 
 		protected Particle[] _particles;
+
+		private Particle defaults;
 		private int _length;
 		private float _emissionRate = 5, _particleLifetime = 5;
 		public float EmissionRate
@@ -32,8 +33,8 @@ namespace Basalt.Common.Components
 		}
 
 		public delegate void ParticleUpdateDelegate(ref Particle particle);
-		private ParticleUpdateDelegate _particleUpdate;
-		private ParticleUpdateDelegate _onParticleReset;
+		private ParticleUpdateDelegate? _particleUpdate;
+		private ParticleUpdateDelegate? _onParticleReset;
 		protected BaseParticleSystem(Entity entity) : base(entity)
 		{
 			ResizePool();
@@ -41,6 +42,7 @@ namespace Basalt.Common.Components
 			{
 				_particles[i].Lifetime = ParticleLifetime / _length * i;
 			}
+			defaults = new(Entity.Transform.Position, Quaternion.Identity, Vector3.Zero, 0);
 		}
 
 		public abstract void RenderParticles();
@@ -58,10 +60,7 @@ namespace Basalt.Common.Components
 				_particleUpdate?.Invoke(ref _particles[i]);
 				if (_particles[i].Lifetime > ParticleLifetime)
 				{
-					_particles[i].Position = Entity.Transform.Position;
-					_particles[i].Rotation = Quaternion.Identity;
-					_particles[i].Velocity = Vector3.One;
-					_particles[i].Lifetime = 0;
+					_particles[i] = defaults;
 					_onParticleReset?.Invoke(ref _particles[i]);
 				}
 			}
@@ -111,6 +110,11 @@ namespace Basalt.Common.Components
 		public void UnsubscribeOnParticleReset(ParticleUpdateDelegate update)
 		{
 			_onParticleReset -= update;
+		}
+
+		public void UpdateDefaults(Particle particle)
+		{
+			defaults = particle;
 		}
 
 	}
