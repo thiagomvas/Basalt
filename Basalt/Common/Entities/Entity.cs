@@ -63,6 +63,9 @@ namespace Basalt.Common.Entities
 			}
 		}
 
+		[JsonIgnore]
+		public bool Destroyed { get; private set; } = false;
+
 		public Entity()
 		{
 			Transform = new Transform(this);
@@ -339,6 +342,7 @@ namespace Basalt.Common.Entities
 		/// </summary>
 		public void Destroy()
 		{
+			destroyed = true;
 			Engine.RemoveEntity(this);
 			foreach (var child in Children)
 			{
@@ -363,8 +367,10 @@ namespace Basalt.Common.Entities
 			}
 		}
 
-		internal void CallOnCollision(Collider other)
+		public void CallOnCollision(Collider other)
 		{
+			if (destroyed)
+				return;
 			foreach (var component in components)
 				component.OnCollision(other);
 		}

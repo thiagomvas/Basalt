@@ -19,7 +19,6 @@ namespace Basalt.Common.Physics
 		private IEventBus eventBus;
 		private ILogger? logger;
 		private bool ShouldRun = true;
-		private List<Entity> entities;
 		/// <summary>
 		/// Gets or sets the gravity value for the physics engine.
 		/// </summary>
