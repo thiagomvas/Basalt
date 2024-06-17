@@ -342,7 +342,7 @@ namespace Basalt.Common.Entities
 		/// </summary>
 		public void Destroy()
 		{
-			destroyed = true;
+			Destroyed = true;
 			Engine.RemoveEntity(this);
 			foreach (var child in Children)
 			{
@@ -369,7 +369,7 @@ namespace Basalt.Common.Entities
 
 		public void CallOnCollision(Collider other)
 		{
-			if (destroyed)
+			if (Destroyed)
 				return;
 			foreach (var component in components)
 				component.OnCollision(other);
