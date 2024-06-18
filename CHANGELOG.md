@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.9.0"></a>
+## [1.9.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.9.0) (2024-06-18)
+
+### Features
+
+* Add base particle system component. ([d33c620](https://www.github.com/thiagomvas/Basalt/commit/d33c6201f4589925310b987b83736b49d512fea0))
+* Add base Raylib camera controller class ([2568b60](https://www.github.com/thiagomvas/Basalt/commit/2568b609786fbee19a3c445a74bcec0b044d4411))
+* Add CameraControllerBase<T> generic class ([0099ea8](https://www.github.com/thiagomvas/Basalt/commit/0099ea85347604e6749e0a2e58fdd1aec30b1ba1))
+* Add Entity.Clone() and Entity.Create() ([6b1d15a](https://www.github.com/thiagomvas/Basalt/commit/6b1d15a55c7f2ccdb5424c470677ac6171b9c246))
+* Add First Person camera controller class ([57c6f74](https://www.github.com/thiagomvas/Basalt/commit/57c6f74f4d9ca29fc8802633b56bba3624df3a39))
+* Add RaylibParticleSystem component ([3615e2a](https://www.github.com/thiagomvas/Basalt/commit/3615e2ab304d60357448e15267bbf9b32eb02db9))
+* Add System.Drawing.Color.ToRaylibColor() extension method ([7acdade](https://www.github.com/thiagomvas/Basalt/commit/7acdadee93a1f9ee79fec03577b3565df120ee86))
+* CameraController can now be changed for RaylibGraphicsEngine ([0cd2cab](https://www.github.com/thiagomvas/Basalt/commit/0cd2cab1cc853e496f08492679fabebd651e2a5f))
+* Particle Systems can be looping or have limited emission duration. ([00bc197](https://www.github.com/thiagomvas/Basalt/commit/00bc197b6db7c4cbdf60b260fd2f0226059b91f6))
+* RaylibGraphicsEngine updated to support new camera system. ([7ec5323](https://www.github.com/thiagomvas/Basalt/commit/7ec532351f8efac7ffa4aa26f2409ea9ec4eacd4))
+
+### Bug Fixes
+
+* InvalidResourceKeyException now contains the param name and value that caused the exception ([32de895](https://www.github.com/thiagomvas/Basalt/commit/32de89577af550199992a5b8413546a7149123bc))
+* OnCollision no longer called when entity is destroyed. ([0aa34fb](https://www.github.com/thiagomvas/Basalt/commit/0aa34fb04739f155e495895d83f935fca4231899))
+* Possible null reference exception when setting transform position ([35f7d32](https://www.github.com/thiagomvas/Basalt/commit/35f7d320bd374805363cab3c16930da9a6ce3217))
+* Properly reference new chunking ([be6bcf9](https://www.github.com/thiagomvas/Basalt/commit/be6bcf98f370b693589fe802344d613515efcf6e))
+
 <a name="1.8.1"></a>
 ## [1.8.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.8.1) (2024-06-10)
 
