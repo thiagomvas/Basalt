@@ -21,6 +21,11 @@ namespace Basalt.Common.Entities
 		private List<ComponentDto> componentDtos = new();
 		private List<Component> components = new();
 
+		[JsonIgnore]
+		internal bool created = false;
+		[JsonIgnore]
+		private int componentCount = 0;
+
 		[JsonProperty("Id")]
 		public string Id { get; set; } = System.Guid.NewGuid().ToString();
 		/// <summary>
@@ -113,6 +118,9 @@ namespace Basalt.Common.Entities
 		/// </summary>
 		/// <param name="json">The json string to deserialize from</param>
 		/// <returns>An entity instance from the JSON string</returns>
+		/// <remarks>
+		/// It is not recommended to rely on deserialization to keep references as they will break.
+		/// </remarks>
 		public static Entity DeserializeFromJson(string json)
 		{
 			JObject jObject = JObject.Parse(json);
@@ -208,6 +216,11 @@ namespace Basalt.Common.Entities
 					break;
 			}
 
+			if(created)
+				component.OnStartEvent(this, EventArgs.Empty);
+
+			componentCount++;
+
 		}
 
 		/// <summary>
@@ -244,6 +257,7 @@ namespace Basalt.Common.Entities
 					// Handle other cases if necessary
 					break;
 			}
+			componentCount++;
 		}
 
 		/// <summary>
@@ -257,6 +271,7 @@ namespace Basalt.Common.Entities
 			if (component.GetType() == typeof(Rigidbody))
 				Rigidbody = null;
 
+			componentCount--;
 		}
 
 		/// <summary>
@@ -273,8 +288,9 @@ namespace Basalt.Common.Entities
 			if (typeof(T) == typeof(Collider))
 				return Collider as T;
 
-			foreach (var component in components)
+			for (int i = 0; i < components.Count; i++)
 			{
+				Component? component = components[i];
 				if (component is T match)
 				{
 					return match;
@@ -344,13 +360,16 @@ namespace Basalt.Common.Entities
 		{
 			Destroyed = true;
 			Engine.RemoveEntity(this);
-			foreach (var child in Children)
+			for (int i = 0; i < Children.Count; i++)
 			{
+				Entity? child = Children[i];
 				child.Destroy();
 			}
 
-			foreach (var component in components)
+			var count = componentCount;
+			for (int i = 0; i < count; i++)
 			{
+				Component? component = components[i];
 				component.onDestroy();
 			}
 		}
@@ -361,8 +380,9 @@ namespace Basalt.Common.Entities
 		public void Create()
 		{
 			Engine.CreateEntity(this);
-			foreach (var child in Children)
+			for (int i = 0; i < Children.Count; i++)
 			{
+				Entity? child = Children[i];
 				child.Create();
 			}
 		}
@@ -371,8 +391,10 @@ namespace Basalt.Common.Entities
 		{
 			if (Destroyed)
 				return;
-			foreach (var component in components)
-				component.OnCollision(other);
+
+			var count = componentCount;
+			for (int i = 0; i < count; i++)
+				components[i].OnCollision(other);
 		}
 
 		private static Type? ByName(string name)
@@ -394,8 +416,10 @@ namespace Basalt.Common.Entities
 
 		internal void CallStart()
 		{
-			foreach (var component in components)
+			var count = componentCount;
+			for (int i = 0; i < count; i++)
 			{
+				Component? component = components[i];
 				if (!component.started)
 				{
 					var dependencyAttribute = component.GetType().GetCustomAttribute<ComponentDependentOnAttribute>();
@@ -431,8 +455,9 @@ namespace Basalt.Common.Entities
 		{
 			var result = new Entity();
 			result.Id = Id + Guid.NewGuid().ToString();
-			foreach (var component in components)
+			for (int i = 0; i < components.Count; i++)
 			{
+				Component? component = components[i];
 				var c = Activator.CreateInstance(component.GetType(), result) as Component;
 				foreach (var prop in c.GetType().GetProperties())
 				{

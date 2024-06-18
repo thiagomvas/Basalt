@@ -15,6 +15,7 @@ using Basalt.Raylib.Input;
 using Basalt.Raylib.Sound;
 using Basalt.Raylib.Utils;
 using Basalt.TestField;
+using Basalt.TestField.Components;
 using Basalt.Types;
 using Raylib_cs;
 using System.Numerics;
@@ -65,20 +66,13 @@ player.AddComponent(new LightSource(player, "lighting") { Color = Color.Red, Typ
 
 Engine.CreateEntity(player);
 
-var emitter = new Entity();
-emitter.Transform.Position = new Vector3(0, 10, 0);
-emitter.AddComponent(new RaylibParticleSystem(emitter) { ModelCacheKey = "cube" });
-Engine.CreateEntity(emitter);
-
-var ps = emitter.GetComponent<RaylibParticleSystem>()!;
-
-ps.SubscribeOnParticleReset((ref Particle p) =>
-{
-	p.Velocity = new(Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5, Random.Shared.NextSingle() * 10 - 5);
-	// Apply random rotation
-	p.Rotation = Quaternion.CreateFromYawPitchRoll(Random.Shared.NextSingle() * MathF.PI * 2, Random.Shared.NextSingle() * MathF.PI * 2, Random.Shared.NextSingle() * MathF.PI * 2);
-
-});
+var trigger = new Entity();
+trigger.AddComponent(new ModelRenderer(trigger) { ModelCacheKey = "cube", Size = new Vector3(1f), ColorTint = Color.Green });
+trigger.AddComponent(new BoxCollider(trigger) { Size = new Vector3(1, 1, 1), IsTrigger = true });
+trigger.AddComponent(new TestTrigger(trigger));
+trigger.AddComponent(new Rigidbody(trigger) { IsKinematic = true });
+trigger.Transform.Position = new Vector3(0, 1, 5);
+Engine.CreateEntity(trigger);
 
 TestingUtils.SetupTestingScene(250);
 TestingUtils.SetupDebugInfo();

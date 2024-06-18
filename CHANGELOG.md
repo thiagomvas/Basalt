@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.9.1"></a>
+## [1.9.1](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.9.1) (2024-06-18)
+
+### Bug Fixes
+
+* Adding components during some events would crash the engine ([c13a6cf](https://www.github.com/thiagomvas/Basalt/commit/c13a6cf34094cee8841c5e2cbace019422ca04f2))
+* Components are now initialized when added after entity creation ([7aab969](https://www.github.com/thiagomvas/Basalt/commit/7aab9696b8da0ddda0076eef0be87d29e28461ec))
+* Particle Lifetime and starting position now work as expected ([7d19af5](https://www.github.com/thiagomvas/Basalt/commit/7d19af5b30834bbce56df88c45e4697cf361e610))
+
 <a name="1.9.0"></a>
 ## [1.9.0](https://www.github.com/thiagomvas/Basalt/releases/tag/v1.9.0) (2024-06-18)
 

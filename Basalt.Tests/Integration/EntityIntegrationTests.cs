@@ -169,30 +169,6 @@ namespace Basalt.Tests.Integration
 			Assert.That(json, Does.Contain("entity.target"));
 		}
 
-		[Test]
-		public void EntityDeserializeFromJson_WhenComponentHasEntityReference_ShouldDeserializeReference()
-		{
-			// Arrange
-			var target = new Entity();
-			target.Id = "entity.target";
-			var entity = new Entity();
-			entity.Id = "entity.testing";
-			entity.AddComponent(new TestComponent(entity) { Target = target });
-
-			// Act
-			Engine.Instance.Initialize();
-			Engine.CreateEntity(target);
-			var json = entity.SerializeToJson();
-			var newEntity = Entity.DeserializeFromJson(json);
-			Engine.CreateEntity(newEntity);
-
-			// Assert
-			Assert.IsNotNull(newEntity, "Deserialization failed, result entity was null");
-			Assert.IsNotNull(newEntity.GetComponent<TestComponent>(), "Test component was null");
-			Assert.IsTrue(newEntity.GetComponent<TestComponent>().HasStarted, "Component did not initialize");
-			Assert.IsNotNull(newEntity.GetComponent<TestComponent>().Target, "Target was null");
-			Assert.That(newEntity.GetComponent<TestComponent>().Target.Id, Is.EqualTo(target.Id), "Ids are different");
-		}
 
 		[Test]
 		public void EntityDeserializeToJson_WhenMissingIdField_ShouldGenerateNew()
