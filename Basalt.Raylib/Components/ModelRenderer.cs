@@ -72,7 +72,7 @@ namespace Basalt.Raylib.Components
 					cube = ResourceCache.Instance.GetModel(ModelCacheKey)!.Value;
 				else
 				{
-					throw new InvalidResourceKeyException(nameof(ModelCacheKey));
+					throw new InvalidResourceKeyException(nameof(ModelCacheKey), ModelCacheKey);
 				}
 				init = true;
 			}

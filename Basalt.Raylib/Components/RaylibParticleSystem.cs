@@ -40,7 +40,7 @@ namespace Basalt.Raylib.Components
 				var m = ResourceCache.Instance.GetModel(ModelCacheKey);
 				if (m == null)
 				{
-					throw new InvalidResourceKeyException($"{nameof(ModelCacheKey)}:{ModelCacheKey}");
+					throw new InvalidResourceKeyException(nameof(ModelCacheKey), ModelCacheKey);
 				}
 				model = m.Value;
 

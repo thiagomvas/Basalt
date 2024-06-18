@@ -74,11 +74,10 @@ namespace Basalt.Common.Physics
 
 				eventBus?.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
-				Engine.Instance.EntityManager.ChunkingMechanism.Update();
-
 				// Check for collisions
 
 				DetectCollisions(Engine.Instance.EntityManager.ChunkingMechanism.GetEntitiesChunked());
+				Engine.Instance.EntityManager.ChunkingMechanism.Update();
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 
