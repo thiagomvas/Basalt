@@ -177,6 +177,7 @@ namespace Basalt
 			Instance.EntityManager.AddEntity(entity);
 			Instance.GetEngineComponent<IPhysicsEngine>()?.AddEntityToSimulation(entity);
 			entity.CallStart();
+			entity.created = true;
 		}
 
 		/// <summary>

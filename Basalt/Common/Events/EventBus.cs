@@ -1,4 +1,5 @@
 ﻿using Basalt.Core.Common.Abstractions.Engine;
+using System.Collections.Concurrent;
 namespace Basalt.Common.Events
 {
 	/// <summary>
@@ -6,17 +7,15 @@ namespace Basalt.Common.Events
 	/// </summary>
 	public class EventBus : IEventBus
 	{
-		private readonly List<IObserver> observers;
 		private readonly object lockObject;
 
 		// Game Events
-		private Dictionary<string, EventHandler> eventHandlers = new Dictionary<string, EventHandler>();
+		private ConcurrentDictionary<string, EventHandler> eventHandlers = new ConcurrentDictionary<string, EventHandler>();
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EventBus"/> class.
 		/// </summary>
 		public EventBus()
 		{
-			observers = new List<IObserver>();
 			lockObject = new object();
 		}
 

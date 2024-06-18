@@ -22,6 +22,8 @@ namespace Basalt.Common.Entities
 		private List<Component> components = new();
 
 		[JsonIgnore]
+		internal bool created = false;
+		[JsonIgnore]
 		private int componentCount = 0;
 
 		[JsonProperty("Id")]
@@ -210,6 +212,10 @@ namespace Basalt.Common.Entities
 					// Handle other cases if necessary
 					break;
 			}
+
+			if(created)
+				component.OnStartEvent(this, EventArgs.Empty);
+
 			componentCount++;
 
 		}
@@ -357,7 +363,8 @@ namespace Basalt.Common.Entities
 				child.Destroy();
 			}
 
-			for (int i = 0; i < components.Count; i++)
+			var count = componentCount;
+			for (int i = 0; i < count; i++)
 			{
 				Component? component = components[i];
 				component.onDestroy();
@@ -382,7 +389,8 @@ namespace Basalt.Common.Entities
 			if (Destroyed)
 				return;
 
-			for (int i = 0; i < componentCount; i++)
+			var count = componentCount;
+			for (int i = 0; i < count; i++)
 				components[i].OnCollision(other);
 		}
 
@@ -405,7 +413,8 @@ namespace Basalt.Common.Entities
 
 		internal void CallStart()
 		{
-			for (int i = 0; i < components.Count; i++)
+			var count = componentCount;
+			for (int i = 0; i < count; i++)
 			{
 				Component? component = components[i];
 				if (!component.started)
