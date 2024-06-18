@@ -56,13 +56,13 @@ namespace Basalt
 		/// </summary>
 		public EntityManager EntityManager
 		{
-			get 
-			{ 
-				if(_entityManager == null)
+			get
+			{
+				if (_entityManager == null)
 				{
 					_entityManager = new();
 				}
-				return _entityManager; 
+				return _entityManager;
 			}
 			private set { _entityManager = value; }
 		}

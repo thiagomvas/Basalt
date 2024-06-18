@@ -1,8 +1,6 @@
 ﻿using Basalt.Common;
 using Basalt.Common.Components;
 using Basalt.Common.Entities;
-using Raylib_cs;
-using System.Diagnostics;
 using static Raylib_cs.Raylib;
 
 namespace Basalt.TestField.Components

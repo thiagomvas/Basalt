@@ -28,7 +28,7 @@ namespace Basalt.Raylib.Sound
 
 		private void UpdateStream(object? sender, EventArgs args)
 		{
-			if(MusicPlaying is not null)
+			if (MusicPlaying is not null)
 			{
 				UpdateMusicStream(MusicPlaying.Value);
 			}
@@ -49,7 +49,7 @@ namespace Basalt.Raylib.Sound
 		/// </summary>
 		/// <param name="logger">The logger to use for logging.</param>
 		public RaylibSoundSystem()
-		{ 
+		{
 		}
 
 		/// <summary>

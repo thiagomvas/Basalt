@@ -63,6 +63,9 @@ namespace Basalt.Common.Entities
 			}
 		}
 
+		[JsonIgnore]
+		public bool Destroyed { get; private set; } = false;
+
 		public Entity()
 		{
 			Transform = new Transform(this);
@@ -173,11 +176,17 @@ namespace Basalt.Common.Entities
 		/// Adds a component to the entity.
 		/// </summary>
 		/// <param name="component">The component to add</param>
-		public void AddComponent(Component component)
+		public void AddComponent(Component component, bool overwrite = false)
 		{
 			// Check for singleton attribute
 			if (components.Any(c => c.GetType() == component.GetType()) && component.GetType().GetCustomAttribute<SingletonComponentAttribute>() != null)
-				return;
+			{
+				if(!overwrite)
+					return;
+
+				// Replace the existing component
+				components.Remove(components.First(c => c.GetType() == component.GetType()));
+			}
 
 			components.Add(component);
 			switch (component)
@@ -201,6 +210,10 @@ namespace Basalt.Common.Entities
 
 		}
 
+		/// <summary>
+		/// Works identical to AddComponent, however forces changes to singleton components by overwritting them.
+		/// </summary>
+		/// <param name="component"></param>
 		private void ForceAddComponent(Component component)
 		{
 
@@ -213,14 +226,23 @@ namespace Basalt.Common.Entities
 
 
 			components.Add(component);
-			if (Rigidbody == null && component is Rigidbody rb)
+			switch (component)
 			{
-				Rigidbody = rb;
-			}
+				case Rigidbody rb:
+					Rigidbody = rb;
+					break;
 
-			else if (component is Transform t)
-			{
-				Transform = t;
+				case Transform t:
+					Transform = t;
+					break;
+
+				case Collider c:
+					Collider = c;
+					break;
+
+				default:
+					// Handle other cases if necessary
+					break;
 			}
 		}
 
@@ -320,6 +342,7 @@ namespace Basalt.Common.Entities
 		/// </summary>
 		public void Destroy()
 		{
+			Destroyed = true;
 			Engine.RemoveEntity(this);
 			foreach (var child in Children)
 			{
@@ -332,9 +355,22 @@ namespace Basalt.Common.Entities
 			}
 		}
 
-
-		internal void CallOnCollision(Collider other)
+		/// <summary>
+		/// Adds the entity to the engine by calling <see cref="Engine.CreateEntity(Entity)"/> and recursively adds all children.
+		/// </summary>
+		public void Create()
 		{
+			Engine.CreateEntity(this);
+			foreach (var child in Children)
+			{
+				child.Create();
+			}
+		}
+
+		public void CallOnCollision(Collider other)
+		{
+			if (Destroyed)
+				return;
 			foreach (var component in components)
 				component.OnCollision(other);
 		}
@@ -366,7 +402,7 @@ namespace Basalt.Common.Entities
 					if (dependencyAttribute != null)
 					{
 						var missing = dependencyAttribute.Dependencies.Where(d => !HasComponent(d));
-						if(missing.Any())
+						if (missing.Any())
 						{
 							Engine.Instance.Logger?.LogError($"Component \"{component.GetType().Name}\" is missing component dependencies: {string.Join(", ", missing.Select(m => $"\"{m.Name}\""))}");
 						}
@@ -374,6 +410,54 @@ namespace Basalt.Common.Entities
 					component.OnStartEvent(this, EventArgs.Empty);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Creates a deep copy of the entity and all of its children and components.
+		/// </summary>
+		/// <remarks>
+		/// The clone entity will not be added to the engine automatically. Use <see cref="Engine.CreateEntity(Entity)"/> or <see cref="Create"/> to add it to the engine. <br/>
+		/// The result will have a randomly generated Id, and all components will be cloned, with a few limitations:
+		/// <list type="bullet">
+		/// <item>Will only copy <b>public</b> fields;</item>
+		/// <item>Will only copy properties if the setter is <b>public</b>;</item>
+		/// <item>Will <b>not</b> copy static fields or properties;</item>
+		/// <item>Will <b>not</b> copy init-only fields or properties;</item>
+		/// <item>Reference-type fields and properties <b>will</b> have their references copied;</item>
+		/// </list>
+		/// </remarks>
+		/// <returns>A deep copy of the entity</returns>
+		public Entity Clone()
+		{
+			var result = new Entity();
+			result.Id = Id + Guid.NewGuid().ToString();
+			foreach (var component in components)
+			{
+				var c = Activator.CreateInstance(component.GetType(), result) as Component;
+				foreach (var prop in c.GetType().GetProperties())
+				{
+					// Only copy values if the property has a setter, is not static and is public
+
+					if (prop.SetMethod != null && prop.CanWrite && !prop.SetMethod.IsStatic && prop.SetMethod.IsPublic)
+						prop.SetValue(c, prop.GetValue(component));
+				}
+
+				foreach(var field in c.GetType().GetFields())
+				{
+					if(field.IsPublic && !field.IsStatic && !field.IsInitOnly && !field.IsLiteral)
+						field.SetValue(c, field.GetValue(component));
+				}
+
+				c.Entity = result;
+				c.started = false;
+
+				result.ForceAddComponent(c);
+			}
+			foreach(var child in Children)
+			{
+				result.AddChildren(child.Clone());
+			}
+			return result;
 		}
 	}
 }

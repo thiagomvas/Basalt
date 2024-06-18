@@ -1,5 +1,4 @@
-﻿using Basalt.Common.Attributes;
-using Basalt.Common.Entities;
+﻿using Basalt.Common.Entities;
 using Newtonsoft.Json;
 using System.Numerics;
 

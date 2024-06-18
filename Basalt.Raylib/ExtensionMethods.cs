@@ -65,5 +65,13 @@ namespace Basalt.Raylib
 			builder.AddComponent<ISoundSystem, RaylibSoundSystem>();
 			return builder;
 		}
+
+
+		/// <summary>
+		/// Converts a <see cref="System.Drawing.Color"/> to a <see cref="Raylib_cs.Color"/>.
+		/// </summary>
+		/// <param name="color">The color to be converted to a raylib color type</param>
+		/// <returns>The original color as a <see cref="Raylib_cs.Color"/></returns>
+		public static Raylib_cs.Color ToRaylibColor(this System.Drawing.Color color) => new(color.R, color.G, color.B, color.A);
 	}
 }

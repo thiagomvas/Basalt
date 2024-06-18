@@ -1,5 +1,4 @@
 ﻿using Basalt.Common.Entities;
-using Basalt.Common.Physics;
 using Basalt.Core.Common.Attributes;
 using Basalt.Math;
 using Newtonsoft.Json;
@@ -28,9 +27,9 @@ namespace Basalt.Common.Components
 					return;
 				}
 
-				if(Engine.Instance.EntityManager != null)
+				if (Engine.Instance.EntityManager != null)
 					Engine.Instance.EntityManager.ChunkingMechanism.MarkForUpdate(Entity);
-				
+
 
 				var offset = value - position;
 				position = value;

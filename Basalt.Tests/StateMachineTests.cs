@@ -1,6 +1,5 @@
-using NUnit.Framework;
-using Moq;
 using Basalt.Utility;
+using Moq;
 
 namespace Basalt.Tests
 {

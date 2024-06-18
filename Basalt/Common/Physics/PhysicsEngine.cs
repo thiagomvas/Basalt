@@ -1,5 +1,4 @@
-﻿using Basalt.Common.Components;
-using Basalt.Common.Entities;
+﻿using Basalt.Common.Entities;
 using Basalt.Common.Utils;
 using Basalt.Core.Common.Abstractions.Engine;
 
@@ -20,7 +19,6 @@ namespace Basalt.Common.Physics
 		private IEventBus eventBus;
 		private ILogger? logger;
 		private bool ShouldRun = true;
-		private List<Entity> entities;
 		/// <summary>
 		/// Gets or sets the gravity value for the physics engine.
 		/// </summary>
@@ -33,7 +31,7 @@ namespace Basalt.Common.Physics
 		public PhysicsEngine()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-			
+
 		}
 
 		/// <summary>
@@ -76,11 +74,10 @@ namespace Basalt.Common.Physics
 
 				eventBus?.TriggerEvent(BasaltConstants.PhysicsUpdateEventKey);
 
-				Engine.Instance.EntityManager.ChunkingMechanism.Update();
-
 				// Check for collisions
 
 				DetectCollisions(Engine.Instance.EntityManager.ChunkingMechanism.GetEntitiesChunked());
+				Engine.Instance.EntityManager.ChunkingMechanism.Update();
 
 				elapsedTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime;
 

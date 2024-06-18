@@ -1,6 +1,4 @@
-﻿using Basalt.Common.Components;
-
-namespace Basalt.Common.Attributes
+﻿namespace Basalt.Common.Attributes
 {
 
 	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]

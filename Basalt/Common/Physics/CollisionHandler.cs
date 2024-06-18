@@ -49,7 +49,7 @@ namespace Basalt.Common.Physics
 		/// <param name="col2">The second box collider.</param>
 		private static void BoxBoxCollision(Collider col1, Collider col2)
 		{
-			if (!col1.Enabled || !col2.Enabled)
+			if (!col1.Enabled || !col2.Enabled || col1.Entity.Destroyed || col2.Entity.Destroyed)
 				return;
 
 			BoxCollider box1 = (BoxCollider)col1;
@@ -95,7 +95,7 @@ namespace Basalt.Common.Physics
 				return;
 
 			// Handle collisions and separate them from here 
-			
+
 			// Calculate the direction of least penetration
 			Vector3 separationDirection = Vector3.Zero;
 			float minOverlap = Min(overlapX, Min(overlapY, overlapZ));

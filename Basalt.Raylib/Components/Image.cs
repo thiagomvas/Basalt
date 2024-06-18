@@ -3,8 +3,8 @@ using Basalt.Common.Entities;
 using Basalt.Common.Utils;
 using Basalt.Raylib.Graphics;
 using Raylib_cs;
-using static Raylib_cs.Raylib;
 using System.Numerics;
+using static Raylib_cs.Raylib;
 
 namespace Basalt.Raylib.Components
 {

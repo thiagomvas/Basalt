@@ -79,7 +79,7 @@ namespace Basalt.Utility
 			}
 			_index = 0;
 		}
-		
+
 		#endregion
 
 		/// <summary>

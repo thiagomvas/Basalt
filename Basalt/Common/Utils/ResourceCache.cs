@@ -84,7 +84,7 @@ namespace Basalt.Common.Utils
 				if (Instance.resourceCache.ContainsKey(resourceName))
 				{
 					var r = Instance.resourceCache[resourceName];
-					if(r is T t)
+					if (r is T t)
 					{
 						resource = t;
 						return true;
