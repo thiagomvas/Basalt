@@ -186,6 +186,7 @@ namespace Basalt.Common.Components
 		/// <param name="particle">The new default particle value</param>
 		public void UpdateDefaults(Particle particle)
 		{
+			particle.Position = Entity.Transform.Position;
 			defaults = particle;
 		}
 
@@ -198,6 +199,7 @@ namespace Basalt.Common.Components
 			for (int i = 0; i < _particles.Length; i++)
 			{
 				_particles[i] = defaults;
+				_particles[i].Lifetime = ParticleLifetime / _length * i;
 			}
 		}
 
