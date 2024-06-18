@@ -118,6 +118,9 @@ namespace Basalt.Common.Entities
 		/// </summary>
 		/// <param name="json">The json string to deserialize from</param>
 		/// <returns>An entity instance from the JSON string</returns>
+		/// <remarks>
+		/// It is not recommended to rely on deserialization to keep references as they will break.
+		/// </remarks>
 		public static Entity DeserializeFromJson(string json)
 		{
 			JObject jObject = JObject.Parse(json);
