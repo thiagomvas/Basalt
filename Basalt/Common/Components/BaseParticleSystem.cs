@@ -1,5 +1,6 @@
 ﻿using Basalt.Common.Entities;
 using Basalt.Types;
+using System.Drawing;
 using System.Numerics;
 
 namespace Basalt.Common.Components
@@ -94,7 +95,8 @@ namespace Basalt.Common.Components
 		{
 			var dt = Time.DeltaTime;
 			_systemLifetime += dt;
-			if (!Looping && _systemLifetime > SystemDuration)
+
+			if (!Looping && _systemLifetime > SystemDuration + ParticleLifetime)
 				return;
 
 			for (int i = 0; i < _particles.Length; i++)
@@ -104,6 +106,12 @@ namespace Basalt.Common.Components
 				_particleUpdate?.Invoke(ref _particles[i]);
 				if (_particles[i].Lifetime > ParticleLifetime)
 				{
+					if (!Looping && _systemLifetime > SystemDuration)
+					{
+						_particles[i] = defaults;
+						_particles[i].Color = Color.FromArgb(0x00000000);
+						continue;
+					}
 					_particles[i] = defaults;
 					_onParticleReset?.Invoke(ref _particles[i]);
 				}
