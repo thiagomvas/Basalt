@@ -20,7 +20,7 @@ namespace Basalt.Common.Components
 		protected Particle defaults;
 
 		private int _length;
-		private float _emissionRate = 5, _particleLifetime = 5;
+		private float _emissionRate = 5, _particleLifetime = 5, _systemLifetime = 0;
 
 
 		/// <summary>
@@ -54,6 +54,17 @@ namespace Basalt.Common.Components
 				ResizePool();
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the duration of the particle system. The system will reset and stop after this duration.
+		/// </summary>
+		public float SystemDuration { get; set; } = 5f;
+
+		/// <summary>
+		/// Gets or sets whether the particle system should loop.
+		/// </summary>
+		public bool Looping { get; set; } = false;
+
 		/// <summary>
 		/// A delegate for updating particles.
 		/// </summary>
@@ -82,6 +93,10 @@ namespace Basalt.Common.Components
 		public override void OnUpdate()
 		{
 			var dt = Time.DeltaTime;
+			_systemLifetime += dt;
+			if (!Looping && _systemLifetime > SystemDuration)
+				return;
+
 			for (int i = 0; i < _particles.Length; i++)
 			{
 				_particles[i].Lifetime += dt;
@@ -164,6 +179,27 @@ namespace Basalt.Common.Components
 		public void UpdateDefaults(Particle particle)
 		{
 			defaults = particle;
+		}
+
+		/// <summary>
+		/// Resets the particle system to it's initial state.
+		/// </summary>
+		public void Reset()
+		{
+			_systemLifetime = 0;
+			for (int i = 0; i < _particles.Length; i++)
+			{
+				_particles[i] = defaults;
+			}
+		}
+
+
+		/// <summary>
+		/// Stop the particle system from emitting new particles. Already existing particles will continue to update until end of lifetime.
+		/// </summary>
+		public void Stop()
+		{
+			_systemLifetime = SystemDuration;
 		}
 
 	}
